@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Play — Annabel Yang</title>
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       NAV  —  logo → index.html (home)
+       ══════════════════════════════════════════ -->
+  <nav class="site-nav" aria-label="Main navigation">
+
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang — home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work">work</a></li>
+      <li><a href="play.html" class="active">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════
+       PLAY GALLERY  —  parallax columns
+       ---------------------------------------------
+       Each .parallax-col scrolls vertically at its own
+       speed (depth). js/main.js duplicates each column's
+       cards so it can loop seamlessly, staggers the
+       starting offsets, and makes whichever column the
+       cursor is over the fastest one.
+
+       Add an image: drop a new .gallery-card into any
+       column. Aspect-ratio classes:
+         .ar-sq 1:1  .ar-tall 2:3  .ar-port 3:4
+         .ar-wide 4:3  .ar-land 16:9
+       Remove class "ph" and uncomment the <img> to use
+       a real image.
+       ══════════════════════════════════════════ -->
+  <main class="parallax" id="parallax" aria-label="Play gallery">
+
+    <!-- Column 1 (slow / far) -->
+    <div class="parallax-col" data-speed="0.55">
+      <div class="parallax-col-track">
+        <div class="gallery-card"><img src="images/play/suntrace/suntrace1.png" alt="Suntrace 1" /></div>
+        <div class="gallery-card"><img src="images/play/machine/machine1.png" alt="Machine 1" /></div>
+        <div class="gallery-card"><img src="images/play/splash/akalisplash.png" alt="Akali splash" /></div>
+        <div class="gallery-card"><img src="images/play/nostalgia/nostalgia1.png" alt="Nostalgia 1" /></div>
+        <div class="gallery-card"><img src="images/play/coffeeposter.png" alt="Coffee poster" /></div>
+        <div class="gallery-card"><img src="images/play/environment/environment1.png" alt="Environment 1" /></div>
+        <div class="gallery-card"><img src="images/play/cinema.gif" alt="Cinema" /></div>
+        <div class="gallery-card"><img src="images/play/suntrace/suntrace5.png" alt="Suntrace 5" /></div>
+        <div class="gallery-card"><img src="images/play/nostalgia/nostalgia4.png" alt="Nostalgia 4" /></div>
+        <div class="gallery-card"><img src="images/balloonman/balloon1.png" alt="Balloon Man 1" /></div>
+      </div>
+    </div>
+
+    <!-- Column 2 (medium) -->
+    <div class="parallax-col" data-speed="0.8">
+      <div class="parallax-col-track">
+        <div class="gallery-card"><img src="images/play/fallenangels.png" alt="Fallen angels" /></div>
+        <div class="gallery-card"><img src="images/play/suntrace/suntrace2.png" alt="Suntrace 2" /></div>
+        <div class="gallery-card"><img src="images/play/splash/dianasplash.png" alt="Diana splash" /></div>
+        <div class="gallery-card"><img src="images/play/machine/machine2.png" alt="Machine 2" /></div>
+        <div class="gallery-card"><img src="images/play/nostalgia/nostalgia2.png" alt="Nostalgia 2" /></div>
+        <div class="gallery-card"><img src="images/play/rainchain.png" alt="Rain chain" /></div>
+        <div class="gallery-card"><img src="images/play/environment/environment2.png" alt="Environment 2" /></div>
+        <div class="gallery-card"><img src="images/play/spring-show-poster/springshowposter.png" alt="Spring show poster" /></div>
+        <div class="gallery-card"><img src="images/play/suntrace/suntrace6.png" alt="Suntrace 6" /></div>
+      </div>
+    </div>
+
+    <!-- Column 3 (near / fast) -->
+    <div class="parallax-col" data-speed="1.05">
+      <div class="parallax-col-track">
+        <div class="gallery-card"><img src="images/play/selfportrait.gif" alt="Self portrait" /></div>
+        <div class="gallery-card"><img src="images/play/suntrace/suntrace3.png" alt="Suntrace 3" /></div>
+        <div class="gallery-card"><img src="images/play/machine/machine3.png" alt="Machine 3" /></div>
+        <div class="gallery-card"><img src="images/play/splash/hweisplash.png" alt="Hwei splash" /></div>
+        <div class="gallery-card"><img src="images/play/nostalgia/nostalgia3.png" alt="Nostalgia 3" /></div>
+        <div class="gallery-card"><img src="images/play/study.png" alt="Study" /></div>
+        <div class="gallery-card"><img src="images/play/splash/luxsplash.png" alt="Lux splash" /></div>
+        <div class="gallery-card"><img src="images/play/suntrace/suntrace7.png" alt="Suntrace 7" /></div>
+        <div class="gallery-card"><img src="images/play/nostalgia/nostalgia5.png" alt="Nostalgia 5" /></div>
+        <div class="gallery-card"><img src="images/balloonman/balloon2.png" alt="Balloon Man 2" /></div>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <p class="footer-copy">© 2026 Annabel Yang — Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+
+  <script src="js/main.js"></script>
+</body>
+</html>

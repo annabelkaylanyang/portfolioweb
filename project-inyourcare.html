@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>In Your Care &mdash; Annabel Yang</title>
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* =============================================
+       In Your Care - interactive installation
+       Design reference: 12-column grid, 1440px width.
+       Labels sit at the 8.33% column, body copy and
+       figures at 33.33%, details at 41.67%.
+       ============================================= */
+
+    /* Nav sits above the content here rather than behind it,
+       so cancel the global hero pull-up and add a hairline rule. */
+    .site-nav {
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--border-sel);
+    }
+    .site-nav .nav-links a,
+    .site-nav .nav-links a.active { color: var(--fg); }
+    .site-nav .nav-links a:hover { color: var(--pink); }
+
+    .iyc {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-weight: 400;
+    }
+
+    /* Label | content row. The 30% left column resolves to 25% of the
+       viewport inside the 8.33% padding, putting content at 33.33%. */
+    .iyc-row {
+      display: grid;
+      grid-template-columns: 30% 1fr;
+      padding: 120px 8.33% 0;
+    }
+
+    .iyc-label {
+      font-size: 36px;
+      line-height: 1.15;
+      color: var(--fg);
+      padding-right: 32px;
+    }
+
+    .iyc-body {
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--fg);
+      max-width: 670px;
+    }
+    .iyc-body p + p { margin-top: 1.5em; }
+    /* A single line pulled out of its paragraph onto its own line, with a
+       blank line of space above it and a slight indent so it reads as a
+       beat/aside rather than a continuation of the prose. */
+    .iyc-body p.iyc-aside {
+      margin-top: 2.2em;
+      padding-left: 1.5em;
+    }
+
+    /* =============================================
+       INTRO
+       ============================================= */
+    .iyc-intro {
+      display: grid;
+      grid-template-columns: 30% 1fr;
+      padding: 80px 8.33% 0;
+    }
+
+    .iyc-title {
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1.15;
+      color: #0c0c0c;
+      margin-bottom: 48px;
+    }
+    [data-theme="dark"] .iyc-title { color: var(--fg); }
+
+    .iyc-toc {
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
+    }
+    .iyc-toc a {
+      font-size: 24px;
+      line-height: 1.2;
+      color: #767676;
+      transition: color 0.2s;
+    }
+    .iyc-toc a:hover { color: var(--fg); }
+
+    .iyc-hero {
+      width: 100%;
+      aspect-ratio: 830 / 463;
+      object-fit: cover;
+      display: block;
+      margin-top: 115px;
+    }
+
+    /* Nested inside .iyc-intro-right (below the hero image), spanning that
+       column's full width — so the row's right edge is always the image's
+       right edge, and the three items keep even spacing between them
+       whatever that width turns out to be. */
+    .iyc-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 29px;
+    }
+    .iyc-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .iyc-meta-key {
+      font-size: 15px;
+      color: #767676;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .iyc-meta-val {
+      font-size: 16px;
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    /* =============================================
+       FIGURES
+       ============================================= */
+    /* One spacing value per figure group, used for the gaps between
+       stacked figures AND between the two halves of a side-by-side pair.
+       The pair's columns are fr units, so the images resize themselves to
+       whatever width the matched gap leaves — every gap in a group is the
+       same, in both directions. */
+    .iyc-figures {
+      --fig-gap: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--fig-gap);
+      padding: 24px 8.33% 0;
+    }
+    .iyc-figures--process { --fig-gap: 45px; padding-top: 45px; }
+
+    .iyc-fig {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Side-by-side pairs keep the design's width ratio; the gap comes from
+       the group so it matches the stacking above and below. */
+    .iyc-pair {
+      display: grid;
+      gap: var(--fig-gap);
+    }
+    .iyc-pair--media   { grid-template-columns: 515fr 648fr; }
+    .iyc-pair--process { grid-template-columns: 532fr 619fr; }
+
+    /* =============================================
+       FOREST REEL PLAYER
+       Custom controls: one thin bar along the bottom, revealed on hover
+       or once the video has been clicked. No centre play button - the
+       frame stays clean and the video itself is the play target.
+       ============================================= */
+    .iyc-player {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1189 / 608;
+      background: #000;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .iyc-player__video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .iyc-player__bar {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 26px 18px 14px;
+      /* Just enough shading for white controls to hold on any frame. */
+      background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      pointer-events: none;
+    }
+    .iyc-player.is-showing .iyc-player__bar {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .iyc-player__btn {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+      opacity: 0.9;
+      transition: opacity 0.15s ease;
+    }
+    .iyc-player__btn:hover { opacity: 1; }
+    .iyc-player__btn svg { width: 100%; height: 100%; display: block; fill: currentColor; }
+
+    /* Only one icon per button is shown at a time. */
+    .iyc-player__btn .i-pause,
+    .iyc-player.is-playing .iyc-player__btn .i-play { display: none; }
+    .iyc-player.is-playing .iyc-player__btn .i-pause { display: block; }
+    .iyc-player__btn .i-muted,
+    .iyc-player.is-muted .iyc-player__btn .i-sound { display: none; }
+    .iyc-player.is-muted .iyc-player__btn .i-muted { display: block; }
+
+    /* Centre play/pause button: a plain circle, no ring or shadow, sitting
+       over the frame. Visible whenever the video is paused; while it's
+       playing it follows the same reveal as the bottom bar (hover/tap, then
+       fades after the pointer settles), so at rest the frame stays clean. */
+    .iyc-player__center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 1;
+      transition: opacity 0.2s ease, background 0.15s ease;
+    }
+    .iyc-player__center:hover { opacity: 1; background: rgba(0, 0, 0, 0.5); }
+    .iyc-player__center svg {
+      width: 20px;
+      height: 20px;
+      /* The play triangle's own visual weight sits left of centre; nudge it
+         so it reads as centred inside the circle. */
+      margin-left: 2px;
+    }
+    .iyc-player.is-playing .iyc-player__center svg { margin-left: 0; }
+    .iyc-player.is-playing .iyc-player__center {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .iyc-player.is-playing.is-showing .iyc-player__center {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Hairline track that thickens slightly on hover — the only affordance
+       it needs. */
+    .iyc-player__track {
+      position: relative;
+      flex: 1 1 auto;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .iyc-player__track::before {   /* the unfilled rail */
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 50%;
+      transform: translateY(-50%);
+      height: 2px;
+      background: rgba(255,255,255,0.28);
+      transition: height 0.15s ease;
+    }
+    .iyc-player__fill {
+      position: relative;
+      height: 2px;
+      width: 0;
+      background: #fff;
+      transition: height 0.15s ease;
+    }
+    .iyc-player__track:hover::before,
+    .iyc-player__track:hover .iyc-player__fill { height: 3px; }
+
+    .iyc-player__time {
+      flex: 0 0 auto;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      color: #fff;
+      opacity: 0.85;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .iyc-weblink {
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--fg);
+      max-width: 670px;
+    }
+    .iyc-weblink a {
+      text-decoration: underline;
+      text-underline-position: from-font;
+    }
+    .iyc-weblink a:hover { color: var(--pink); }
+
+    .iyc-end { padding-bottom: 120px; }
+
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 900px) {
+      .iyc-row,
+      .iyc-intro {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 72px 6% 0;
+      }
+      .iyc-intro { padding-top: 48px; }
+      .iyc-label { font-size: 28px; }
+      .iyc-body  { font-size: 17px; max-width: 100%; }
+      .iyc-title { font-size: 28px; margin-bottom: 32px; }
+      .iyc-hero  { margin-top: 0; }
+
+      .iyc-meta {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px 16px;
+        margin-top: 32px;
+      }
+
+      .iyc-figures { padding: 20px 6% 0; --fig-gap: 16px; }
+      .iyc-figures--process { --fig-gap: 24px; padding-top: 24px; }
+      .iyc-weblink { font-size: 17px; }
+      .iyc-end { padding-bottom: 72px; }
+    }
+
+    @media (max-width: 600px) {
+      /* Stack the paired figures once they get too narrow. The gap still
+         comes from the group, so stacked pairs match the rest. */
+      .iyc-pair--media,
+      .iyc-pair--process { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang &mdash; home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work" class="active">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+  <main class="iyc" aria-label="In Your Care project">
+
+    <!-- INTRO -->
+    <section class="iyc-intro" id="home">
+      <div class="iyc-intro-left">
+        <h1 class="iyc-title">In Your Care<br>Interactive Installation</h1>
+        <nav class="iyc-toc" aria-label="Page sections">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#media">Media</a>
+          <a href="#process">Process</a>
+          <a href="#reflections">Reflections</a>
+        </nav>
+      </div>
+      <div class="iyc-intro-right">
+        <img class="iyc-hero"
+             src="images/inyourcare/hero.png"
+             alt="In Your Care &mdash; installation still" />
+
+        <!-- Nested in the same column as the hero (not a page-wide grid)
+             so its right edge is always exactly the image's right edge,
+             whatever the image's own width happens to be. -->
+        <div class="iyc-meta" aria-label="Project details">
+          <div class="iyc-meta-item">
+            <span class="iyc-meta-key">ROLE</span>
+            <span class="iyc-meta-val">Visual Designer</span>
+          </div>
+          <div class="iyc-meta-item">
+            <span class="iyc-meta-key">TOOLS</span>
+            <span class="iyc-meta-val">TouchDesigner, p5.js<br>Adobe AfterEffects</span>
+          </div>
+          <div class="iyc-meta-item">
+            <span class="iyc-meta-key">DOMAIN</span>
+            <span class="iyc-meta-val">Interaction design<br>Sound design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="iyc-row" id="about">
+      <div class="iyc-label">About</div>
+      <div class="iyc-body">
+        <p>We often understand climate change through statistics and projections, something intangible and unfelt. This interactive installation aims to instead present it as a living system that remembers and transforms through interaction. My aim is not to shove some dreadful environmental collapse in people&rsquo;s faces directly, but invite visitors to witness firsthand how small actions accumulate into larger ecological shifts.</p>
+        <p>Through &ldquo;In Your Care&rdquo;, the boundaries between observer and participant gradually disappear. In this world, we don&rsquo;t just feel what&rsquo;s happening emotionally, but physically, through our eyes and hands.</p>
+        <p class="iyc-aside">Are we witnessing change&mdash;or creating it?</p>
+      </div>
+    </section>
+
+    <!-- MEDIA -->
+    <section class="iyc-row" id="media">
+      <div class="iyc-label">Media</div>
+      <div></div>
+    </section>
+
+    <div class="iyc-figures">
+      <img class="iyc-fig"
+           src="images/inyourcare/wave.png"
+           alt="Wave sequence &mdash; installation stills"
+           style="aspect-ratio: 1193 / 671;" />
+
+      <div class="iyc-pair iyc-pair--media">
+        <img class="iyc-fig"
+             src="images/inyourcare/media1.png"
+             alt="Microplastic sequence still"
+             style="aspect-ratio: 515 / 448;" />
+        <img class="iyc-fig"
+             src="images/inyourcare/media2.png"
+             alt="Installation scene still"
+             style="aspect-ratio: 648 / 448;" />
+      </div>
+
+      <!-- Forest reel: click or hover to reveal the bottom controls, or hit
+           the centre button. Starts on its own first usable frame, plays
+           with sound, never autoplays. -->
+      <!-- clip-start is 0: the trimmed head is cut in the file itself.
+           The offset mechanism is kept in case a future clip needs one. -->
+      <div class="iyc-player" id="forestReel" data-clip-start="0">
+        <video class="iyc-player__video"
+               src="images/inyourcare/forestreelrecording.mp4"
+               playsinline preload="metadata"
+               aria-label="Forest reel recording"></video>
+
+        <button class="iyc-player__btn iyc-player__center" data-role="toggle"
+                type="button" aria-label="Play">
+          <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>
+          <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/></svg>
+        </button>
+
+        <div class="iyc-player__bar">
+          <button class="iyc-player__btn" data-role="toggle"
+                  type="button" aria-label="Play">
+            <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>
+            <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/></svg>
+          </button>
+
+          <div class="iyc-player__track" data-role="seek"
+               role="slider" tabindex="0" aria-label="Seek"
+               aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="iyc-player__fill"></div>
+          </div>
+
+          <span class="iyc-player__time" data-role="time">0:00</span>
+
+          <button class="iyc-player__btn" data-role="mute"
+                  type="button" aria-label="Mute">
+            <svg class="i-sound" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6h2.5L9 3v10L5.5 10H3z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <svg class="i-muted" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6h2.5L9 3v10L5.5 10H3z"/><path d="M11 6l3 4M14 6l-3 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCESS -->
+    <section class="iyc-row" id="process">
+      <div class="iyc-label">Process</div>
+      <div class="iyc-body">
+        <p>The work began with the collection of found moving-image material sourced from digital archives and online platforms. Alongside imagery created from scratch, these visual references were then transformed, composited, and reinterpreted through After Effects and TouchDesigner. Individual interactive elements, such as the microplastic sequence, were developed in p5.js before being integrated into a larger, scene-based experience. Mouse and scroll interactions were used to connect the work&rsquo;s different visual states, allowing the viewer&rsquo;s movement to shape the pacing and progression of the piece. In the final stage, text and graphic overlays were composed in After Effects to unify the installation&rsquo;s visual language and reinforce its environmental yet digital-visual themes.</p>
+      </div>
+    </section>
+
+    <div class="iyc-figures iyc-figures--process">
+      <img class="iyc-fig"
+           src="images/inyourcare/process3.png"
+           alt="TouchDesigner node network"
+           style="aspect-ratio: 1194 / 554;" />
+
+      <div class="iyc-pair iyc-pair--process">
+        <img class="iyc-fig"
+             src="images/inyourcare/process4.png"
+             alt="Process still &mdash; particle study"
+             style="aspect-ratio: 532 / 372;" />
+        <img class="iyc-fig"
+             src="images/inyourcare/process1.png"
+             alt="Process still &mdash; compositing"
+             style="aspect-ratio: 619 / 372;" />
+      </div>
+
+      <img class="iyc-fig"
+           src="images/inyourcare/process2.png"
+           alt="After Effects timeline composite"
+           style="aspect-ratio: 1191 / 642;" />
+
+      <p class="iyc-weblink">
+        To check out the web version (WIP),
+        <a href="https://habitationa.netlify.app/" target="_blank" rel="noopener noreferrer">click here.</a>
+      </p>
+    </div>
+
+    <!-- REFLECTIONS -->
+    <section class="iyc-row iyc-end" id="reflections">
+      <div class="iyc-label">Reflections</div>
+      <div class="iyc-body">
+        <p>This project was so incredibly frustrating at times but overall I had a lot of fun making it and genuinely learned so much from the process. If I were to go back and do it all over again, I would definitely add more snippets similar to the forest scene and also do more rounds of feedback. Thank you to everyone who tried out the final piece as well as those who gave feedback during playtesting :)</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* Forest reel player.
+
+       START is treated as the beginning for seeking/looping purposes (the
+       trim itself is baked into the file). Nothing autoplays; the centre
+       button and the frame itself both start playback, and the bottom bar
+       carries its own play/pause toggle in sync with the centre one. */
+    (function () {
+      var root = document.getElementById('forestReel');
+      if (!root) return;
+
+      var video   = root.querySelector('.iyc-player__video');
+      var bar     = root.querySelector('.iyc-player__bar');
+      var toggles = root.querySelectorAll('[data-role="toggle"]');
+      var track   = root.querySelector('[data-role="seek"]');
+      var fill    = root.querySelector('.iyc-player__fill');
+      var time    = root.querySelector('[data-role="time"]');
+      var mute    = root.querySelector('[data-role="mute"]');
+
+      var START = parseFloat(root.dataset.clipStart) || 0;
+      var hideTimer = null;
+      var scrubbing = false;
+
+      /* ---- open on the trimmed first frame ---- */
+      function toStart() {
+        try { video.currentTime = START; } catch (e) {}
+      }
+      if (video.readyState >= 1) toStart();
+      video.addEventListener('loadedmetadata', toStart, { once: true });
+
+      /* ---- the bar ---- */
+      function show(sticky) {
+        root.classList.add('is-showing');
+        window.clearTimeout(hideTimer);
+        // While playing, the bar fades back out once the pointer settles.
+        if (!sticky && !video.paused) {
+          hideTimer = window.setTimeout(function () {
+            if (!scrubbing) root.classList.remove('is-showing');
+          }, 2200);
+        }
+      }
+      function hide() {
+        if (scrubbing) return;
+        window.clearTimeout(hideTimer);
+        if (!video.paused) root.classList.remove('is-showing');
+      }
+
+      root.addEventListener('pointerenter', function () { show(true); });
+      root.addEventListener('pointermove',  function () { show(true); });
+      root.addEventListener('pointerleave', hide);
+      root.addEventListener('focusin',  function () { show(true); });
+      root.addEventListener('focusout', hide);
+
+      /* ---- play / pause ---- */
+      function play() {
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      function togglePlay() {
+        if (video.paused) play(); else video.pause();
+      }
+
+      // The frame itself is a play target, alongside both toggle buttons
+      // (the centre one and the bottom bar's).
+      video.addEventListener('click', togglePlay);
+      toggles.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          togglePlay();
+        });
+      });
+
+      function setToggleLabel(label) {
+        toggles.forEach(function (btn) { btn.setAttribute('aria-label', label); });
+      }
+
+      video.addEventListener('play', function () {
+        root.classList.add('is-playing');
+        setToggleLabel('Pause');
+        show(false);
+      });
+      video.addEventListener('pause', function () {
+        root.classList.remove('is-playing');
+        setToggleLabel('Play');
+        show(true);
+      });
+      video.addEventListener('ended', function () {
+        toStart();
+        show(true);
+      });
+
+      /* ---- sound (on by default; this clip is meant to be heard) ---- */
+      function syncMute() {
+        root.classList.toggle('is-muted', video.muted || video.volume === 0);
+        mute.setAttribute('aria-label', video.muted ? 'Unmute' : 'Mute');
+      }
+      mute.addEventListener('click', function (e) {
+        e.stopPropagation();
+        video.muted = !video.muted;
+        syncMute();
+      });
+      syncMute();
+
+      /* ---- progress + seeking ---- */
+      function clock(s) {
+        s = Math.max(0, Math.floor(s));
+        return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+      }
+
+      function render() {
+        var span = Math.max(0.001, (video.duration || 0) - START);
+        var at   = Math.min(span, Math.max(0, video.currentTime - START));
+        var pct  = (at / span) * 100;
+
+        fill.style.width = pct + '%';
+        track.setAttribute('aria-valuenow', Math.round(pct));
+        time.textContent = clock(at) + ' / ' + clock(span);
+      }
+
+      video.addEventListener('timeupdate', render);
+      video.addEventListener('durationchange', render);
+      video.addEventListener('loadedmetadata', render);
+
+      function seekTo(clientX) {
+        var box = track.getBoundingClientRect();
+        var pct = Math.min(1, Math.max(0, (clientX - box.left) / box.width));
+        var span = (video.duration || 0) - START;
+        if (span > 0) {
+          video.currentTime = START + pct * span;
+          render();
+        }
+      }
+
+      track.addEventListener('pointerdown', function (e) {
+        e.stopPropagation();
+        scrubbing = true;
+        track.setPointerCapture(e.pointerId);
+        seekTo(e.clientX);
+      });
+      track.addEventListener('pointermove', function (e) {
+        if (scrubbing) seekTo(e.clientX);
+      });
+      track.addEventListener('pointerup', function (e) {
+        scrubbing = false;
+        try { track.releasePointerCapture(e.pointerId); } catch (err) {}
+      });
+      /* If the release happens off the track (or the gesture is cancelled),
+         clear the flag anyway - otherwise the bar is stuck open. */
+      window.addEventListener('pointerup', function () { scrubbing = false; });
+      window.addEventListener('pointercancel', function () { scrubbing = false; });
+      track.addEventListener('click', function (e) { e.stopPropagation(); });
+
+      track.addEventListener('keydown', function (e) {
+        var step = e.key === 'ArrowLeft' ? -5 : e.key === 'ArrowRight' ? 5 : 0;
+        if (!step) return;
+        e.preventDefault();
+        video.currentTime = Math.max(START, video.currentTime + step);
+        render();
+      });
+
+      /* ---- don't let it play to an empty room ---- */
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting && !video.paused) video.pause();
+          });
+        }, { threshold: 0.15 }).observe(root);
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden && !video.paused) video.pause();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aftertone &mdash; Annabel Yang</title>
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* =============================================
+       Aftertone - music discovery app
+       Design reference: 12-column grid, 1440px width.
+       Labels sit at column 2, body copy at column 5,
+       details at columns 6, 8 and 10.
+       ============================================= */
+
+    /* Same treatment as the Zro page: hairline rule, and the
+       global hero pull-up cancelled so the bar sits above the
+       content rather than behind it. Colors follow the theme
+       tokens here, since this page is white with black text. */
+    .site-nav {
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--border-sel);
+    }
+
+    .at {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-weight: 400;
+    }
+
+    .at-row {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    /* =============================================
+       INTRO
+       ============================================= */
+    .at-intro { padding-top: 80px; }
+
+    .at-intro-left { grid-column: 2 / 5; }
+
+    .at-title {
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--fg);
+      margin-bottom: 48px;
+    }
+    /* No italic cut is bundled, so the browser obliques the roman */
+    .at-title em { font-style: italic; }
+
+    .at-toc {
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
+    }
+    .at-toc a {
+      font-size: 24px;
+      line-height: 1.2;
+      color: #767676;
+      transition: color 0.2s;
+    }
+    .at-toc a:hover { color: var(--fg); }
+
+    .at-hero {
+      grid-column: 5 / 11;
+      width: 100%;
+      aspect-ratio: 828 / 541;
+      object-fit: cover;
+      display: block;
+      margin-top: 100px;
+    }
+
+    /* Details land on columns 6, 8 and 10 (41.67%, 58.33%, 75%) */
+    .at-meta { margin-top: 21px; }
+    .at-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .at-meta-item:nth-of-type(1) { grid-column: 6 / 8; }
+    .at-meta-item:nth-of-type(2) { grid-column: 8 / 10; }
+    .at-meta-item:nth-of-type(3) { grid-column: 10 / 12; }
+
+    .at-meta-key {
+      font-size: 13px;
+      color: #767676;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .at-meta-val {
+      font-size: 13px;
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    /* =============================================
+       ABOUT
+       ============================================= */
+    .at-section { margin-top: 120px; }
+
+    .at-label {
+      grid-column: 2 / 5;
+      font-size: 36px;
+      line-height: 1.15;
+      color: var(--fg);
+      padding-right: 32px;
+    }
+    .at-body {
+      grid-column: 5 / 11;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--fg);
+      max-width: 670px;
+    }
+    .at-body p + p { margin-top: 1.5em; }
+
+    /* =============================================
+       BETA NOTICE
+       Stays the same muted grey in both themes, since it
+       reads as a status message rather than body copy.
+       ============================================= */
+    .at-beta {
+      grid-column: 4 / 10;
+      justify-self: center;
+      text-align: center;
+      font-size: 24px;
+      line-height: 1.4;
+      color: #7f7f7f;
+      max-width: 670px;
+    }
+
+    /* A generous stretch of blank page, with the beta line
+       centred in the middle of it rather than sitting at the top.
+       .at-row is already display: grid; align-items centres the
+       line within this tall row instead of switching layout modes. */
+    .at-end {
+      min-height: 90vh;
+      align-items: center;
+    }
+
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 900px) {
+      .at-row {
+        grid-template-columns: 1fr;
+        padding: 0 6%;
+      }
+      /* Collapse every placed item back into the single column */
+      .at-intro-left,
+      .at-hero,
+      .at-label,
+      .at-body,
+      .at-beta,
+      .at-meta-item:nth-of-type(1),
+      .at-meta-item:nth-of-type(2),
+      .at-meta-item:nth-of-type(3) { grid-column: 1; }
+
+      .at-intro   { padding-top: 48px; }
+      .at-hero    { margin-top: 32px; }
+      .at-section { margin-top: 72px; }
+      .at-meta    { margin-top: 32px; row-gap: 28px; }
+
+      .at-title { font-size: 28px; margin-bottom: 32px; }
+      .at-label { font-size: 28px; margin-bottom: 20px; padding-right: 0; }
+      .at-body  { font-size: 17px; max-width: 100%; }
+      .at-beta  { font-size: 18px; }
+      .at-end   { min-height: 70vh; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang &mdash; home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work" class="active">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+  <main class="at" aria-label="Aftertone project">
+
+    <!-- INTRO -->
+    <div class="at-row at-intro" id="home">
+      <div class="at-intro-left">
+        <h1 class="at-title">Aftertone<br><em>App</em></h1>
+        <nav class="at-toc" aria-label="Page sections">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+        </nav>
+      </div>
+
+      <img class="at-hero"
+           src="images/aftertone/hero.png"
+           alt="Aftertone &mdash; music discovery app title screen" />
+    </div>
+
+    <div class="at-row at-meta" aria-label="Project details">
+      <div class="at-meta-item">
+        <span class="at-meta-key">ROLE</span>
+        <span class="at-meta-val">Visual Designer<br>Developer</span>
+      </div>
+      <div class="at-meta-item">
+        <span class="at-meta-key">TOOLS</span>
+        <span class="at-meta-val">Python, PostgreSQL,<br>Essentia, CLAP, Figma</span>
+      </div>
+      <div class="at-meta-item">
+        <span class="at-meta-key">DOMAIN</span>
+        <span class="at-meta-val">Product Design</span>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="at-row at-section" id="about">
+      <div class="at-label">About</div>
+      <div class="at-body">
+        <p>Aftertone is a music discovery tool that recommends songs based on how they actually sound rather than by who else has listened to them. When finding a song, users can tailor their recommendations based on what they&rsquo;re looking for&mdash;for instance, if they&rsquo;re looking for a song with similar instrumentals, the same vocal style, or same emotional meaning within the lyrics. Aftertone adjusts it&rsquo;s algorithm in order to match your needs, providing the recommendation that fits just right.</p>
+      </div>
+    </div>
+
+    <!-- BETA NOTICE -->
+    <div class="at-row at-end">
+      <p class="at-beta">
+        This project is currently in beta testing. Please come back another time for music recommendations :)
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

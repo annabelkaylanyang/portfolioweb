@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abel &mdash; Annabel Yang</title>
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* =============================================
+       Abel - personal brand
+       Design reference: 12-column grid, 1440px width.
+       Labels sit at column 2, body copy at column 4,
+       details at columns 8 and 10.
+       ============================================= */
+
+    /* Same treatment as the Zro page: black bar, white text,
+       hairline rule, and the global hero pull-up cancelled so
+       the bar sits above the content rather than behind it. */
+    .site-nav {
+      margin-bottom: 0;
+      background: #000;
+      border-bottom: 1px solid #1f1f1f;
+    }
+    .site-nav .nav-links a,
+    .site-nav .nav-links a.active { color: #fff; }
+    .site-nav .nav-links a:hover { color: var(--pink); }
+    /* This page is always dark, so the logo stays inverted (white)
+       even when the site is in light mode. */
+    .site-nav .nav-logo img { filter: invert(1); }
+
+    .ab {
+      background: #000;
+      color: #fff;
+      font-family: var(--font-body);
+      font-weight: 400;
+    }
+
+    .ab-row {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .ab-band { grid-column: 2 / 12; }
+
+    /* Vertical rhythm */
+    .ab-section { margin-top: 120px; }
+    .ab-stack   { margin-top: 24px; }
+    .ab-stack-lg{ margin-top: 46px; }
+
+    /* =============================================
+       INTRO
+       ============================================= */
+    .ab-intro { padding-top: 80px; }
+
+    .ab-intro-left { grid-column: 2 / 5; }
+
+    .ab-title {
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 48px;
+    }
+    /* No italic cut is bundled, so the browser obliques the roman */
+    .ab-title em { font-style: italic; }
+
+    .ab-toc {
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
+    }
+    .ab-toc a {
+      font-size: 24px;
+      line-height: 1.2;
+      color: #767676;
+      transition: color 0.2s;
+    }
+    .ab-toc a:hover { color: #fff; }
+
+    .ab-hero {
+      grid-column: 5 / 11;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      margin-top: 127px;
+    }
+
+    /* Details land on columns 8 and 10 (58.33% and 75%) */
+    .ab-meta { margin-top: 43px; }
+    .ab-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ab-meta-item:nth-of-type(1) { grid-column: 8 / 10; }
+    .ab-meta-item:nth-of-type(2) { grid-column: 10 / 12; }
+
+    .ab-meta-key {
+      font-size: 13px;
+      color: #767676;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .ab-meta-val {
+      font-size: 13px;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* =============================================
+       TYPE
+       ============================================= */
+    .ab-label {
+      grid-column: 2 / 4;
+      font-size: 36px;
+      line-height: 1.15;
+      color: #fff;
+      padding-right: 32px;
+    }
+    .ab-body {
+      grid-column: 4 / 10;
+      font-size: 20px;
+      line-height: 1.65;
+      color: #fff;
+      max-width: 670px;
+    }
+    .ab-body p + p { margin-top: 1.5em; }
+
+    /* =============================================
+       FIGURES
+       ============================================= */
+    /* Type exploration sheet, centred under the full-width band. contain
+       (not cover) so the whole sheet always shows at its own proportions,
+       never cropped. */
+    /* aspect-ratio matches the source file's own ratio exactly (1440x1024),
+       so the box is a perfect fit and there's no letterboxing to speak of. */
+    .ab-specimen {
+      width: min(1340px, 100%);
+      margin: 0 auto;
+      aspect-ratio: 1440 / 1024;
+      object-fit: cover;
+      display: block;
+    }
+
+    .ab-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 20px;
+    }
+    .ab-gallery img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Closing shot runs the full width of the page */
+    .ab-emboss {
+      width: 100%;
+      aspect-ratio: 1440 / 2221;
+      object-fit: cover;
+      display: block;
+      margin-top: 120px;
+    }
+
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 900px) {
+      .ab-row {
+        grid-template-columns: 1fr;
+        padding: 0 6%;
+      }
+      /* Collapse every placed item back into the single column */
+      .ab-intro-left,
+      .ab-hero,
+      .ab-label,
+      .ab-body,
+      .ab-band,
+      .ab-specimen,
+      .ab-meta-item:nth-of-type(1),
+      .ab-meta-item:nth-of-type(2) { grid-column: 1; }
+
+      .ab-intro   { padding-top: 48px; }
+      .ab-hero    { margin-top: 32px; }
+      .ab-section { margin-top: 72px; }
+      .ab-meta    { margin-top: 32px; row-gap: 28px; }
+
+      .ab-title { font-size: 28px; margin-bottom: 32px; }
+      .ab-label { font-size: 28px; margin-bottom: 20px; padding-right: 0; }
+      .ab-body  { font-size: 17px; max-width: 100%; }
+
+      .ab-gallery { gap: 10px; }
+      .ab-emboss  { margin-top: 72px; }
+    }
+
+    @media (max-width: 600px) {
+      .ab-gallery { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang &mdash; home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work" class="active">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+  <main class="ab" aria-label="Abel project">
+
+    <!-- INTRO -->
+    <div class="ab-row ab-intro" id="home">
+      <div class="ab-intro-left">
+        <h1 class="ab-title">Abel<br><em>Personal Brand</em></h1>
+        <nav class="ab-toc" aria-label="Page sections">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#gallery">Gallery</a>
+        </nav>
+      </div>
+
+      <img class="ab-hero"
+           src="images/abel/card-tree-hero.jpg"
+           alt="Abel business card leaning against driftwood" />
+    </div>
+
+    <div class="ab-row ab-meta" aria-label="Project details">
+      <div class="ab-meta-item">
+        <span class="ab-meta-key">TOOLS</span>
+        <span class="ab-meta-val">Figma, Adobe Photoshop</span>
+      </div>
+      <div class="ab-meta-item">
+        <span class="ab-meta-key">ROLES</span>
+        <span class="ab-meta-val">Graphic Design<br>Creative Direction<br>Logo Design</span>
+      </div>
+    </div>
+
+    <div class="ab-row ab-section" id="about">
+      <div class="ab-label">About</div>
+      <div class="ab-body">
+        <p>ABEL is an experimental concept surrounding my personal brand. In this project, I played around with elements of typography that I felt best fit my identity as an artist. As my work predominantly focuses on mixed digital media, the concept of ABEL revolves around the unique evolutions of type as a result of the digital age and styles that have emerged from it.</p>
+      </div>
+    </div>
+
+    <div class="ab-row ab-section">
+      <img class="ab-band ab-specimen"
+           src="images/abel/type-exploration.png"
+           alt="Abel type exploration — wordmark, logomark, and subtitle specimens" />
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="ab-row ab-section">
+      <div class="ab-label">Identity</div>
+      <div class="ab-body">
+        <p>I wanted the to visually represent some of the things I like&mdash;whether it be things i&rsquo;m drawn to (ideas, inspiration, objects) or how I want to represent myself as a creative. My iterations in logo designs mainly focused on using varying fonts, mirroring my interest in texture, material, and things that appear seemingly opposite, but work well when placed together. The organic (fluid cursive) vs. computation (pixel/bitmap), and in general, a visual representation of experimentation. My hope is for this brand concept to hint toward the type of work I make myself.</p>
+      </div>
+    </div>
+
+    <!-- THE GALLERY -->
+    <div class="ab-row ab-section" id="gallery">
+      <div class="ab-label">The Gallery</div>
+    </div>
+
+    <div class="ab-row ab-stack-lg">
+      <div class="ab-band ab-gallery">
+        <img src="images/abel/mockup-3.jpg" alt="Abel business cards, stacked" />
+        <img src="images/abel/mockup-1.jpg" alt="Abel business card, front detail" />
+        <img src="images/abel/mockup-2.jpg" alt="Abel business cards on a box" />
+        <img src="images/abel/card-tree-hero.jpg" alt="Abel business card against driftwood" />
+        <img src="images/abel/mockup-tree-2.jpg" alt="Abel business card resting on a branch" />
+        <img src="images/abel/mockup-tree-1.jpg" alt="Abel business card hanging from a branch" />
+      </div>
+    </div>
+
+    <!-- CLOSING -->
+    <img class="ab-emboss"
+         src="images/abel/emboss.jpg"
+         alt="Abel wordmark embossed into paper" />
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

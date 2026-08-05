@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zr&oslash; &mdash; Annabel Yang</title>
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Receiving half of the hand-off from the home page: the browser
+       holds that page's last frame - fully covered by the burst - until
+       this one is ready to paint, so there's no blank between them. No
+       animation; the burst already did the work. */
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+
+    /* =============================================
+       Zro project page - always dark, black background
+       Design reference: 12-column grid, 1440px width
+       ============================================= */
+
+    /* The page is black end to end, so the browser has nothing white to
+       paint while it loads - the burst on the home page hands straight
+       over to this. */
+    html, body { background: #000; }
+
+    .zro {
+      background: #000;
+      color: #fff;
+      font-family: 'Neue Haas Grotesk Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    /* Generic two-column row: label | body */
+    /* Nav bar: black, white text, hairline rule underneath.
+       Also cancels the global hero pull-up so the bar sits above
+       the content instead of behind it. */
+    .site-nav {
+      margin-bottom: 0;
+      background: #000;
+      border-bottom: 1px solid #1f1f1f;
+    }
+    .site-nav .nav-links a,
+    .site-nav .nav-links a.active { color: #fff; }
+    .site-nav .nav-links a:hover { color: var(--pink); }
+    /* This page is always dark, so the logo stays inverted (white)
+       even when the site is in light mode. */
+    .site-nav .nav-logo img { filter: invert(1); }
+
+    /* Footer matches the nav: black bar, white type, white logo. */
+    .site-footer { background: #000; }
+    .site-footer .footer-copy { color: #fff; }
+    .site-footer .footer-logo img { filter: invert(1); }
+
+    .zro-row {
+      display: grid;
+      grid-template-columns: 25% 1fr;
+      padding: 80px 8.33%;
+    }
+    .zro-row--tight { padding-top: 40px; }
+    /* Extra breathing room under the mockup row; also pushes
+       every following section down by the same amount. */
+    .zro-row--pushed { padding-top: 140px; }
+
+    .zro-label {
+      font-size: 36px;
+      line-height: 1.15;
+      color: #fff;
+      padding-right: 32px;
+    }
+
+    .zro-body {
+      font-size: 20px;
+      line-height: 1.65;
+      color: #fff;
+      max-width: 670px;
+    }
+    .zro-body p + p { margin-top: 1.5em; }
+
+    /* =============================================
+       INTRO
+       ============================================= */
+    /* Two columns: title + contents on the left, homepage still
+       and project details on the right (starting at the 25% mark). */
+    .zro-intro {
+      display: grid;
+      grid-template-columns: 16.67% 1fr;
+      padding: 80px 8.33%;
+    }
+
+    .zro-title {
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 48px;
+    }
+
+    .zro-toc {
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
+    }
+    .zro-toc a {
+      font-size: 24px;
+      color: #767676;
+      line-height: 1.2;
+      transition: color 0.2s;
+    }
+    .zro-toc a:hover { color: #fff; }
+
+    /* Zro homepage still - 2:1, spans the right column */
+    .zro-hero {
+      width: 100%;
+      aspect-ratio: 952 / 484;
+      object-fit: cover;
+      display: block;
+      margin-top: 104px;
+    }
+
+    /* Project details, aligned under the homepage still */
+    .zro-meta {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: 28px;
+    }
+    .zro-meta-item { display: flex; flex-direction: column; gap: 6px; }
+
+    .zro-meta-key {
+      font-size: 15px;
+      color: #767676;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .zro-meta-val {
+      font-size: 16px;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* Muted oversized sub-heading used by the Goal section */
+    .zro-body--muted {
+      font-size: 36px;
+      color: #656565;
+      line-height: 1.2;
+    }
+
+    /* =============================================
+       PHONE MOCKUPS
+       Centred row. Columns shrink below their 345px
+       design width so all three always stay on screen.
+       ============================================= */
+    .zro-phones { padding: 60px 8.33% 0; }
+
+    .zro-phones-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: clamp(20px, 5.5vw, 80px);
+    }
+    .zro-phone-col {
+      flex: 0 1 345px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .zro-phone-img {
+      width: 100%;
+      aspect-ratio: 345 / 697;
+      object-fit: cover;
+      display: block;
+    }
+    .zro-phone-img--a { border-radius: clamp(20px, 2.4vw, 34px); }
+    .zro-phone-img--b { border-radius: clamp(21px, 2.5vw, 36px); }
+    .zro-phone-img--c {
+      border-radius: clamp(31px, 3.7vw, 53px);
+      border: 1px solid #1a1a1a;
+    }
+    .zro-caption {
+      font-size: 20px;
+      color: #767676;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .zro-caption-sub {
+      font-size: 10px;
+      color: #767676;
+      text-align: center;
+      max-width: 167px;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    /* =============================================
+       FULL-WIDTH IMAGES
+       ============================================= */
+    .zro-wide { padding: 60px 8.33% 0; }
+    .zro-wide img,
+    .zro-wide video { width: 100%; height: auto; display: block; }
+
+    /* =============================================
+       BRANDING
+       ============================================= */
+    .zro-brand-symbols {
+      display: flex;
+      gap: 100px;
+      align-items: flex-end;
+      margin-top: 40px;
+    }
+    .zro-brand-symbol-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .zro-brand-wt { font-size: 20px; color: #fff; }
+
+    /* Wordmarks are 735x149px at design size */
+    .zro-wordmarks {
+      display: flex;
+      gap: 60px;
+      margin-top: 60px;
+      overflow: hidden;
+    }
+    .zro-wordmark-wrap {
+      position: relative;
+      width: 735px;
+      max-width: 100%;
+      height: 149px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .zro-wm-vector { position: absolute; }
+    .zro-wm-circle {
+      position: absolute;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+    }
+    .zro-wm-circle img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* =============================================
+       FINAL IMAGE
+       ============================================= */
+    .zro-final { padding: 80px 8.33% 0; }
+    .zro-final img { width: 100%; height: auto; display: block; }
+
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 820px) {
+      .zro-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 56px 6%;
+      }
+      .zro-row--tight { padding-top: 24px; }
+      .zro-label { font-size: 28px; }
+      .zro-body  { font-size: 17px; max-width: 100%; }
+      .zro-body--muted { font-size: 28px; }
+
+      /* Stack the intro: title + contents, then the still, then details */
+      .zro-intro {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 56px 6%;
+      }
+      .zro-hero { margin-top: 0; }
+
+      .zro-phones { padding: 40px 6% 0; }
+      .zro-wide   { padding: 40px 6% 0; }
+      .zro-final  { padding: 56px 6% 0; }
+
+      .zro-meta {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px 16px;
+        margin-top: 32px;
+      }
+
+      /* Stack the mockups once three across gets too narrow */
+      .zro-phones-row { flex-direction: column; align-items: center; gap: 40px; }
+      .zro-phone-col  { flex: 0 0 auto; width: min(300px, 80vw); }
+
+      .zro-wordmarks { gap: 20px; }
+      .zro-wordmark-wrap { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+    /* The transition on the home page hands over to this page by showing
+       it, in a frame, at the top. If the browser restored a previous
+       scroll position instead, the hand-off would visibly jump - so pin
+       this page to the top and take scroll restoration off the browser. */
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+    window.addEventListener('pageshow', function () { window.scrollTo(0, 0); });
+  </script>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang &mdash; home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work" class="active">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+  <main class="zro" aria-label="Zr&oslash; project">
+
+    <!-- INTRO -->
+    <section class="zro-intro" id="home">
+      <div class="zro-intro-left">
+        <h1 class="zro-title">Zr&oslash; 2026<br>Web and App</h1>
+        <nav class="zro-toc" aria-label="Page sections">
+          <a href="#home">Home</a>
+          <a href="#context">Context</a>
+          <a href="#case1">Case #1</a>
+          <a href="#case2">Case #2</a>
+          <a href="#case3">Case #3</a>
+          <a href="#reflections">Reflections</a>
+        </nav>
+      </div>
+
+      <div class="zro-intro-right">
+        <!-- No poster image: the still shown before playback is the video's
+             own first frame, decoded from the file. A separate poster can
+             never match it exactly, and the mismatch shows during the
+             transition from the home page. preload="auto" so that frame is
+             ready rather than leaving the slot blank. -->
+        <video class="zro-hero" id="zroHero" data-autoplay-in-view data-start-delay="1000"
+               src="images/zro/zrohomeanimation.mp4"
+               muted loop playsinline preload="auto"
+               aria-label="Zr&oslash; homepage &mdash; aperture landing experience"></video>
+        <script>
+          /* If we arrived through the transition, it left us the exact
+             first frame of this video. Use it as the poster so the slot is
+             filled on the very first paint, rather than sitting black
+             while the file decodes. Runs during parse, before paint. */
+          (function () {
+            try {
+              var v = document.getElementById('zroHero');
+              var still = sessionStorage.getItem(
+                'zroHeroStill:' + v.getAttribute('src').split('/').pop());
+              if (still) v.setAttribute('poster', still);
+            } catch (e) {}
+          })();
+        </script>
+
+        <div class="zro-meta" aria-label="Project details">
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">ROLE</span>
+            <span class="zro-meta-val">Product Lead</span>
+          </div>
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">TIMELINE</span>
+            <span class="zro-meta-val">June &ndash; August, 2026</span>
+          </div>
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">TOOLS</span>
+            <span class="zro-meta-val">Figma, Illustrator, TouchDesigner<br>Js/HTML/CSS, WebGL</span>
+          </div>
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">DOMAIN</span>
+            <span class="zro-meta-val">UX Concept<br>UI Design<br>Creative Direction<br>Logo Design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTEXT -->
+    <section class="zro-row" id="context">
+      <div class="zro-label">Context</div>
+      <div class="zro-body">
+        <p>Zr&oslash; is a reflective digital experience that helps users notice what is already present in their own words without explicitly providing advice.</p>
+        <p>As the product design lead on the project, I was responsible for translating Zr&oslash;&rsquo;s philosophy and vision into a cohesive digital experience. I defined the interaction model, primary visual language, motion principles, and brand identity across mobile and web, transforming abstract concepts into a unified product.</p>
+      </div>
+    </section>
+
+    <!-- GOAL -->
+    <section class="zro-row zro-row--tight" id="goal">
+      <div class="zro-label">Goal</div>
+      <div class="zro-body zro-body--muted">
+        Designing a visual language for a product that didn&rsquo;t fit existing interaction patterns.
+      </div>
+    </section>
+
+    <!-- CASE #1 -->
+    <section class="zro-row" id="case1">
+      <div class="zro-label">Not<br>Another<br>Chatbot</div>
+      <div class="zro-body">
+        <p>Early versions of Zr&oslash; used a conventional chat interface with message bubbles and a persistent AI identity. While familiar, users immediately associated the experience with existing AI assistants and conversational products. This shifted their expectations toward asking questions and receiving answers&mdash;the opposite of the reflective experience Zr&oslash; was designed to create.</p>
+      </div>
+    </section>
+
+    <div class="zro-phones">
+      <div class="zro-phones-row">
+        <div class="zro-phone-col">
+          <img class="zro-phone-img zro-phone-img--a"
+               src="images/zro/chat1ui.png"
+               alt="Old chat mode &mdash; message bubble interface" />
+          <p class="zro-caption">Old &ldquo;Chat&rdquo; Mode</p>
+          <p class="zro-caption-sub">stale, too permanent, and reminiscent of classic AI chat tools</p>
+        </div>
+        <div class="zro-phone-col">
+          <img class="zro-phone-img zro-phone-img--b"
+               src="images/zro/chat2ui.png"
+               alt="Old card mode &mdash; response cards interface" />
+          <p class="zro-caption">Old &ldquo;Card&rdquo; Mode</p>
+          <p class="zro-caption-sub">cards felt better than bubbles, but didn&rsquo;t serve a particular purpose</p>
+        </div>
+        <div class="zro-phone-col">
+          <img class="zro-phone-img zro-phone-img--c"
+               src="images/zro/image2.png"
+               alt="Final UI &mdash; continuous text stream" />
+          <p class="zro-caption">Final</p>
+          <p class="zro-caption-sub">Feels like your own thoughts visualized instead of someone talking to you</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="zro-row zro-row--pushed">
+      <div class="zro-label"></div>
+      <div class="zro-body">
+        <p>I noticed that interaction patterns communicate a product&rsquo;s purpose long before reading any text. Therefore, I removed any hint toward conversational structure, replacing previous interfaces with a continuous stream of language that unfolds naturally like our thoughts themselves.</p>
+      </div>
+    </div>
+
+    <!-- CASE #2 -->
+    <section class="zro-row" id="case2">
+      <div class="zro-label">Rethinking<br>Memory</div>
+      <div class="zro-body">
+        <p>The traditional AI chat sidebar prioritizes recency and scannability for users to quickly index previous conversations. This kind of interface conflicted with the product&rsquo;s goal of encouraging users to revisit reflections as meaningful experiences rather than completed exchanges.</p>
+      </div>
+    </section>
+
+    <div class="zro-wide">
+      <video data-autoplay-in-view
+             src="images/zro/cardui.mp4"
+             poster="images/zro/image4.png"
+             muted loop playsinline preload="metadata"
+             aria-label="Redesigned session navigation &mdash; box previews of past reflections"></video>
+    </div>
+
+    <div class="zro-row zro-row--tight">
+      <div class="zro-label"></div>
+      <div class="zro-body">
+        <p>Rather than presenting previous sessions as conversations, I redesigned them as individual spaces that users could return to. Each chat became more easily visualized through a box preview, which provoked feelings of entering a room or past memory. The improved navigation emphasized entering and revisiting experiences instead of scrolling through archived chats.</p>
+      </div>
+    </div>
+
+    <!-- CASE #3 -->
+    <section class="zro-row" id="case3">
+      <div class="zro-label">From<br>Philosophy<br>To Form</div>
+      <div class="zro-body">
+        <p>One of Zr&oslash;&rsquo;s central ideas was that clarity doesn&rsquo;t appear instantly, just as answers don&rsquo;t come to us right away. In fact, it gradually comes into focus as our attention shifts. I focused the feelings I associated with the concept of aperture: uncertainty, emergence, focus, and changing perspective. The challenge was translating this abstract philosophy into a visual experience without relying on literal camera imagery or explanatory graphics.</p>
+      </div>
+    </section>
+
+    <div class="zro-wide">
+      <video data-autoplay-in-view
+             src="images/zro/zroaperturedemo.mp4"
+             poster="images/zro/image5.png"
+             muted loop playsinline preload="metadata"
+             aria-label="Aperture-inspired visual explorations &mdash; blur and focus studies"></video>
+    </div>
+
+    <div class="zro-row zro-row--tight">
+      <div class="zro-label"></div>
+      <div class="zro-body">
+        <p>I explored dynamic blur systems, motion studies, and interactive visual experiments inspired by the behavior of an aperture. Through multiple iterations, these ideas evolved into a fluid landing experience where clarity subtly emerges through the interaction of users themselves.</p>
+      </div>
+    </div>
+
+    <!-- BRANDING -->
+    <section class="zro-row" id="reflections">
+      <div class="zro-label">Branding</div>
+      <div class="zro-body">
+        <div class="zro-brand-symbols">
+          <div class="zro-brand-symbol-group">
+            <span class="zro-brand-wt">Thick</span>
+            <img src="images/zro/zrologo.svg"
+                 alt="Zr&oslash; logomark &mdash; thick weight"
+                 style="width:93px;height:98px;object-fit:contain;display:block;" />
+          </div>
+          <div class="zro-brand-symbol-group">
+            <span class="zro-brand-wt">Thin</span>
+            <img src="images/zro/zrologothin.svg"
+                 alt="Zr&oslash; logomark &mdash; thin weight"
+                 style="width:127px;height:113px;object-fit:contain;display:block;" />
+          </div>
+        </div>
+
+        <div class="zro-wordmarks">
+          <!-- Thick wordmark -->
+          <div class="zro-wordmark-wrap" role="img" aria-label="Zr&oslash; wordmark, thick weight">
+            <div class="zro-wm-vector"
+                 style="top:35.69%;right:84.35%;bottom:16.78%;left:1.03%;">
+              <img src="images/zro/vector-thick.svg"
+                   style="width:100%;height:100%;object-fit:contain;display:block;" alt="" />
+            </div>
+            <div class="zro-wm-circle"
+                 style="top:28.19%;right:73.2%;bottom:16.78%;left:16.19%;
+                        -webkit-mask-image:url('images/zro/mask-thick.svg');
+                        mask-image:url('images/zro/mask-thick.svg');
+                        -webkit-mask-size:78px 82px;mask-size:78px 82px;
+                        -webkit-mask-position:0 0;mask-position:0 0;">
+              <img src="images/zro/fill-thick.svg" alt="" />
+            </div>
+          </div>
+
+          <!-- Thin wordmark -->
+          <div class="zro-wordmark-wrap" role="img" aria-label="Zr&oslash; wordmark, thin weight">
+            <div class="zro-wm-vector"
+                 style="top:20.74%;right:84.56%;bottom:16.78%;left:1.24%;">
+              <img src="images/zro/vector-thin.svg"
+                   style="width:100%;height:100%;object-fit:contain;display:block;" alt="" />
+            </div>
+            <div class="zro-wm-circle"
+                 style="top:29.62%;right:72.93%;bottom:16.78%;left:16.64%;
+                        -webkit-mask-image:url('images/zro/mask-thin.svg');
+                        mask-image:url('images/zro/mask-thin.svg');
+                        -webkit-mask-size:104px 92px;mask-size:104px 92px;
+                        -webkit-mask-position:-27.314px -12.137px;mask-position:-27.314px -12.137px;">
+              <img src="images/zro/fill-thin.svg" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL IMAGE -->
+    <div class="zro-final">
+      <img src="images/zro/image6.png" alt="Zr&oslash; landing experience" />
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* Only play the page's videos while they're actually on screen —
+       they stay paused (and idle) the rest of the time.
+
+       Two extra rules:
+       - Inside the home page's transition frame nothing ever plays, so
+         the frame and this page show the same still at the hand-off.
+       - A video marked data-start-delay sits on its own first frame for
+         that long after arrival, so the page settles before it moves. */
+    (function () {
+      var vids = document.querySelectorAll('video[data-autoplay-in-view]');
+      if (!vids.length) return;
+
+      /* Make sure a held video is actually showing its first frame rather
+         than an empty box - in the frame as well as on the real page, so
+         the two are identical at the hand-off. */
+      Array.prototype.forEach.call(vids, function (v) {
+        if (!v.dataset.startDelay) return;
+        if (v.readyState >= 2) return;
+        v.addEventListener('loadedmetadata', function () {
+          try { v.currentTime = 0; } catch (e) {}
+        }, { once: true });
+      });
+
+      var inFrame = window.top !== window.self;
+      if (inFrame) return;
+
+      var landed = Date.now();
+
+      if (!('IntersectionObserver' in window)) {
+        Array.prototype.forEach.call(vids, function (v) { v.play(); });
+        return;
+      }
+
+      function play(v) {
+        var wait = parseInt(v.dataset.startDelay || 0, 10) -
+                   (Date.now() - landed);
+
+        if (wait > 0) {
+          if (v.dataset.pending) return;
+          v.dataset.pending = '1';
+          window.setTimeout(function () {
+            v.dataset.pending = '';
+            if (v.dataset.inView && !document.hidden) play(v);
+          }, wait);
+          return;
+        }
+
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          e.target.dataset.inView = e.isIntersecting ? '1' : '';
+          if (e.isIntersecting && !document.hidden) play(e.target);
+          else e.target.pause();
+        });
+      }, { threshold: 0.25 });
+
+      Array.prototype.forEach.call(vids, function (v) { io.observe(v); });
+
+      // Also stop when the tab itself is hidden; resume what's on screen.
+      document.addEventListener('visibilitychange', function () {
+        Array.prototype.forEach.call(vids, function (v) {
+          if (document.hidden) v.pause();
+          else if (v.dataset.inView) play(v);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

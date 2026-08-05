@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yuetu &mdash; Annabel Yang</title>
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* =============================================
+       Yuetu - worldbuilding case study
+       Design reference: 12-column grid, 1440px width.
+       Everything is placed on that grid: the content
+       band is columns 2-12 (8.33% to 91.67%), labels
+       start at column 2 and body copy at column 5.
+       ============================================= */
+
+    /* Nav sits above the content here rather than behind it,
+       so cancel the global hero pull-up and add a hairline rule. */
+    .site-nav {
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--border-sel);
+    }
+    .site-nav .nav-links a,
+    .site-nav .nav-links a.active { color: var(--fg); }
+    .site-nav .nav-links a:hover { color: var(--pink); }
+
+    .yt {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-weight: 400;
+    }
+
+    .yt-row {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .yt-band { grid-column: 2 / 12; }
+
+    /* Vertical rhythm */
+    .yt-section { margin-top: 120px; }
+    .yt-stack   { margin-top: 24px; }
+    .yt-stack-lg{ margin-top: 46px; }
+    .yt-stack-xl{ margin-top: 140px; }
+
+    /* =============================================
+       HERO
+       ============================================= */
+    /* Capped short of the viewport so a strip of the page shows
+       beneath it, signalling that there is more to scroll to.
+       object-fit crops the overflow rather than squashing it. */
+    .yt-hero {
+      width: 100%;
+      aspect-ratio: 1440 / 819;
+      max-height: 74vh;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* =============================================
+       INTRO
+       ============================================= */
+    .yt-intro-head { margin-top: 40px; }
+
+    .yt-title {
+      grid-column: 2 / 7;
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1.15;
+      color: #0c0c0c;
+    }
+    [data-theme="dark"] .yt-title { color: var(--fg); }
+    /* No italic cut is bundled, so the browser obliques the roman */
+    .yt-title em,
+    .yt-body em { font-style: italic; }
+
+    /* Details land on columns 7, 9 and 11 (50%, 66.67%, 83.33%) */
+    .yt-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .yt-meta-item:nth-of-type(1) { grid-column: 7 / 9; }
+    .yt-meta-item:nth-of-type(2) { grid-column: 9 / 11; }
+    .yt-meta-item:nth-of-type(3) { grid-column: 11 / 13; }
+
+    .yt-meta-key {
+      font-size: 13px;
+      color: #767676;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .yt-meta-val {
+      font-size: 13px;
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    .yt-intro-body { margin-top: 100px; }
+
+    .yt-toc {
+      grid-column: 2 / 5;
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
+      align-content: start;
+    }
+    .yt-toc a {
+      font-size: 24px;
+      line-height: 1.2;
+      color: #767676;
+      transition: color 0.2s;
+    }
+    .yt-toc a:hover { color: var(--fg); }
+
+    /* =============================================
+       TYPE
+       ============================================= */
+    .yt-label {
+      grid-column: 2 / 5;
+      font-size: 36px;
+      line-height: 1.15;
+      color: var(--fg);
+      padding-right: 32px;
+    }
+    .yt-body {
+      grid-column: 5 / 11;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--fg);
+      max-width: 670px;
+    }
+    .yt-body p + p { margin-top: 1.5em; }
+    /* The closing section sets its copy one column further in */
+    .yt-body--inset { grid-column: 6 / 12; }
+
+    /* =============================================
+       FIGURES
+       ============================================= */
+    .yt-figure {
+      grid-column: 2 / 12;
+      margin: 0;
+    }
+    .yt-figure img,
+    .yt-figure video {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .yt-figure figcaption {
+      margin-top: 12px;
+      font-size: 16px;
+      line-height: 1.4;
+      color: var(--fg);
+      text-align: center;
+    }
+
+    /* Two-up rows */
+    .yt-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    /* Turnaround renders: three across, so the final row of two
+       sits left-aligned exactly as it does in the design */
+    .yt-renders {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .yt-renders img { aspect-ratio: 1 / 1; }
+
+    /* Closing illustration is centred and narrower than the band */
+    .yt-figure--center {
+      grid-column: 4 / 10;
+      justify-self: center;
+      width: 100%;
+    }
+
+    .yt-end { padding-bottom: 120px; }
+
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 900px) {
+      .yt-row {
+        grid-template-columns: 1fr;
+        padding: 0 6%;
+      }
+      /* Collapse every placed item back into the single column */
+      .yt-title,
+      .yt-toc,
+      .yt-label,
+      .yt-body,
+      .yt-body--inset,
+      .yt-figure,
+      .yt-figure--center,
+      .yt-meta-item:nth-of-type(1),
+      .yt-meta-item:nth-of-type(2),
+      .yt-meta-item:nth-of-type(3) { grid-column: 1; }
+
+      .yt-section { margin-top: 72px; }
+      .yt-intro-body { margin-top: 40px; }
+      .yt-title { font-size: 28px; }
+      .yt-label { font-size: 28px; margin-bottom: 20px; padding-right: 0; }
+      .yt-body  { font-size: 17px; max-width: 100%; }
+
+      .yt-intro-head { row-gap: 28px; margin-top: 32px; }
+      .yt-meta-item  { margin-top: 4px; }
+
+      .yt-figure figcaption { font-size: 14px; }
+      .yt-pair, .yt-renders { gap: 10px; }
+      .yt-end { padding-bottom: 72px; }
+    }
+
+    @media (max-width: 600px) {
+      .yt-pair { grid-template-columns: 1fr; }
+      .yt-renders { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang &mdash; home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work" class="active">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+  <main class="yt" aria-label="Yuetu project">
+
+    <!-- HERO -->
+    <img class="yt-hero"
+         src="images/yuetu/hero.png"
+         alt="Yuetu &mdash; the jade realm of The Stratum" />
+
+    <!-- INTRO -->
+    <div class="yt-row yt-intro-head" id="home">
+      <h1 class="yt-title">Yuetu<br><em>Worldbuilding</em></h1>
+
+      <div class="yt-meta-item">
+        <span class="yt-meta-key">ROLE</span>
+        <span class="yt-meta-val">Concept Artist</span>
+      </div>
+      <div class="yt-meta-item">
+        <span class="yt-meta-key">TOOLS</span>
+        <span class="yt-meta-val">Photoshop, Blender</span>
+      </div>
+      <div class="yt-meta-item">
+        <span class="yt-meta-key">DOMAIN</span>
+        <span class="yt-meta-val">Concept Art<br>3D Modeling<br>Animation</span>
+      </div>
+    </div>
+
+    <div class="yt-row yt-intro-body">
+      <nav class="yt-toc" aria-label="Page sections">
+        <a href="#home">Home</a>
+        <a href="#concept-art">Concept Art</a>
+        <a href="#modeling">3D</a>
+        <a href="#video">Video</a>
+        <a href="#more">More</a>
+      </nav>
+
+      <div class="yt-body">
+        <p>The Stratum was said to have formed beneath the weight of what the world could not hold. At times, grief carried in silence and emotions were pushed under as people attempted to move on from their burdens. Unknowingly, these invisible weights began to manifest in another realm, where they crystallized into rivers and forests of jade. When The Stratum began to fracture and slowly consume the earth with it&rsquo;s pressure, the rabbit <em>Yuetu</em> fell from the overworld and offered its spirit in order to preserve life above.</p>
+        <p>Bound to the Stratum ever since, <em>Yuetu</em> wanders its quiet paths, gathering broken jade and returning each fragment to the land to be resolved. Yet as time passes by, the rabbit begins to realize the reality of it&rsquo;s sacrifice&mdash;with an immortal jade body, it is forever condemned to crushing the weight of the world above.</p>
+      </div>
+    </div>
+
+    <!-- CONCEPT ART -->
+    <div class="yt-row yt-section" id="concept-art">
+      <div class="yt-label">Concept Art</div>
+      <div class="yt-body">
+        <p>Focusing on form, figure, and function, I held onto aspects that stayed true to the original tale, such as the rabbit&rsquo;s large cauldron for grinding items and it&rsquo;s identity as a regal, somewhat mythical being. Distinctive jade marks engulf the body, suggesting there is something weighing the character down. Most importantly, the body stands upright in order to further elevate the rabbit&rsquo;s transformation as something beyond it&rsquo;s origin folktale.</p>
+      </div>
+    </div>
+
+    <div class="yt-row yt-stack-lg">
+      <figure class="yt-figure">
+        <img src="images/yuetu/concepts-early.png"
+             alt="Early character concepts for Yuetu"
+             style="aspect-ratio: 1125 / 351;" />
+        <figcaption>early concepts of Yuetu</figcaption>
+      </figure>
+    </div>
+
+    <div class="yt-row yt-stack-lg">
+      <figure class="yt-figure">
+        <img src="images/yuetu/concept-turnaround.png"
+             alt="Final concept turnaround of Yuetu"
+             style="aspect-ratio: 1196 / 713;" />
+        <figcaption>final concept turnaround</figcaption>
+      </figure>
+    </div>
+
+    <!-- 3D MODELING -->
+    <div class="yt-row yt-section" id="modeling">
+      <div class="yt-label">3D Modeling</div>
+    </div>
+
+    <div class="yt-row yt-stack-lg">
+      <div class="yt-figure yt-pair">
+        <img src="images/yuetu/model1.png" alt="3D model turnaround, front"
+             style="aspect-ratio: 597 / 326;" />
+        <img src="images/yuetu/model2.png" alt="3D model turnaround, side"
+             style="aspect-ratio: 587 / 326;" />
+      </div>
+    </div>
+
+    <div class="yt-row yt-stack">
+      <figure class="yt-figure">
+        <div class="yt-pair">
+          <img src="images/yuetu/model3.png" alt="3D model turnaround, three-quarter"
+               style="aspect-ratio: 587 / 327;" />
+          <img src="images/yuetu/model4.png" alt="3D model turnaround, back"
+               style="aspect-ratio: 589 / 327;" />
+        </div>
+        <figcaption>3D turnarounds</figcaption>
+      </figure>
+    </div>
+
+    <div class="yt-row yt-stack-lg">
+      <figure class="yt-figure">
+        <div class="yt-renders">
+          <img src="images/yuetu/render5.png" alt="Final render, neutral lighting" />
+          <img src="images/yuetu/render4.png" alt="Final render, neutral lighting" />
+          <img src="images/yuetu/render3.png" alt="Final render, neutral lighting" />
+          <img src="images/yuetu/render2.png" alt="Final render, neutral lighting" />
+          <img src="images/yuetu/render1.png" alt="Final render, neutral lighting" />
+        </div>
+        <figcaption>Final 3D renders in neutral lighting</figcaption>
+      </figure>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="yt-row yt-section" id="video">
+      <div class="yt-label">Video</div>
+    </div>
+
+    <div class="yt-row yt-stack-lg">
+      <figure class="yt-figure">
+        <video src="images/yuetu/rabbitfinal.mp4"
+               muted loop playsinline preload="metadata"
+               style="aspect-ratio: 1196 / 673;"
+               aria-label="Yuetu animation"></video>
+        <figcaption>Animation</figcaption>
+      </figure>
+    </div>
+
+    <!-- MORE -->
+    <div class="yt-row yt-section" id="more">
+      <div class="yt-label">More</div>
+    </div>
+
+    <div class="yt-row yt-stack-lg">
+      <figure class="yt-figure">
+        <img src="images/yuetu/stratum.png"
+             alt="Illustration of The Stratum, the imagined jade world"
+             style="aspect-ratio: 1190 / 658;" />
+      </figure>
+    </div>
+
+    <div class="yt-row yt-stack-lg">
+      <div class="yt-body yt-body--inset">
+        <p>The Stratum is a hidden realm where the weight of human emotion has taken physical form. The illustration above depicts the imagined jade world, which strangely imitates the real world, yet is filled with walls and obstructions. At first glance, The Stratum appears like an idyllic place. It is peaceful, that is, until one realizes why this world is so beautiful, almost untouched. In this vastness, not a single soul can be found.</p>
+      </div>
+    </div>
+
+    <div class="yt-row yt-stack-xl yt-end">
+      <figure class="yt-figure yt-figure--center">
+        <img src="images/yuetu/stratum-detail.png"
+             alt="Painted UV map for The Stratum"
+             style="aspect-ratio: 675.5 / 681.5;" />
+        <figcaption>painted UV</figcaption>
+      </figure>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* The animation is a large file, so it only plays while it is
+       actually on screen and stays paused the rest of the time. */
+    (function () {
+      var vid = document.querySelector('.yt-figure video');
+      if (!vid || !('IntersectionObserver' in window)) return;
+
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            var p = vid.play();
+            if (p && p.catch) p.catch(function () {});
+          } else if (!vid.paused) {
+            vid.pause();
+          }
+        });
+      }, { threshold: 0.25 }).observe(vid);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="is-loading">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annabel Yang</title>
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Hand-off to the Zro page. Both documents opt in, so the browser
+       holds the last painted frame of this page until the next one is
+       ready to paint, instead of blanking between the two. The animation
+       is switched off deliberately - the burst is the transition; this
+       only exists to close the gap. Pages that don't opt in (every other
+       project) navigate exactly as before. */
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading screen — stays until hero + project media are ready -->
+  <div id="siteLoader" class="site-loader" role="status" aria-live="polite" aria-label="Loading">
+    <div class="site-loader__inner">
+      <div class="site-loader__row">
+        <span class="site-loader__text">loading...</span>
+        <span class="site-loader__mark" aria-hidden="true"></span>
+        <span class="site-loader__pct" id="loaderPct">0%</span>
+      </div>
+      <div class="site-loader__bar" id="loaderBar"
+           role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span class="site-loader__fill" id="loaderFill"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       NAV — transparent, scrolls away with page
+       Hero image bleeds behind it to the top edge
+       ══════════════════════════════════════════ -->
+  <nav class="site-nav" aria-label="Main navigation">
+
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang — home">
+      <!-- swap src → images/logo.png after upload -->
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+
+    <ul class="nav-links" role="list">
+      <li><a href="#work">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════
+       HERO
+       Left: bio statement + selected-work index
+       Right: full-bleed art image from top edge
+       ══════════════════════════════════════════ -->
+  <section id="hero" aria-label="Introduction">
+
+    <!-- Centre stage: interactive 3D model.
+         NOTE: the sphere-wrapped text ring (js/hero-ring.js) is DEACTIVATED for
+         now — the layers are kept (hidden) and the <script> is commented out at
+         the bottom of the page so the effect can be switched back on later. -->
+    <div class="hero-stage">
+      <!-- Back half of the 3D text ring (rendered behind the model) -->
+      <div class="hero-ring hero-ring--back" aria-hidden="true" hidden></div>
+
+      <div id="hero3d"></div>
+
+      <!-- Front half of the 3D text ring (rendered in front of the model). -->
+      <div class="hero-ring hero-ring--front" aria-hidden="true" hidden
+           data-ring-text="Annabel Yang is a digital designer working across visuals &amp; code to create interactive experiences   ✦   "></div>
+    </div>
+
+    <!-- Bio descriptor, top-left. Explicit line breaks control the exact wrap. -->
+    <p class="hero-bio">Annabel Yang is a product designer<br>who builds interactive digital experiences<br>through creative technology, visual identity, and motion.</p>
+
+    <!-- Order matches the project entries in #work, top to bottom. -->
+    <nav class="hero-index" aria-label="Selected work">
+      <p class="hero-index-label">Selected Work</p>
+
+      <a href="project-zro.html" class="project-line">
+        <span class="pl-inner">Zro <span style="font-weight:400">[identity, motion]</span></span>
+      </a>
+      <a href="project-inyourcare.html" class="project-line">
+        <span class="pl-inner">In Your Care <span style="font-weight:400">[interactive art]</span></span>
+      </a>
+      <a href="project-yuetu.html" class="project-line">
+        <span class="pl-inner">Yuetu <span style="font-weight:400">[3d, concept]</span></span>
+      </a>
+      <a href="project-aftertone.html" class="project-line">
+        <span class="pl-inner">Aftertone <span style="font-weight:400">[ui/ux, identity]</span></span>
+      </a>
+      <a href="project-abel.html" class="project-line">
+        <span class="pl-inner">Abel <span style="font-weight:400">[branding, graphic design]</span></span>
+      </a>
+      <a href="project-fsystem.html" class="project-line">
+        <span class="pl-inner">F-System <span style="font-weight:400">[design, systems]</span></span>
+      </a>
+      <a href="project-color.html" class="project-line">
+        <span class="pl-inner">Color <span style="font-weight:400">[in progress]</span></span>
+      </a>
+    </nav>
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       REEL — overview / showreel (always dark)
+       ══════════════════════════════════════════ -->
+  <section id="reel" aria-label="Project reel">
+    <div class="reel-inner">
+      <!-- Placeholder image removed. Drop in a real asset here — either
+           swap src → images/reel-cover.jpg on an <img>, or use a <video> tag. -->
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       WORK (#work)
+
+       ─── HOW TO ADD A NEW PROJECT ─────────────
+       Copy the <article class="project-entry"> block,
+       paste after the last </article>, and update:
+         • href on .project-link  → project-NAME.html
+         • .project-title text
+         • .project-category text
+         • .project-description text
+         • data-href on .project-scroll
+         • <img> srcs / add more .img-ph divs
+           (each image is 50vw wide, 16:9 ratio)
+       ──────────────────────────────────────────
+       ══════════════════════════════════════════ -->
+  <section id="work" aria-label="Work">
+    <p class="work-section-label">Work</p>
+
+
+    <!-- ── PROJECT: ZRO ───────────────────────── -->
+    <article class="project-entry">
+
+      <a href="project-zro.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">Zro</h2>
+          <p class="project-description">A reimagined interface for reflection</p>
+          <span class="project-category">Identity, Motion</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-zro.html">
+        <div class="project-images">
+          <!-- The same three videos the project page itself uses. -->
+          <div class="project-slide">
+            <video class="project-img" autoplay muted loop playsinline preload="auto"
+                   src="images/zro/zrohomeanimation.mp4" aria-label="Zro — landing animation"></video>
+          </div>
+          <div class="project-slide">
+            <video class="project-img" autoplay muted loop playsinline preload="auto"
+                   src="images/zro/cardui.mp4" aria-label="Zro — session card interface"></video>
+          </div>
+          <div class="project-slide">
+            <video class="project-img" autoplay muted loop playsinline preload="auto"
+                   src="images/zro/zrohomedemo.mp4" aria-label="Zro — aperture explorations"></video>
+          </div>
+        </div>
+      </div>
+
+    </article>
+
+
+    <!-- ── PROJECT: IN YOUR CARE ──────────────── -->
+    <article class="project-entry">
+
+      <a href="project-inyourcare.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">In Your Care</h2>
+          <p class="project-description">Exploring the fragile balance between human intervention and nature</p>
+          <span class="project-category">Installation</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-inyourcare.html">
+        <div class="project-images">
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/untitled/untitled1.gif" alt="In Your Care — image 1" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/untitled/untitled2.png" alt="In Your Care — image 2" />
+          </div>
+          <div class="project-slide">
+            <video class="project-img" autoplay muted loop playsinline preload="auto"
+                   src="images/untitled/untitled3.mp4" aria-label="In Your Care — image 3"></video>
+          </div>
+          <div class="project-slide">
+            <video class="project-img" autoplay muted loop playsinline preload="auto"
+                   src="images/untitled/untitled4.mp4" aria-label="In Your Care — image 4"></video>
+          </div>
+        </div>
+      </div>
+
+    </article>
+
+
+    <!-- ── PROJECT: YUETU ─────────────────────── -->
+    <article class="project-entry">
+
+      <a href="project-yuetu.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">Yuetu</h2>
+          <p class="project-description">Unveiling the mysterious yet mystical world that the jade rabbit resides in</p>
+          <span class="project-category">Concept Art, 3D, Animation</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-yuetu.html">
+        <div class="project-images">
+          <!-- 1: yuetu1.mp4 · 2: environment painting · 3: still · 4: still ·
+               5: blurred swirl motif · 6: landscape concept art -->
+          <div class="project-slide">
+            <video class="project-img" autoplay muted loop playsinline preload="auto"
+                   src="images/yuetu/yuetu1.mp4" aria-label="Yuetu — image 1"></video>
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/yuetu/stratum.png"
+                 alt="Yuetu — environment painting of The Stratum" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/yuetu/yuetu3.png" alt="Yuetu — image 3" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/yuetu/yuetu4.png" alt="Yuetu — image 4" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/yuetu/blur-swirl.png"
+                 alt="Yuetu — soft-focus swirl motif" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/yuetu/concept-landscape.png"
+                 alt="Yuetu — landscape concept art" />
+          </div>
+        </div>
+      </div>
+
+    </article>
+
+
+    <!-- ── PROJECT: AFTERTONE ─────────────────── -->
+    <article class="project-entry">
+
+      <a href="project-aftertone.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">Aftertone</h2>
+          <p class="project-description">A new, more personal way to discover your next favorite song</p>
+          <span class="project-category">UI/UX, Visual Identity</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-aftertone.html">
+        <div class="project-images">
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/aftertone/hero.png"
+                 alt="Aftertone — music discovery app title screen" />
+          </div>
+        </div>
+      </div>
+
+    </article>
+
+
+    <!-- ── PROJECT: ABEL ───────────────────────── -->
+    <article class="project-entry">
+
+      <a href="project-abel.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">Abel</h2>
+          <p class="project-description">Personal branding</p>
+          <span class="project-category">Branding, Graphic Design</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-abel.html">
+        <div class="project-images">
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/abel/card-tree.jpg"
+                 alt="Abel — business card leaning against driftwood" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/abel/card-stacked-angle.jpg"
+                 alt="Abel — stack of business cards, angled view" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/abel/card-single.jpg"
+                 alt="Abel — business card, front face" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async" src="images/abel/card-stacked.jpg"
+                 alt="Abel — business card, front and back stacked" />
+          </div>
+        </div>
+      </div>
+
+    </article>
+
+
+    <!-- ── PROJECT: F-SYSTEM ──────────────────── -->
+    <article class="project-entry">
+
+      <a href="project-fsystem.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">F-System</h2>
+          <p class="project-description">Customizable digital flower generator based on L-system growth</p>
+          <span class="project-category">Design, Generative Systems</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-fsystem.html">
+        <div class="project-images">
+          <div class="project-slide">
+            <img class="project-img" decoding="async"
+                 src="https://api.builder.io/api/v1/image/assets/TEMP/5fc8604368416275777c329d1bc63b635281e4ed?width=1359"
+                 alt="F-System — generative flower 1" />
+          </div>
+          <div class="project-slide">
+            <img class="project-img" decoding="async"
+                 src="https://api.builder.io/api/v1/image/assets/TEMP/b8f75916f43d5d8182322548b4a79fd46594dcab?width=1361"
+                 alt="F-System — tulip render" />
+          </div>
+        </div>
+      </div>
+
+    </article>
+
+
+    <!-- ── PROJECT: COLOR (in progress) ───────── -->
+    <article class="project-entry">
+
+      <a href="project-color.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">Color</h2>
+          <p class="project-description"></p>
+          <span class="project-category">In Progress</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-color.html">
+        <div class="project-images">
+        </div>
+      </div>
+
+    </article>
+
+
+    <!--
+    ════════════════════════════════════════════
+    NEW PROJECT TEMPLATE — copy & paste below
+    ════════════════════════════════════════════
+    <article class="project-entry">
+
+      <a href="project-NAME.html" class="project-link">
+        <div class="project-header">
+          <h2 class="project-title">PROJECT TITLE</h2>
+          <p class="project-description">Short one-line description of the project</p>
+          <span class="project-category">CATEGORY, TAGS</span>
+        </div>
+      </a>
+
+      <div class="project-scroll" data-href="project-NAME.html">
+        <div class="project-images">
+          <img class="project-img" decoding="async" src="images/NAME-1.jpg" alt="..." />
+          <img class="project-img" decoding="async" src="images/NAME-2.jpg" alt="..." />
+          <div class="img-ph ph-2" role="img" aria-label="placeholder 3"></div>
+          <div class="img-ph ph-3" role="img" aria-label="placeholder 4"></div>
+          <div class="img-ph"     role="img" aria-label="placeholder 5"></div>
+        </div>
+      </div>
+
+    </article>
+    ════════════════════════════════════════════ -->
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <p class="footer-copy">© 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to top">
+      <!-- swap src → images/logo.png after upload -->
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+
+  <script src="js/main.js"></script>
+  <script src="js/zro-transition.js"></script>
+  <!-- Sphere-wrapped hero text ring — deactivated for now. Re-enable by
+       un-commenting this and removing the `hidden` attrs on the .hero-ring
+       layers above. -->
+  <!-- <script src="js/hero-ring.js"></script> -->
+
+  <!-- Three.js for the interactive hero model (loaded from CDN via import map).
+       To vendor locally later, download three.module.js + the addons and point
+       these URLs at local files. -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/hero3d.js"></script>
+</body>
+</html>

@@ -1,0 +1,986 @@
+/* =============================================
+   FONTS — local Neue Haas Grotesk Display + Helvetica
+   ============================================= */
+@font-face {
+  font-family: 'Helvetica Neue LT';
+  src: url('../fonts/Helvetica Neue LT Pro 55 Roman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display';
+  src: url('../fonts/NeueHaasDisplayRoman.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display';
+  src: url('../fonts/NeueHaasDisplayMediu.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DeFonte Reduced';
+  src: url('../fonts/DeFonte-Reduced.woff2') format('woff2'),
+       url('../fonts/DeFonte-Reduced.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =============================================
+   THEME TOKENS
+   ============================================= */
+:root {
+  --bg:         #fff;
+  --fg:         #000;
+  --fg-muted:   rgba(0,0,0,0.38);
+  --border-sel: rgba(0,0,0,0.18);
+  --ph-bg:      #d8d8d8;
+  --ph-bg-2:    #c8c8c8;
+  --ph-bg-3:    #e0e0e0;
+  --pink:       #f03878;            /* vivid hot pink — cool-toned, not purple */
+
+  --font-nav:  'DeFonte Reduced', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Neue Haas Grotesk Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* layout scale — keeps type, logos, and spacing cohesive */
+  --nav-h:       64px;
+  --logo-h:      52px;
+  --gutter:      28px;
+  --gutter-lg:   36px;
+}
+[data-theme="dark"] {
+  --bg:         #000;
+  --fg:         #fff;
+  --fg-muted:   rgba(255,255,255,0.38);
+  --border-sel: rgba(255,255,255,0.2);
+  --ph-bg:      #222;
+  --ph-bg-2:    #2a2a2a;
+  --ph-bg-3:    #1a1a1a;
+}
+
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html  { scroll-behavior: smooth; }
+body  {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.28s ease, color 0.28s ease;
+}
+img { display: block; max-width: 100%; }
+a   { text-decoration: none; color: inherit; }
+ul  { list-style: none; }
+
+/* =============================================
+   LOADING SCREEN
+   ============================================= */
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  transition: opacity 0.55s ease;
+}
+html.is-loading,
+html.is-loading body {
+  overflow: hidden;
+  height: 100%;
+}
+.site-loader.is-hidden { opacity: 0; pointer-events: none; }
+.site-loader__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(280px, 60vw);
+}
+.site-loader__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* Percentage sits at the far end of the row, on the bar's right edge. */
+.site-loader__pct {
+  margin-left: auto;
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.site-loader__bar {
+  position: relative;
+  width: 100%;
+  height: 2px;
+}
+/* Track drawn on a pseudo-element: putting opacity on the bar itself would
+   fade the fill inside it too. */
+.site-loader__bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--fg);
+  opacity: 0.18;
+}
+.site-loader__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--fg);
+  /* Eases between real readings so the bar glides rather than jumping;
+     the number itself is never interpolated. */
+  transition: width 0.25s ease-out;
+}
+.site-loader__text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: var(--fg);
+}
+.site-loader__mark {
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: var(--fg);
+  animation: loader-flash 0.7s steps(1, end) infinite;
+}
+@keyframes loader-flash {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* =============================================
+   NAV — transparent, stationary, scrolls away
+   margin-bottom pulls hero behind it so image
+   bleeds all the way to the top viewport edge
+   ============================================= */
+.site-nav {
+  position: relative;
+  z-index: 20;
+  height: var(--nav-h);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 var(--gutter);
+  background: transparent;
+  margin-bottom: calc(-1 * var(--nav-h));
+}
+
+/* Logo — same size top & bottom */
+.nav-logo {
+  justify-self: start;
+  display: block;
+  height: var(--logo-h);
+}
+.nav-logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+[data-theme="dark"] .nav-logo img { filter: invert(1); }
+
+/* Light | Dark toggle — no rectangle, opacity contrast */
+.mode-toggle {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--fg);
+  padding: 4px 0;
+  user-select: none;
+  transition: color 0.28s;
+}
+.mode-toggle .m-label {
+  padding: 3px 8px;
+  transition: opacity 0.22s;
+}
+/* Active label: full opacity. Inactive: dimmed. No background pill. */
+[data-theme="light"] .m-label.dark,
+[data-theme="dark"]  .m-label.light { opacity: 0.35; }
+.mode-toggle .m-sep {
+  color: var(--fg);
+  font-weight: 300;
+  font-size: 12px;
+  opacity: 0.4;
+  padding: 0 1px;
+}
+.mode-toggle:hover { color: var(--fg); opacity: 0.55; }
+.mode-toggle:hover .m-sep { opacity: 0.45; }
+
+/* Nav links — pink on hover */
+.nav-links {
+  justify-self: end;
+  display: flex;
+  gap: 18px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-nav);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--fg);
+  transition: color 0.2s;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--pink); }
+
+/* =============================================
+   HERO — centred 3D model with a rotating ring of
+   bio text wrapped around it, selected-work index
+   pinned bottom-left.
+   ============================================= */
+#hero {
+  position: relative;
+  z-index: 10;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg);
+  transition: background 0.28s ease;
+}
+
+/* Screen-reader-only helper */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Bio descriptor — top-left, tucked just under the logo and aligned to the
+   nav's left margin (--gutter). The model is shifted right to clear this space. */
+.hero-bio {
+  position: absolute;
+  left: var(--gutter);
+  top: 34vh;
+  z-index: 3;
+  width: max-content;      /* only break at the explicit <br>s */
+  max-width: 92vw;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(30px, 3vw, 54px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+@media (max-width: 720px) {
+  .hero-bio {
+    top: calc(var(--nav-h) + 40px);
+    font-size: clamp(22px, 6vw, 34px);
+  }
+}
+
+/* Centre stage holds the model canvas + the text ring, concentric */
+.hero-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Interactive 3D model container — fills the hero; model centred by the camera */
+#hero3d {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+#hero3d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Bio text wrapped around the model like lettering on a sphere.
+   js/hero-ring.js lays each character on the sphere's surface with CSS 3D
+   transforms; each layer carries the `perspective` (set in JS) and preserves 3D
+   so glyphs sort by real depth. Near-side glyphs go in the front layer (over the
+   model); far-side glyphs go in the back layer (behind the model) and are faded,
+   so the model occludes the back of the wrap while it stays partly visible. */
+.hero-ring {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  transform-style: preserve-3d;
+}
+.hero-ring--back  { z-index: 0; }   /* behind #hero3d (z-index 1) */
+.hero-ring--front { z-index: 2; }   /* in front of the model      */
+
+/* Each character is anchored at the sphere centre (left/top 50% + origin 0 0);
+   the script sets a per-frame 3D transform that lays it tangent on the sphere's
+   surface. translate(-50%,-50%) (inside the transform) centres the glyph box on
+   its surface point. Backface culling is left OFF so the wrap stays visible as
+   it curves around the far side. */
+.hero-ring-word {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  white-space: pre;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+/* Selected-work index, pinned bottom-left */
+.hero-index {
+  position: absolute;
+  left: var(--gutter-lg);
+  bottom: 40px;
+  z-index: 3;
+  width: min(420px, 44vw);
+  border-top: 1px solid var(--fg);
+  padding-top: 12px;
+}
+.hero-index-label {
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--fg);
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.project-line {
+  display: block;
+  font-family: var(--font-body);
+  font-size: clamp(19px, 2vw, 27px);
+  font-weight: 400;
+  line-height: 1;
+  padding: 10px 0;
+  color: var(--fg);
+  transition: color 0.2s;
+}
+.project-line:hover { color: var(--pink); }
+
+/* Each title rises into place from below its own line AND wipes in left→right,
+   while the divider line under it draws in from the left on the same beat. The
+   animation is gated on `.hero-index.in-view` (added by js/main.js) so it
+   replays every time the top of the page scrolls back into view. Base state is
+   hidden (pushed down + fully clipped) so nothing peeks before it plays. */
+.project-line { overflow: hidden; position: relative; }
+.hero-index .pl-inner {
+  display: block;
+  transform: translateY(130%);
+  clip-path: inset(0 100% 0 0);
+}
+.hero-index .project-line::after {   /* divider line, drawn left→right */
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--border-sel);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.hero-index.in-view .pl-inner {
+  animation: pl-rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-index.in-view .project-line::after {
+  animation: line-draw 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-index.in-view .project-line:nth-of-type(1) .pl-inner,
+.hero-index.in-view .project-line:nth-of-type(1)::after { animation-delay: 0.35s; }
+.hero-index.in-view .project-line:nth-of-type(2) .pl-inner,
+.hero-index.in-view .project-line:nth-of-type(2)::after { animation-delay: 0.55s; }
+.hero-index.in-view .project-line:nth-of-type(3) .pl-inner,
+.hero-index.in-view .project-line:nth-of-type(3)::after { animation-delay: 0.75s; }
+.hero-index.in-view .project-line:nth-of-type(4) .pl-inner,
+.hero-index.in-view .project-line:nth-of-type(4)::after { animation-delay: 0.95s; }
+.hero-index.in-view .project-line:nth-of-type(5) .pl-inner,
+.hero-index.in-view .project-line:nth-of-type(5)::after { animation-delay: 1.15s; }
+.hero-index.in-view .project-line:nth-of-type(6) .pl-inner,
+.hero-index.in-view .project-line:nth-of-type(6)::after { animation-delay: 1.35s; }
+.hero-index.in-view .project-line:nth-of-type(7) .pl-inner,
+.hero-index.in-view .project-line:nth-of-type(7)::after { animation-delay: 1.55s; }
+@keyframes pl-rise {
+  from { transform: translateY(130%); clip-path: inset(0 100% 0 0); }
+  to   { transform: translateY(0);    clip-path: inset(0 0 0 0); }
+}
+@keyframes line-draw {
+  to { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-index .pl-inner { transform: none; clip-path: none; animation: none; }
+  .hero-index .project-line::after { transform: scaleX(1); animation: none; }
+}
+
+/* (hero-fx-toggle removed — ascii is the only effect now)
+   (hero-bio-strip removed — bio is back in left column) */
+
+/* =============================================
+   REEL — overview/showreel, always dark
+   ============================================= */
+#reel {
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 48px var(--gutter-lg);
+}
+.reel-inner { width: 100%; max-width: 960px; }
+.reel-inner img,
+.reel-inner video { width: 100%; height: auto; display: block; }
+
+/* =============================================
+   WORK
+   ============================================= */
+#work {
+  background: var(--bg);
+  padding-top: 40px;
+  transition: background 0.28s ease;
+}
+
+/* "Work" label — with ruled line cut at margins */
+.work-section-label {
+  display: block;
+  font-size: 20px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--fg);
+  letter-spacing: 0.04em;
+  margin: 0 var(--gutter) 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--fg);
+}
+
+.project-entry {
+  padding-bottom: 56px;
+  /* Skip rendering (and compositing the GIFs/images of) projects that are off
+     screen — a big scroll-performance win on this image-heavy page. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
+.project-entry:first-of-type { margin-top: 28px; }
+
+.project-link {
+  display: block;
+  color: var(--fg);
+  padding: 14px var(--gutter) 10px;
+}
+
+/* 3-column header row: title | description | category */
+.project-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 0 20px;
+}
+
+.project-title {
+  font-family: 'Helvetica Neue LT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(16px, 1.4vw, 21px);
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--fg);
+  transition: color 0.2s;
+}
+
+/* Description: Helvetica, roman (400) */
+.project-description {
+  font-family: 'Helvetica Neue LT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(13px, 1.1vw, 16px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--fg);
+  transition: color 0.2s;
+}
+
+/* Category: Helvetica Neue — tight tracking, all-caps */
+.project-category {
+  font-family: 'Helvetica Neue LT', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-align: right;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fg);
+  transition: color 0.2s;
+}
+
+/* Hover anywhere inside entry → pink text */
+.project-entry:hover .project-title,
+.project-entry:hover .project-description,
+.project-entry:hover .project-category { color: var(--pink); }
+
+/* Horizontal image strip — a clipped window; the track inside is moved by JS
+   (js/main.js) via translateX, so there's no native scroll to jank on. */
+.project-scroll {
+  margin: 0 var(--gutter);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;          /* let vertical touch scroll the page */
+}
+.project-scroll:active { cursor: grabbing; }
+
+.project-images {
+  display: flex;
+  gap: 14px;                /* a bit of space between each image */
+  width: max-content;
+  will-change: transform;
+}
+/* Slide shell carries sizing + entrance transforms. Keep media (esp. animated
+   GIFs) free of CSS transforms — browsers often freeze GIF playback when the
+   <img> itself is transformed or animated. */
+.project-slide,
+.project-img,
+.img-ph {
+  flex: 0 0 auto;
+  width: 42vw;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  position: relative;
+}
+.project-slide .project-img,
+.project-slide video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  flex: none;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  /* never inherit slide transforms onto the bitmap */
+  transform: none !important;
+  animation: none !important;
+}
+.project-img {
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Placeholder boxes — solid color only, no diagonal lines */
+.img-ph       { background: var(--ph-bg); }
+.img-ph.ph-2  { background: var(--ph-bg-2); }
+.img-ph.ph-3  { background: var(--ph-bg-3); }
+
+/* A project with no media yet: don't leave an empty band under the title. */
+.project-scroll.is-empty { display: none; }
+
+/* ── Carousel slider ────────────────────────────────────────────────────────
+   Drag handle under each strip. Built by js/main.js and inserted as a sibling
+   of .project-scroll, so dragging it is never read as a tap on the strip. */
+.project-slider {
+  position: relative;
+  margin: 14px var(--gutter) 0;
+  height: 14px;
+  cursor: grab;
+  touch-action: none;          /* the handle owns horizontal gestures */
+}
+.project-slider.is-active { cursor: grabbing; }
+.project-slider.is-idle { visibility: hidden; }   /* nothing to scroll */
+.project-slider::before {     /* rail */
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  transform: translateY(-50%);
+  height: 2px;
+  background: var(--fg);
+  opacity: 0.16;
+  transition: height 0.15s ease;
+}
+.project-slider__thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--fg);
+  transform: translate3d(0, -50%, 0);
+  transition: height 0.15s ease;
+}
+.project-slider:hover::before,
+.project-slider.is-active::before,
+.project-slider:hover .project-slider__thumb,
+.project-slider.is-active .project-slider__thumb { height: 4px; }
+
+/* ── Scroll-in reveal for each work entry ────────────────────────────────────
+   js/main.js adds `.in-view` when the entry scrolls into view. The header text
+   rises + wipes left→right, a divider line under the header draws in, and the
+   images build the track left→right, each one wiping in on a stagger. */
+.project-entry .project-title,
+.project-entry .project-description,
+.project-entry .project-category {
+  opacity: 0;
+  transform: translateY(18px);
+  clip-path: inset(0 100% 0 0);
+}
+.project-link { position: relative; }
+.project-link::after {          /* header divider line */
+  content: '';
+  position: absolute;
+  left: var(--gutter); right: var(--gutter); bottom: 0;
+  height: 1px;
+  background: var(--border-sel);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+/* Images slide vertically into place — a mirrored parallax: 1st from the top,
+   2nd from the bottom, 3rd from the top … and the whole pattern FLIPS on every
+   other project, so no two neighbouring images ever enter from the same
+   direction. .project-scroll clips top/bottom, so each image is masked until it
+   arrives, then eases to rest. */
+.project-images > * { opacity: 0; }
+.project-entry:nth-of-type(odd)  .project-images > *:nth-child(odd)  { transform: translateY(-100%); }
+.project-entry:nth-of-type(odd)  .project-images > *:nth-child(even) { transform: translateY(100%); }
+.project-entry:nth-of-type(even) .project-images > *:nth-child(odd)  { transform: translateY(100%); }
+.project-entry:nth-of-type(even) .project-images > *:nth-child(even) { transform: translateY(-100%); }
+
+/* Timings are deliberately short. These are gated on the whole #work
+   section, so they fire once as it comes into view — anything slow reads
+   as the projects being missing while you scroll, not as a reveal. */
+#work.in-view .project-entry .project-title       { animation: work-text 0.6s cubic-bezier(0.22,1,0.36,1) 0.02s both; }
+#work.in-view .project-entry .project-description  { animation: work-text 0.6s cubic-bezier(0.22,1,0.36,1) 0.10s both; }
+#work.in-view .project-entry .project-category     { animation: work-text 0.6s cubic-bezier(0.22,1,0.36,1) 0.18s both; }
+#work.in-view .project-entry .project-link::after  { animation: line-draw 0.6s cubic-bezier(0.22,1,0.36,1) 0.02s both; }
+/* Each image eases into place from its alternating direction, still with a
+   strong ease-out so it decelerates over most of the travel — just far less
+   of it, and starting almost at once. */
+#work.in-view .project-entry .project-images > * { animation: img-slide 0.85s cubic-bezier(0.12, 0.8, 0.16, 1) both; }
+#work.in-view .project-entry .project-images > *:nth-child(1) { animation-delay: 0.04s; }
+#work.in-view .project-entry .project-images > *:nth-child(2) { animation-delay: 0.11s; }
+#work.in-view .project-entry .project-images > *:nth-child(3) { animation-delay: 0.18s; }
+#work.in-view .project-entry .project-images > *:nth-child(4) { animation-delay: 0.25s; }
+#work.in-view .project-entry .project-images > *:nth-child(n+5) { animation-delay: 0.32s; }
+
+@keyframes work-text {
+  to { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0 0); }
+}
+@keyframes img-slide {
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-entry .project-title,
+  .project-entry .project-description,
+  .project-entry .project-category,
+  .project-images > * { opacity: 1; transform: none; clip-path: none; animation: none; }
+  .project-link::after { transform: scaleX(1); }
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.site-footer {
+  background: var(--bg);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 20px 0 20px var(--gutter);
+  transition: background 0.28s ease;
+}
+.footer-copy {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--fg);
+  letter-spacing: 0;
+  padding-bottom: 4px;
+}
+.footer-logo {
+  display: block;
+  height: var(--logo-h);
+  margin-right: 14px;
+  transition: opacity 0.2s;
+}
+.footer-logo:hover { opacity: 0.5; }
+.footer-logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  object-position: right center;
+  display: block;
+}
+[data-theme="dark"] .footer-logo img { filter: invert(1); }
+
+/* =============================================
+   ABOUT PAGE
+   ============================================= */
+/* Text sits at the vertical centre of the viewport, toward the left; the
+   photos are a scattered pile in their own zone to its right. */
+.about-wrap {
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: var(--nav-h) var(--gutter-lg) 40px;
+  transition: background 0.28s ease;
+}
+.about-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.about-text { flex: 0 1 460px; }
+.about-text p {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--fg);
+  margin-bottom: 20px;
+}
+/* The greeting reads as a lead-in line, not just the first sentence of
+   the paragraph below it. */
+.about-text p:first-child {
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.2;
+  margin-bottom: 28px;
+}
+.about-inner a { text-decoration: underline; }
+.about-inner a:hover { color: var(--pink); }
+
+/* Scattered photo pile: two loose, unevenly-staggered columns rather than a
+   tidy grid — but level (no rotation) and spaced so no two photos overlap.
+   Square corners — no border-radius. */
+.about-gallery {
+  position: relative;
+  flex: 0 0 520px;
+  width: 520px;
+  height: 760px;
+}
+.about-gallery img {
+  position: absolute;
+  display: block;
+  width: var(--w);
+  height: auto;
+  border-radius: 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.16);
+}
+/* Left column: the three landscape shots. */
+.about-gallery img:nth-child(1) { --w: 230px; top: 0px;   left: 0px; }    /* steak */
+.about-gallery img:nth-child(3) { --w: 225px; top: 200px; left: 0px; }    /* desk / snow view */
+.about-gallery img:nth-child(5) { --w: 230px; top: 392px; left: 0px; }    /* selfie */
+/* Right column, staggered lower to start: the three portrait shots. */
+.about-gallery img:nth-child(2) { --w: 160px; top: 40px;  left: 290px; }  /* plant */
+.about-gallery img:nth-child(4) { --w: 175px; top: 282px; left: 290px; }  /* dog */
+.about-gallery img:nth-child(6) { --w: 155px; top: 540px; left: 290px; }  /* travel dango */
+
+/* =============================================
+   PROJECT PAGES
+   ============================================= */
+.project-page-wrap {
+  background: var(--bg);
+  min-height: calc(100vh - var(--nav-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px var(--gutter-lg);
+  transition: background 0.28s ease;
+}
+.under-construction {
+  font-size: clamp(15px, 1.6vw, 20px);
+  font-weight: 400;
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+/* =============================================
+   PLAY PAGE
+   ============================================= */
+/* Parallax columns: a fixed-height viewport region. Each column clips its own
+   track, which js/main.js translates vertically. */
+.parallax {
+  background: var(--bg);
+  height: 100vh;
+  padding: calc(var(--nav-h) + 8px) var(--gutter) 8px;
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+  transition: background 0.28s ease;
+}
+.parallax-col {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.parallax-col-track {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  will-change: transform;
+}
+.gallery-card {
+  background: var(--ph-bg);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity 0.22s;
+}
+.gallery-card:hover { opacity: 0.8; }
+/* Image cards size to the image's natural ratio (no crop) — the card grows to
+   fit, giving the columns their masonry feel. Placeholders still use ar-* sizes. */
+.gallery-card img { width: 100%; height: auto; display: block; }
+/* No diagonal lines on gallery placeholders */
+.gallery-card.ar-sq   { aspect-ratio: 1; }
+.gallery-card.ar-tall { aspect-ratio: 2/3; }
+.gallery-card.ar-port { aspect-ratio: 3/4; }
+.gallery-card.ar-wide { aspect-ratio: 4/3; }
+.gallery-card.ar-land { aspect-ratio: 16/9; }
+.gallery-card.ph-2 { background: var(--ph-bg-2); }
+.gallery-card.ph-3 { background: var(--ph-bg-3); }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1024px) {
+  #hero { grid-template-columns: 46% 54%; }
+  .nav-links a { font-size: 22px; }
+  .project-slide, .project-img, .img-ph { width: 55vw; }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nav-h: 52px;
+    --logo-h: 40px;
+    --gutter: 18px;
+    --gutter-lg: 24px;
+  }
+
+  .site-nav { padding: 0 var(--gutter); grid-template-columns: auto auto; }
+  .mode-toggle { display: none; }
+  .nav-links { gap: 12px; }
+  .nav-links a { font-size: 17px; }
+
+  /* Hero stacks: image on top, text col below */
+  #hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: 48vw auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  .hero-right { grid-row: 1; min-height: 48vw; }
+  .hero-left  { grid-row: 2; padding: 24px var(--gutter) 32px; }
+  .hero-bio-zone { flex: none; padding-bottom: 24px; }
+  .hero-statement p { font-size: clamp(18px, 5vw, 26px); }
+
+  .project-scroll { margin: 0 var(--gutter); }
+  .work-section-label { margin: 0 var(--gutter) 12px; font-size: 17px; }
+  .project-header { grid-template-columns: 1fr; row-gap: 3px; }
+  .project-category { text-align: left; }
+  .project-link { padding: 12px var(--gutter) 8px; }
+  .project-slide, .project-img, .img-ph { width: 78vw; }
+
+  /* The scatter layout is hand-placed in fixed pixels for the wide desktop
+     zone; below this width there isn't room for it beside the text, so
+     stack instead — text first, then the photos in a simple two-up wrap
+     (still square, still no two photos touching). */
+  .about-wrap { padding: calc(var(--nav-h) + 32px) var(--gutter) 56px; align-items: flex-start; }
+  .about-inner { flex-direction: column; align-items: flex-start; gap: 36px; }
+  .about-text { flex: none; max-width: 100%; }
+  .about-text p { font-size: 17px; }
+  .about-text p:first-child { font-size: clamp(24px, 6vw, 30px); }
+
+  .about-gallery { position: static; flex: none; width: 100%; height: auto;
+                    display: flex; flex-wrap: wrap; gap: 14px; }
+  .about-gallery img { position: static; width: calc(50% - 7px); }
+
+  .site-footer { padding: 16px var(--gutter); align-items: center; }
+  .footer-copy  { font-size: 12px; }
+  .footer-logo  { margin-right: 0; }
+
+  .parallax { padding: calc(var(--nav-h) + 8px) var(--gutter) 8px; gap: 6px; }
+  /* Drop to 2 columns on tablets — JS hides the extras it doesn't use. */
+  .parallax-col:nth-child(n+3) { display: none; }
+}
+
+@media (max-width: 480px) {
+  .nav-links a { font-size: 15px; }
+  .nav-links { gap: 8px; }
+
+  .about-gallery { column-count: 1; }
+}
+
+/* =============================================
+   CUSTOM CURSOR — white "pixel" with exclusion blend
+   ---------------------------------------------
+   A small white square follows the pointer. mix-blend-mode:
+   exclusion inverts it against whatever is behind: over the
+   white background it reads black, over dark areas it reads
+   white — always visible. The native cursor is hidden
+   everywhere (incl. inline cursor styles set by JS, via
+   !important). Created + positioned by js/main.js.
+   ============================================= */
+* { cursor: none !important; }
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  pointer-events: none;
+  z-index: 100000;
+  mix-blend-mode: exclusion;
+  opacity: 0;                       /* revealed on first mouse move */
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+/* Touch / no fine-pointer devices: no custom cursor, restore native. */
+@media (hover: none), (pointer: coarse) {
+  * { cursor: auto !important; }
+  .cursor-dot { display: none !important; }
+}
+
+/* =============================================
+   ZRO PAGE TRANSITION  (index.html)
+   Fragments cut out of the live Zro page burst from the
+   centre and cover the screen before navigating. Built
+   and driven by js/zro-transition.js.
+   ============================================= */
+.zro-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  overflow: hidden;
+}
+/* The Zro page itself, at viewport size. The script clips it to the
+   fragments that have landed so far, so every fragment is a cut-out of
+   the real page rather than a stand-in rectangle. */
+.zro-burst__view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  background: #000;
+  /* Width and height are set in exact pixels by the script, to match the
+     layout viewport the destination page will get. */
+}
