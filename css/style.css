@@ -349,32 +349,44 @@ html.is-loading body {
 }
 
 /* Selected-work index, pinned bottom-left */
+/* Sized so its own footprint stays modest — since it's pinned to the
+   bottom of #hero while the bio text is pinned near the top (34vh), a
+   taller box here directly eats into the gap between the two. Shrinking
+   the box (rather than repositioning either element) is what keeps that
+   gap comfortable on shorter laptop screens. */
 .hero-index {
   position: absolute;
   left: var(--gutter-lg);
   bottom: 40px;
   z-index: 3;
-  width: min(420px, 44vw);
+  width: min(360px, 40vw);
   border-top: 1px solid var(--fg);
-  padding-top: 12px;
+  padding-top: 10px;
 }
 .hero-index-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   text-transform: uppercase;
   color: var(--fg);
   letter-spacing: 0.05em;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 .project-line {
   display: block;
   font-family: var(--font-body);
-  font-size: clamp(19px, 2vw, 27px);
+  font-size: clamp(17px, 1.7vw, 22px);
   font-weight: 400;
   line-height: 1;
-  padding: 10px 0;
+  padding: 8px 0;
   color: var(--fg);
   transition: color 0.2s;
+}
+/* Short laptop screens (most MacBooks land here before browser chrome is
+   even subtracted): shrink further so the gap above never closes up. */
+@media (max-height: 820px) {
+  .hero-index { bottom: 28px; width: min(300px, 36vw); padding-top: 8px; }
+  .hero-index-label { font-size: 11px; margin-bottom: 4px; }
+  .project-line { font-size: clamp(15px, 1.5vw, 18px); padding: 6px 0; }
 }
 .project-line:hover { color: var(--pink); }
 
