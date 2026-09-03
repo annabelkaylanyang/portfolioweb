@@ -247,13 +247,22 @@ html.is-loading body {
    bio text wrapped around it, selected-work index
    pinned bottom-left.
    ============================================= */
+/* Deliberately shorter than the viewport so the top of #work is already
+   visible on load — the page reads as having more below the fold rather than
+   ending at the bio. */
 #hero {
   position: relative;
   z-index: 10;
-  height: 100vh;
+  height: 78vh;
+  min-height: 420px;
   overflow: hidden;
   background: var(--bg);
   transition: background 0.28s ease;
+  /* Centres the bio in what's left after the nav's overlap is accounted for. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nav-h) var(--gutter) 0;
 }
 
 /* Screen-reader-only helper */
@@ -267,12 +276,11 @@ html.is-loading body {
   border: 0;
 }
 
-/* Bio descriptor — top-left, tucked just under the logo and aligned to the
-   nav's left margin (--gutter). The model is shifted right to clear this space. */
+/* Bio descriptor — centred in the hero, both on the page and within itself,
+   so the <br>-separated lines stack as a centred block rather than a
+   left-aligned ragged one. Centred by #hero's flexbox, not absolute offsets. */
 .hero-bio {
-  position: absolute;
-  left: var(--gutter);
-  top: 34vh;
+  position: relative;
   z-index: 3;
   width: max-content;      /* only break at the explicit <br>s */
   max-width: 92vw;
@@ -280,13 +288,14 @@ html.is-loading body {
   font-family: var(--font-body);
   font-size: clamp(30px, 3vw, 54px);
   font-weight: 400;
-  line-height: 1.02;
+  line-height: 1.15;
   letter-spacing: -0.01em;
+  text-align: center;
+  text-indent: 0;
   color: var(--fg);
 }
 @media (max-width: 720px) {
   .hero-bio {
-    top: calc(var(--nav-h) + 40px);
     font-size: clamp(22px, 6vw, 34px);
   }
 }
@@ -447,6 +456,8 @@ html.is-loading body {
 
 /* =============================================
    REEL — overview/showreel, always dark
+   UNUSED: the black #reel band was removed from index.html. Styles kept so
+   the section can be dropped back in without rebuilding them.
    ============================================= */
 #reel {
   background: #000;
@@ -738,15 +749,31 @@ html.is-loading body {
 /* =============================================
    ABOUT PAGE
    ============================================= */
+/* Fixed backdrop layer holding the interactive 3D model (moved here from the
+   home page hero). Fixed rather than absolute so it holds still while the page
+   scrolls, and click-through so it never intercepts text selection or links —
+   js/hero3d.js tracks the pointer on `window`, so head-tracking still works. */
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Knocked back so the copy on top stays comfortably readable. Raise toward
+     1 for a more present model, lower for a fainter one. */
+  opacity: 0.5;
+}
+
 /* Text sits at the vertical centre of the viewport, toward the left; the
-   photos are a scattered pile in their own zone to its right. */
+   photos are a scattered pile in their own zone to its right.
+   Transparent (not var(--bg)) so the model behind it shows through. */
 .about-wrap {
-  background: var(--bg);
+  position: relative;
+  z-index: 1;
+  background: transparent;
   min-height: 100vh;
   display: flex;
   align-items: center;
   padding: var(--nav-h) var(--gutter-lg) 40px;
-  transition: background 0.28s ease;
 }
 .about-inner {
   width: 100%;
@@ -855,9 +882,17 @@ html.is-loading body {
   transition: opacity 0.22s;
 }
 .gallery-card:hover { opacity: 0.8; }
+/* Artwork that sits on white would otherwise bleed into the page and lose its
+   edges. A hairline keeps the piece contained. box-sizing is border-box
+   globally, so this never changes the column width. */
+.gallery-card.is-framed {
+  border: 1px solid #000;
+  background: #fff;
+}
 /* Image cards size to the image's natural ratio (no crop) — the card grows to
    fit, giving the columns their masonry feel. Placeholders still use ar-* sizes. */
-.gallery-card img { width: 100%; height: auto; display: block; }
+.gallery-card img,
+.gallery-card video { width: 100%; height: auto; display: block; }
 /* No diagonal lines on gallery placeholders */
 .gallery-card.ar-sq   { aspect-ratio: 1; }
 .gallery-card.ar-tall { aspect-ratio: 2/3; }
@@ -868,10 +903,311 @@ html.is-loading body {
 .gallery-card.ph-3 { background: var(--ph-bg-3); }
 
 /* =============================================
+   PLAY — LIGHTBOX
+   Dims the page and centres one piece, with arrows stepping through the
+   rest of its set. Built by js/play-lightbox.js.
+   ============================================= */
+/* The gallery columns are their own scroll surface, so the page itself
+   doesn't scroll behind the overlay — but lock it anyway for the case where
+   the viewport is short enough for the page to scroll. */
+html.is-lightbox-open,
+html.is-lightbox-open body { overflow: hidden; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 28px);
+  padding: clamp(16px, 4vw, 56px);
+  /* Deliberately heavy: the artwork should read as lit and everything else
+     as switched off. */
+  background: rgba(0, 0, 0, 0.88);
+  animation: lightbox-in 0.18s ease-out both;
+}
+.lightbox[hidden] { display: none; }
+
+@keyframes lightbox-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox__stage {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Fits the piece fully on screen at its own proportions — never cropped,
+   never upscaled past its natural size. */
+.lightbox__media {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  animation: lightbox-media-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Video is sized to the stage rather than to its own intrinsic size: a fresh
+   <video> reports 0x0 until metadata arrives, so auto sizing would open at the
+   browser's default 300x150 and visibly pop to full size a moment later.
+   object-fit keeps it letterboxed at the right proportions either way. */
+video.lightbox__media {
+  width: 100%;
+  height: 100%;
+}
+@keyframes lightbox-media-in {
+  from { opacity: 0; transform: scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Arrows + close: hairline glyphs on a subtle disc, so they stay legible over
+   both a bright painting and a dark one. */
+.lightbox__nav,
+.lightbox__close {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.18s ease, opacity 0.18s ease;
+}
+.lightbox__nav:hover,
+.lightbox__close:hover { background: rgba(255, 255, 255, 0.2); }
+.lightbox__nav:focus-visible,
+.lightbox__close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.lightbox__nav[hidden] { display: none; }
+
+.lightbox__nav {
+  width: clamp(40px, 5vw, 60px);
+  height: clamp(40px, 5vw, 60px);
+}
+.lightbox__nav svg {
+  width: 45%;
+  height: 45%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: clamp(12px, 2.5vw, 28px);
+  right: clamp(12px, 2.5vw, 28px);
+  width: 42px;
+  height: 42px;
+}
+.lightbox__close svg {
+  width: 42%;
+  height: 42%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.lightbox__counter {
+  position: absolute;
+  bottom: clamp(12px, 2.5vw, 28px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.65);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------
+   ZINE / BOOK VIEW
+   A collection marked data-view="book" opens as a bound zine rather than
+   arrow-stepped slides: two pages to a spread, one leaf turning at a time
+   about a spine down the middle. js/play-lightbox.js drives the angle, the
+   paper's curl and the shading, and sizes the pages in px (a rotating box
+   needs a real width).
+   --------------------------------------------- */
+.lightbox__book {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Depth of the turn. Lower = more dramatic foreshortening. */
+  perspective: 2400px;
+  /* A book you can turn by clicking would otherwise select the page text
+     underneath on every drag-ish click. */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Two pages wide. It slides half a page sideways when only one side is in
+   play, so a lone opening page still reads as centred. The slide itself is
+   animated from JS alongside the turn, not by a transition here. */
+.lightbox__book-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* The two resting pages and the leaf in motion all fill one page box; only
+   their offset, stacking and rotation differ. */
+.zine-page,
+.zine-sheet {
+  position: absolute;
+  top: 0;
+  transform-style: preserve-3d;
+}
+.zine-page > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;                   /* paper behind a letterboxed page */
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+.zine-page[hidden],
+.zine-sheet--turn[hidden] { display: none; }
+
+/* Gutter shadow, so the pair reads as bound rather than as two prints laid
+   side by side. Each page darkens on the edge that meets the spine. */
+.zine-page::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 11%;
+  pointer-events: none;
+}
+.zine-page--left::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0));
+}
+.zine-page--right::after {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0));
+}
+
+/* The leaf in motion rides above both resting pages, hinged on the spine. */
+.zine-sheet--turn {
+  z-index: 2;
+  transform-origin: left center;
+  will-change: transform;
+}
+
+/* The two sides of the turning leaf. */
+.zine-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+.zine-face > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+/* Pre-rotated so the reverse reads correctly once the leaf passes 90deg. */
+.zine-face--back { transform: rotateY(180deg); }
+.zine-face[hidden] { display: none; }
+
+/* Paper shading: a lifting leaf catches light on its leading edge and drops
+   shade into the gutter. Opacity is driven from JS so it tracks the turn. */
+.zine-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.zine-face--front .zine-shade {
+  background: linear-gradient(to right,
+    rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.12) 20%,
+    rgba(0, 0, 0, 0) 58%, rgba(255, 255, 255, 0.28) 100%);
+}
+.zine-face--back .zine-shade {
+  background: linear-gradient(to left,
+    rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.14) 24%, rgba(0, 0, 0, 0) 64%);
+}
+
+/* The bit of light that catches the corner as it rolls under. --curl-size
+   and its opacity are driven from JS each frame, in step with the fold. */
+.zine-curl {
+  position: absolute;
+  top: 0;
+  width: var(--curl-size, 0%);
+  height: var(--curl-size, 0%);
+  pointer-events: none;
+  opacity: 0;
+}
+.zine-face--front .zine-curl {
+  right: 0;
+  background: radial-gradient(circle at 100% 0%,
+    rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.35) 45%, rgba(255, 255, 255, 0) 80%);
+}
+.zine-face--back .zine-curl {
+  left: 0;
+  background: radial-gradient(circle at 0% 0%,
+    rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.25) 45%, rgba(255, 255, 255, 0) 80%);
+}
+
+/* Click targets: left half turns back, right half turns forward. Above the
+   sheets, below the close button. */
+.lightbox__book-hit {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 5;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+.lightbox__book-hit--prev { left: 0;  cursor: w-resize; }
+.lightbox__book-hit--next { right: 0; cursor: e-resize; }
+.lightbox__book-hit:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+
+/* In book mode the stage holds the book, not a single contained image. */
+.lightbox.is-book .lightbox__stage { width: 100%; }
+
+/* On phones the arrows sit over the artwork's lower corners rather than
+   stealing width from it. */
+@media (max-width: 620px) {
+  .lightbox { padding: 56px 12px 64px; }
+  .lightbox__nav {
+    position: absolute;
+    bottom: clamp(40px, 9vw, 64px);
+  }
+  .lightbox__nav--prev { left: 16px; }
+  .lightbox__nav--next { right: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox,
+  .lightbox__media { animation: none; }
+}
+
+/* =============================================
    RESPONSIVE
    ============================================= */
 @media (max-width: 1024px) {
-  #hero { grid-template-columns: 46% 54%; }
   .nav-links a { font-size: 22px; }
   .project-slide, .project-img, .img-ph { width: 55vw; }
 }
@@ -889,17 +1225,15 @@ html.is-loading body {
   .nav-links { gap: 12px; }
   .nav-links a { font-size: 17px; }
 
-  /* Hero stacks: image on top, text col below */
+  /* Hero: same centred bio as desktop, just shorter, so the top of #work
+     still shows on load. (The old two-column grid rules here — .hero-right,
+     .hero-left, .hero-bio-zone, .hero-statement — were removed: none of
+     those elements exist in the markup any more, and their height:auto /
+     min-height:100vh was overriding the peek.) */
   #hero {
-    grid-template-columns: 1fr;
-    grid-template-rows: 48vw auto;
-    height: auto;
-    min-height: 100vh;
+    height: 72vh;
+    min-height: 360px;
   }
-  .hero-right { grid-row: 1; min-height: 48vw; }
-  .hero-left  { grid-row: 2; padding: 24px var(--gutter) 32px; }
-  .hero-bio-zone { flex: none; padding-bottom: 24px; }
-  .hero-statement p { font-size: clamp(18px, 5vw, 26px); }
 
   .project-scroll { margin: 0 var(--gutter); }
   .work-section-label { margin: 0 var(--gutter) 12px; font-size: 17px; }

@@ -26,6 +26,15 @@
     </ul>
   </nav>
 
+  <!-- Interactive 3D model, moved here from the home page hero. It sits in a
+       fixed layer behind everything so it stays put while the page scrolls.
+       js/hero3d.js mounts on #hero3d and needs no changes to live here. -->
+  <div class="page-bg" aria-hidden="true">
+    <div class="hero-stage">
+      <div id="hero3d"></div>
+    </div>
+  </div>
+
   <main class="about-wrap" aria-label="About Annabel Yang">
     <div class="about-inner">
 
@@ -58,5 +67,18 @@
   </footer>
 
   <script src="js/main.js"></script>
+
+  <!-- Three.js for the interactive model (loaded from CDN via import map).
+       To vendor locally later, download three.module.js + the addons and point
+       these URLs at local files. -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/hero3d.js"></script>
 </body>
 </html>

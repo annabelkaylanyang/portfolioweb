@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light" class="is-loading">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,20 +23,9 @@
 </head>
 <body>
 
-  <!-- Loading screen — stays until hero + project media are ready -->
-  <div id="siteLoader" class="site-loader" role="status" aria-live="polite" aria-label="Loading">
-    <div class="site-loader__inner">
-      <div class="site-loader__row">
-        <span class="site-loader__text">loading...</span>
-        <span class="site-loader__mark" aria-hidden="true"></span>
-        <span class="site-loader__pct" id="loaderPct">0%</span>
-      </div>
-      <div class="site-loader__bar" id="loaderBar"
-           role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <span class="site-loader__fill" id="loaderFill"></span>
-      </div>
-    </div>
-  </div>
+  <!-- Loading screen removed. The markup lived here; js/main.js only runs its
+       loader when #siteLoader is present, so nothing else needs changing to
+       bring it back — restore the div and re-add class="is-loading" to <html>. -->
 
   <!-- ══════════════════════════════════════════
        NAV — transparent, scrolls away with page
@@ -66,31 +55,19 @@
 
 
   <!-- ══════════════════════════════════════════
-       HERO
-       Left: bio statement + selected-work index
-       Right: full-bleed art image from top edge
+       HERO — bio statement, centred.
+       The interactive 3D model now lives in the background of about.html.
        ══════════════════════════════════════════ -->
   <section id="hero" aria-label="Introduction">
 
-    <!-- Centre stage: interactive 3D model.
-         NOTE: the sphere-wrapped text ring (js/hero-ring.js) is DEACTIVATED for
-         now — the layers are kept (hidden) and the <script> is commented out at
-         the bottom of the page so the effect can be switched back on later. -->
-    <div class="hero-stage">
-      <!-- Back half of the 3D text ring (rendered behind the model) -->
-      <div class="hero-ring hero-ring--back" aria-hidden="true" hidden></div>
-
-      <div id="hero3d"></div>
-
-      <!-- Front half of the 3D text ring (rendered in front of the model). -->
-      <div class="hero-ring hero-ring--front" aria-hidden="true" hidden
-           data-ring-text="Annabel Yang is a digital designer working across visuals &amp; code to create interactive experiences   ✦   "></div>
-    </div>
-
-    <!-- Bio descriptor, top-left. Explicit line breaks control the exact wrap. -->
+    <!-- Bio descriptor. Explicit line breaks control the exact wrap. -->
     <p class="hero-bio">Annabel Yang is a product designer<br>who builds interactive digital experiences<br>through creative technology, visual identity, and motion.</p>
 
-    <!-- Order matches the project entries in #work, top to bottom. -->
+    <!-- ── SELECTED WORK INDEX — hidden for now ──────────────────────────
+         Kept intact so it can be dropped straight back in: un-comment this
+         block. Its CSS (.hero-index / .project-line and the staggered
+         reveal animations) is still live in css/style.css.
+
     <nav class="hero-index" aria-label="Selected work">
       <p class="hero-index-label">Selected Work</p>
 
@@ -110,18 +87,8 @@
         <span class="pl-inner">Abel <span style="font-weight:400">[branding, graphic design]</span></span>
       </a>
     </nav>
+    ────────────────────────────────────────────────────────────────── -->
 
-  </section>
-
-
-  <!-- ══════════════════════════════════════════
-       REEL — overview / showreel (always dark)
-       ══════════════════════════════════════════ -->
-  <section id="reel" aria-label="Project reel">
-    <div class="reel-inner">
-      <!-- Placeholder image removed. Drop in a real asset here — either
-           swap src → images/reel-cover.jpg on an <img>, or use a <video> tag. -->
-    </div>
   </section>
 
 
@@ -403,22 +370,7 @@
 
   <script src="js/main.js"></script>
   <script src="js/zro-transition.js"></script>
-  <!-- Sphere-wrapped hero text ring — deactivated for now. Re-enable by
-       un-commenting this and removing the `hidden` attrs on the .hero-ring
-       layers above. -->
-  <!-- <script src="js/hero-ring.js"></script> -->
-
-  <!-- Three.js for the interactive hero model (loaded from CDN via import map).
-       To vendor locally later, download three.module.js + the addons and point
-       these URLs at local files. -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-    }
-  }
-  </script>
-  <script type="module" src="js/hero3d.js"></script>
+  <!-- The three.js import map and js/hero3d.js moved to about.html, where the
+       model now renders as the page background. -->
 </body>
 </html>

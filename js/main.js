@@ -197,38 +197,69 @@
   // the deliberate restore below.
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
+  var saved = sessionStorage.getItem(KEY);
+  var target = saved ? parseInt(saved, 10) : 0;
+  // While a restore is in flight the page is being scrolled by us, not by the
+  // reader — saving during that window would persist a half-finished (clamped)
+  // offset and the position would drift a little further up on every visit.
+  var restoring = target > 0;
+
   // Keep the saved position current as the user scrolls, throttled to
   // once per frame so this never competes with scroll-driven work
   // elsewhere (the reveal-on-scroll observer, the project carousels).
   var ticking = false;
   window.addEventListener('scroll', function () {
-    if (ticking) return;
+    if (restoring || ticking) return;
     ticking = true;
     requestAnimationFrame(function () {
-      sessionStorage.setItem(KEY, String(window.scrollY));
+      sessionStorage.setItem(KEY, String(Math.round(window.scrollY)));
       ticking = false;
     });
   }, { passive: true });
 
-  var saved = sessionStorage.getItem(KEY);
-  if (!saved || saved === '0') return;
-  var y = parseInt(saved, 10);
-  if (!y) return;
+  if (!restoring) return;
 
-  // While the loader is up, html.is-loading locks overflow — the page
-  // can't actually be scrolled yet, so wait for it to clear. If the
-  // loader has already been removed (e.g. this script re-ran), jump
-  // immediately instead of waiting for an event that will never fire.
-  function restore() {
-    // The site sets `scroll-behavior: smooth` globally, which would turn
-    // this into a visible glide down the page right after load — the
-    // opposite of "already where you left off". Force it instant.
-    window.scrollTo({ top: y, left: 0, behavior: 'instant' });
+  /* The restore only sticks once the page is tall enough to hold the saved
+     offset — ask for 1800px while the document is still 1700px tall and the
+     browser silently clamps it, landing you slightly up-page.
+
+     The loading screen used to guarantee that: it waited for every image to
+     decode and every video to buffer before releasing. Without it, media lays
+     out progressively even after `load`, so instead of guessing a single
+     moment, re-apply the scroll each frame until it actually holds (or we run
+     out of patience). `scroll-behavior: smooth` is overridden to instant so
+     this never reads as a glide down the page. */
+  var DEADLINE = Date.now() + 3000;
+
+  function settle() {
+    window.scrollTo({ top: target, left: 0, behavior: 'instant' });
+
+    var landed = Math.abs(window.scrollY - target) <= 2;
+    if (landed || Date.now() > DEADLINE) {
+      restoring = false;      // hand scrolling back to the reader
+      return;
+    }
+    requestAnimationFrame(settle);
   }
+
+  // Any real input means the reader has taken over — stop fighting them.
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (evt) {
+    window.addEventListener(evt, function () { restoring = false; }, { passive: true, once: true });
+  });
+
+  function begin() {
+    if (!restoring) return;   // reader already scrolled; leave them alone
+    settle();
+  }
+
   if (document.documentElement.classList.contains('is-loading')) {
-    document.addEventListener('site-loader-hidden', restore, { once: true });
+    // Loading screen in use (if it's ever restored): it releases only once
+    // layout has settled, so that event is the right moment to start.
+    document.addEventListener('site-loader-hidden', begin, { once: true });
+  } else if (document.readyState === 'complete') {
+    begin();
   } else {
-    restore();
+    window.addEventListener('load', begin, { once: true });
   }
 })();
 
@@ -538,8 +569,14 @@
   }
   measure();
   window.addEventListener('resize', measure, { passive: true });
+  // Media lays out late and changes the column's height, so re-measure once
+  // each piece knows its own size — otherwise setH is wrong and the loop seam
+  // jumps. Videos report theirs via loadedmetadata rather than load.
   root.querySelectorAll('img').forEach(function (img) {
     if (!img.complete) img.addEventListener('load', measure, { once: true });
+  });
+  root.querySelectorAll('video').forEach(function (v) {
+    if (v.readyState < 1) v.addEventListener('loadedmetadata', measure, { once: true });
   });
 
   // Track which column the cursor is over → that one runs fastest.
