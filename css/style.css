@@ -892,6 +892,13 @@ html.is-loading body {
   border: 1px solid #000;
   background: #fff;
 }
+/* In light mode the page background is already white, so a hairline frame
+   all but disappears against it — Balloon Man needs real weight to still
+   read as framed. Dark mode already has the dark page behind it for
+   contrast, so it keeps the thin frame. */
+[data-theme="light"] .gallery-card.is-framed[data-group="balloonman"] {
+  border-width: 10px;
+}
 /* Image cards size to the image's natural ratio (no crop) — the card grows to
    fit, giving the columns their masonry feel. Placeholders still use ar-* sizes. */
 .gallery-card img,
