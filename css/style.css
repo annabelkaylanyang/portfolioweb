@@ -803,6 +803,9 @@ html.is-loading body {
 .about-inner a { text-decoration: underline; }
 .about-inner a:hover { color: var(--pink); }
 
+.about-links { margin-top: -8px; }
+.about-links-sep { opacity: 0.5; }
+
 /* Scattered photo pile: two loose, unevenly-staggered columns rather than a
    tidy grid — but level (no rotation) and spaced so no two photos overlap.
    Square corners — no border-radius. */

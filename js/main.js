@@ -271,7 +271,7 @@
   var html   = document.documentElement;
   var toggle = document.getElementById('modeToggle');
 
-  var saved = localStorage.getItem('theme') || 'light';
+  var saved = localStorage.getItem('theme') || 'dark';
   html.setAttribute('data-theme', saved);
 
   if (toggle) {
