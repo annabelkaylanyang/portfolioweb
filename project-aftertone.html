@@ -6,6 +6,7 @@
   <title>Aftertone &mdash; Annabel Yang</title>
   <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <script src="js/scale.js"></script>
   <style>
     /* =============================================
        Aftertone - music discovery app
@@ -139,7 +140,7 @@
        .at-row is already display: grid; align-items centres the
        line within this tall row instead of switching layout modes. */
     .at-end {
-      min-height: 90vh;
+      min-height: calc(90 * var(--vh, 1vh));
       align-items: center;
     }
 

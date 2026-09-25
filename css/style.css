@@ -253,7 +253,7 @@ html.is-loading body {
 #hero {
   position: relative;
   z-index: 10;
-  height: 78vh;
+  height: calc(78 * var(--vh, 1vh));
   min-height: 420px;
   overflow: hidden;
   background: var(--bg);
@@ -464,7 +464,7 @@ html.is-loading body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 70vh;
+  min-height: calc(70 * var(--vh, 1vh));
   padding: 48px var(--gutter-lg);
 }
 .reel-inner { width: 100%; max-width: 960px; }
@@ -770,7 +770,7 @@ html.is-loading body {
   position: relative;
   z-index: 1;
   background: transparent;
-  min-height: 100vh;
+  min-height: calc(100 * var(--vh, 1vh));
   display: flex;
   align-items: center;
   padding: var(--nav-h) var(--gutter-lg) 40px;
@@ -837,7 +837,7 @@ html.is-loading body {
    ============================================= */
 .project-page-wrap {
   background: var(--bg);
-  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(calc(100 * var(--vh, 1vh)) - var(--nav-h));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -858,7 +858,7 @@ html.is-loading body {
    track, which js/main.js translates vertically. */
 .parallax {
   background: var(--bg);
-  height: 100vh;
+  height: calc(100 * var(--vh, 1vh));
   padding: calc(var(--nav-h) + 8px) var(--gutter) 8px;
   display: flex;
   gap: 8px;
@@ -1241,7 +1241,7 @@ video.lightbox__media {
      those elements exist in the markup any more, and their height:auto /
      min-height:100vh was overriding the peek.) */
   #hero {
-    height: 72vh;
+    height: calc(72 * var(--vh, 1vh));
     min-height: 360px;
   }
 

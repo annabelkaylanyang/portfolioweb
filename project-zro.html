@@ -6,6 +6,10 @@
   <title>Zr&oslash; &mdash; Annabel Yang</title>
   <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <script src="js/scale.js"></script>
+  <!-- ?v= ties this stylesheet to this page's markup: bump it whenever css/zro-branding.css
+       changes, so a browser can never pair new markup with an old copy of it. -->
+  <link rel="stylesheet" href="css/zro-branding.css?v=3" />
   <style>
     /* Receiving half of the hand-off from the home page: the browser
        holds that page's last frame - fully covered by the burst - until
@@ -57,10 +61,21 @@
     .site-footer .footer-copy { color: #fff; }
     .site-footer .footer-logo img { filter: invert(1); }
 
+    /* Two lines frame the hero image, both as a share of the page width plus a
+       few px (Figma node 1:2); cqw is the page width:
+         --col        the hero's left edge (25% + 6px). Every section title
+                      starts here, and so do the mockups and videos below.
+         --lead       what is left on the right, so the hero's right edge is
+                      the right edge for all of it too (8.33% + 2px)
+         --title-gap  how far a description sits from its title. Title and
+                      description move together as one unit; this is their
+                      fixed distance apart. */
+    .zro { container-type: inline-size; --lead: calc(8.33cqw + 2px); --col: calc(25cqw + 6px); --title-gap: 244px; }
+
     .zro-row {
       display: grid;
-      grid-template-columns: 25% 1fr;
-      padding: 80px 8.33%;
+      grid-template-columns: var(--title-gap) 1fr;
+      padding: 80px var(--lead) 80px var(--col);
     }
     .zro-row--tight { padding-top: 40px; }
     /* Extra breathing room under the mockup row; also pushes
@@ -89,30 +104,46 @@
        and project details on the right (starting at the 25% mark). */
     .zro-intro {
       display: grid;
-      grid-template-columns: 16.67% 1fr;
-      padding: 80px 8.33%;
+      grid-template-columns: calc(var(--col) - var(--lead)) 1fr;
+      padding: 80px var(--lead);
     }
 
+    /* The title's ceiling meets the top of the hero video: the video starts 104px
+       down, and the title's capitals start 0.194em below the top of its line box
+       (measured), so the box is lifted by exactly that. Its size follows the page
+       width below 1440 (its widest line, "Web and App", is 5.6x the font size, so
+       it has to shrink to stay inside the column beside the video) and is
+       capped at 40px, just above the original 36px, on anything wider. */
     .zro-title {
-      font-size: 36px;
+      font-size: clamp(24px, 2.78cqw, 40px);
       font-weight: 400;
       line-height: 1.15;
       color: #fff;
+      margin-top: calc(104px - 0.194em);
       margin-bottom: 48px;
     }
 
     .zro-toc {
+      position: fixed;
+      left: calc(8.33% + 2px);          /* the same left edge as the title (--lead, in viewport terms) */
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 15;
       display: flex;
       flex-direction: column;
       gap: 19px;
     }
     .zro-toc a {
-      font-size: 24px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: #767676;
       line-height: 1.2;
       transition: color 0.2s;
     }
-    .zro-toc a:hover { color: #fff; }
+    .zro-toc a:hover { color: #fff; }   /* grey -> white under the cursor */
+    /* Home scrolls to the very top, site nav included, not just to the intro. */
+    #home { scroll-margin-top: var(--nav-h, 64px); }
 
     /* Zro homepage still - 2:1, spans the right column */
     .zro-hero {
@@ -124,12 +155,16 @@
     }
 
     /* Project details, aligned under the homepage still */
+    /* The design puts the four columns 245 / 240 / 246px apart under a 952px
+       still (the still is the frame's 952px wide), so ROLE starts on the
+       still's left edge and the rest follow at those offsets, kept as shares
+       of the still's width so they stretch with it. */
     .zro-meta {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 25.7353% 25.2101% 25.8403% 1fr;
       margin-top: 28px;
     }
-    .zro-meta-item { display: flex; flex-direction: column; gap: 6px; }
+    .zro-meta-item { display: flex; flex-direction: column; gap: 6px; padding-right: 20px; }
 
     .zro-meta-key {
       font-size: 15px;
@@ -201,60 +236,11 @@
     /* =============================================
        FULL-WIDTH IMAGES
        ============================================= */
-    .zro-wide { padding: 60px 8.33% 0; }
+    /* Full-width media rows sit on the hero's edges too: --col on the left,
+       --lead on the right. The 60px above is unchanged. */
+    .zro-wide { padding: 60px var(--lead) 0 var(--col); }
     .zro-wide img,
     .zro-wide video { width: 100%; height: auto; display: block; }
-
-    /* =============================================
-       BRANDING
-       ============================================= */
-    .zro-brand-symbols {
-      display: flex;
-      gap: 100px;
-      align-items: flex-end;
-      margin-top: 40px;
-    }
-    .zro-brand-symbol-group {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .zro-brand-wt { font-size: 20px; color: #fff; }
-
-    /* Wordmarks are 735x149px at design size */
-    .zro-wordmarks {
-      display: flex;
-      gap: 60px;
-      margin-top: 60px;
-      overflow: hidden;
-    }
-    .zro-wordmark-wrap {
-      position: relative;
-      width: 735px;
-      max-width: 100%;
-      height: 149px;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-    .zro-wm-vector { position: absolute; }
-    .zro-wm-circle {
-      position: absolute;
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-    }
-    .zro-wm-circle img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* =============================================
-       FINAL IMAGE
-       ============================================= */
-    .zro-final { padding: 80px 8.33% 0; }
-    .zro-final img { width: 100%; height: auto; display: block; }
 
     /* =============================================
        RESPONSIVE
@@ -277,10 +263,11 @@
         padding: 56px 6%;
       }
       .zro-hero { margin-top: 0; }
+      .zro-title { font-size: 36px; margin-top: 0; }
+      .zro-toc { display: none; }   /* no room for a pinned index on a phone */
 
       .zro-phones { padding: 40px 6% 0; }
       .zro-wide   { padding: 40px 6% 0; }
-      .zro-final  { padding: 56px 6% 0; }
 
       .zro-meta {
         grid-template-columns: repeat(2, 1fr);
@@ -291,9 +278,6 @@
       /* Stack the mockups once three across gets too narrow */
       .zro-phones-row { flex-direction: column; align-items: center; gap: 40px; }
       .zro-phone-col  { flex: 0 0 auto; width: min(300px, 80vw); }
-
-      .zro-wordmarks { gap: 20px; }
-      .zro-wordmark-wrap { width: 100%; }
     }
   </style>
 </head>
@@ -326,20 +310,25 @@
     </ul>
   </nav>
 
+  <!-- Contents: pinned to the left edge, halfway down the screen, wherever the page is
+       scrolled. It lives here rather than inside <main> because <main> is a container
+       (see .zro), and a container becomes the anchor for anything fixed inside it,
+       which would make this scroll away with the page. Links jump to their section;
+       the smooth scroll comes from scroll-behavior on <html> in css/style.css. -->
+  <nav class="zro-toc" aria-label="Page sections">
+    <a href="#home">Home</a>
+    <a href="#context">Context</a>
+    <a href="#case1">Case #1</a>
+    <a href="#case2">Case #2</a>
+    <a href="#case3">Case #3</a>
+  </nav>
+
   <main class="zro" aria-label="Zr&oslash; project">
 
     <!-- INTRO -->
     <section class="zro-intro" id="home">
       <div class="zro-intro-left">
         <h1 class="zro-title">Zr&oslash; 2026<br>Web and App</h1>
-        <nav class="zro-toc" aria-label="Page sections">
-          <a href="#home">Home</a>
-          <a href="#context">Context</a>
-          <a href="#case1">Case #1</a>
-          <a href="#case2">Case #2</a>
-          <a href="#case3">Case #3</a>
-          <a href="#reflections">Reflections</a>
-        </nav>
       </div>
 
       <div class="zro-intro-right">
@@ -370,7 +359,7 @@
         <div class="zro-meta" aria-label="Project details">
           <div class="zro-meta-item">
             <span class="zro-meta-key">ROLE</span>
-            <span class="zro-meta-val">Product Lead</span>
+            <span class="zro-meta-val">Product Designer</span>
           </div>
           <div class="zro-meta-item">
             <span class="zro-meta-key">TIMELINE</span>
@@ -378,7 +367,7 @@
           </div>
           <div class="zro-meta-item">
             <span class="zro-meta-key">TOOLS</span>
-            <span class="zro-meta-val">Figma, Illustrator, TouchDesigner<br>Js/HTML/CSS, WebGL</span>
+            <span class="zro-meta-val">Figma, Illustrator, AE, TouchDesigner<br>Js/HTML/CSS, WebGL</span>
           </div>
           <div class="zro-meta-item">
             <span class="zro-meta-key">DOMAIN</span>
@@ -395,6 +384,78 @@
         <p>Zr&oslash; is a reflective digital experience that helps users notice what is already present in their own words without explicitly providing advice.</p>
         <p>As the product design lead on the project, I was responsible for translating Zr&oslash;&rsquo;s philosophy and vision into a cohesive digital experience. I defined the interaction model, primary visual language, motion principles, and brand identity across mobile and web, transforming abstract concepts into a unified product.</p>
       </div>
+    </section>
+
+    <!-- PALETTE + MOCKUPS
+         Moved from the Figma build of this page (project-zro.figma.html),
+         keeping its alignment and spacing. Styles: css/zro-branding.css. -->
+    <section class="zp" id="palette" style="--pb:140" aria-label="Colour palette and mockups">
+
+      <div class="fl" style="--mt:120;--w:1224;--h:918"><img src="images/zro/figma/phone-mockup-full.png" alt="A phone running Zr&oslash;, dropped into still water" /></div>
+
+      <div class="pair" style="--mt:14">
+        <div class="grad-hero">
+          <div class="pair-logo"><img src="images/zro/figma/zrologothin2.svg" alt="Zr&oslash; symbol" /></div>
+        </div>
+        <div class="pair-photo"><img src="images/zro/figma/phone-closeup-mockup.png" alt="Close-up of a phone showing the Zr&oslash; input bar" /></div>
+      </div>
+
+      <!-- The motion piece: silent, looping, no controls. It plays while it's on
+           screen (this page's video script) and holds its first frame until then.
+           The hero image's width, on its left and right edges, with extra black space
+           above it. Sits directly above the palette. -->
+      <div class="fl" style="--mt:160;--w:1224;--h:689">
+        <video data-autoplay-in-view
+               src="images/zro/zromotion.mp4" poster="images/zro/figma/zromotion-still.png"
+               muted loop playsinline preload="auto"
+               aria-label="Zr&oslash; motion piece: &ldquo;You may already know.&rdquo;"></video>
+      </div>
+
+      <div class="row" style="--mt:14;--h:645">
+      <ul class="palette" aria-label="Colour palette">
+        <li style="--c:#fff">
+          <span class="a band" style="--l:0%;--t:0;--wp:100%;--h:521"></span>
+          <span class="a t mid black" style="--l:10.125%;--t:15;--w:201;--fs:20">WHITE</span>
+          <span class="a t black" style="--l:61.037%;--t:15;--w:70;--fs:20">RGB</span>
+          <span class="a t black" style="--l:61.037%;--t:38;--w:70;--fs:20">HEX</span>
+          <span class="a t black" style="--l:71.496%;--t:15;--w:234;--fs:20">255, 255, 255</span>
+          <span class="a t black" style="--l:71.496%;--t:38;--w:148;--fs:20">#FFFFFF</span>
+        </li>
+        <li style="--c:#e0e7ee">
+          <span class="a band" style="--l:0%;--t:129;--wp:100%;--h:393"></span>
+          <span class="a t mid black" style="--l:10.200%;--t:143;--w:201;--fs:20">SLATE-200</span>
+          <span class="a t black" style="--l:60.568%;--t:143;--w:70;--fs:20">RGB</span>
+          <span class="a t black" style="--l:60.568%;--t:166;--w:70;--fs:20">HEX</span>
+          <span class="a t black" style="--l:71.019%;--t:143;--w:234;--fs:20">224, 231, 238</span>
+          <span class="a t black" style="--l:71.019%;--t:166;--w:148;--fs:20">#E0E7EE</span>
+        </li>
+        <li style="--c:#bfccd7">
+          <span class="a band" style="--l:0%;--t:261;--wp:100%;--h:384"></span>
+          <span class="a t mid black" style="--l:10.292%;--t:273;--w:201;--fs:20">COOL GRAY</span>
+          <span class="a t black" style="--l:60.702%;--t:273;--w:70;--fs:20">RGB</span>
+          <span class="a t black" style="--l:60.702%;--t:296;--w:70;--fs:20">HEX</span>
+          <span class="a t black" style="--l:71.162%;--t:273;--w:234;--fs:20">191, 204, 215</span>
+          <span class="a t black" style="--l:71.162%;--t:296;--w:148;--fs:20">#BFCCD7</span>
+        </li>
+        <li style="--c:#90959b">
+          <span class="a band" style="--l:0%;--t:393;--wp:100%;--h:252"></span>
+          <span class="a t mid black" style="--l:10.284%;--t:406;--w:201;--fs:20">SMOKE GRAY</span>
+          <span class="a t black" style="--l:60.652%;--t:406;--w:70;--fs:20">RGB</span>
+          <span class="a t black" style="--l:60.652%;--t:429;--w:70;--fs:20">HEX</span>
+          <span class="a t black" style="--l:71.102%;--t:406;--w:234;--fs:20">144, 149, 155</span>
+          <span class="a t black" style="--l:71.102%;--t:429;--w:148;--fs:20">#90959B</span>
+        </li>
+        <li style="--c:#0f0f0f">
+          <span class="a band" style="--l:0%;--t:522;--wp:100%;--h:123"></span>
+          <span class="a t mid" style="--l:10.200%;--t:538;--w:201;--fs:20">CHARCOAL BLACK</span>
+          <span class="a t" style="--l:61.069%;--t:538;--w:70;--fs:20">RGB</span>
+          <span class="a t" style="--l:61.069%;--t:561;--w:70;--fs:20">HEX</span>
+          <span class="a t" style="--l:71.520%;--t:538;--w:234;--fs:20">15, 15, 15</span>
+          <span class="a t" style="--l:71.520%;--t:561;--w:148;--fs:20">#0F0F0F</span>
+        </li>
+      </ul>
+      </div>
+
     </section>
 
     <!-- GOAL -->
@@ -490,68 +551,6 @@
       <div class="zro-body">
         <p>I explored dynamic blur systems, motion studies, and interactive visual experiments inspired by the behavior of an aperture. Through multiple iterations, these ideas evolved into a fluid landing experience where clarity subtly emerges through the interaction of users themselves.</p>
       </div>
-    </div>
-
-    <!-- BRANDING -->
-    <section class="zro-row" id="reflections">
-      <div class="zro-label">Branding</div>
-      <div class="zro-body">
-        <div class="zro-brand-symbols">
-          <div class="zro-brand-symbol-group">
-            <span class="zro-brand-wt">Thick</span>
-            <img src="images/zro/zrologo.svg"
-                 alt="Zr&oslash; logomark &mdash; thick weight"
-                 style="width:93px;height:98px;object-fit:contain;display:block;" />
-          </div>
-          <div class="zro-brand-symbol-group">
-            <span class="zro-brand-wt">Thin</span>
-            <img src="images/zro/zrologothin.svg"
-                 alt="Zr&oslash; logomark &mdash; thin weight"
-                 style="width:127px;height:113px;object-fit:contain;display:block;" />
-          </div>
-        </div>
-
-        <div class="zro-wordmarks">
-          <!-- Thick wordmark -->
-          <div class="zro-wordmark-wrap" role="img" aria-label="Zr&oslash; wordmark, thick weight">
-            <div class="zro-wm-vector"
-                 style="top:35.69%;right:84.35%;bottom:16.78%;left:1.03%;">
-              <img src="images/zro/vector-thick.svg"
-                   style="width:100%;height:100%;object-fit:contain;display:block;" alt="" />
-            </div>
-            <div class="zro-wm-circle"
-                 style="top:28.19%;right:73.2%;bottom:16.78%;left:16.19%;
-                        -webkit-mask-image:url('images/zro/mask-thick.svg');
-                        mask-image:url('images/zro/mask-thick.svg');
-                        -webkit-mask-size:78px 82px;mask-size:78px 82px;
-                        -webkit-mask-position:0 0;mask-position:0 0;">
-              <img src="images/zro/fill-thick.svg" alt="" />
-            </div>
-          </div>
-
-          <!-- Thin wordmark -->
-          <div class="zro-wordmark-wrap" role="img" aria-label="Zr&oslash; wordmark, thin weight">
-            <div class="zro-wm-vector"
-                 style="top:20.74%;right:84.56%;bottom:16.78%;left:1.24%;">
-              <img src="images/zro/vector-thin.svg"
-                   style="width:100%;height:100%;object-fit:contain;display:block;" alt="" />
-            </div>
-            <div class="zro-wm-circle"
-                 style="top:29.62%;right:72.93%;bottom:16.78%;left:16.64%;
-                        -webkit-mask-image:url('images/zro/mask-thin.svg');
-                        mask-image:url('images/zro/mask-thin.svg');
-                        -webkit-mask-size:104px 92px;mask-size:104px 92px;
-                        -webkit-mask-position:-27.314px -12.137px;mask-position:-27.314px -12.137px;">
-              <img src="images/zro/fill-thin.svg" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FINAL IMAGE -->
-    <div class="zro-final">
-      <img src="images/zro/image6.png" alt="Zr&oslash; landing experience" />
     </div>
 
   </main>

@@ -1,0 +1,144 @@
+/* =============================================
+   ZRO PAGE - colour palette and mockups block
+   ---------------------------------------------
+   Moved over from the Figma build of the Zro page (css/zro-figma.css),
+   keeping its alignment and spacing. Everything is scoped to .zp so it
+   can't touch the rest of the page.
+
+   Sizes are in --px, the design pixel: exactly 1px from 1440 wide up, so
+   type keeps its size while the block spreads across the screen, and
+   shrinking in proportion below 1440 so nothing overlaps. Horizontal
+   positions are Figma's own calc(P% + Npx).
+   ============================================= */
+
+.zp {
+  position: relative;
+  overflow: hidden;
+  container-type: inline-size;
+  --px: min(1px, calc(100cqw / 1440));
+  background: #000;
+  /* room between the last piece and the Context section below */
+  padding-bottom: calc(var(--pb, 0) * var(--px));
+}
+
+/* A row of fixed height: everything in it is placed against its top edge. */
+/* Everything here sits on the hero image's edges: it starts at --col and ends
+   where the hero ends (--lead from the right). Both are set on .zro. */
+.zp .row {
+  position: relative;
+  height: calc(var(--h) * var(--px));
+  margin-top: calc(var(--mt, 0) * var(--px));
+  margin-left: var(--col);
+  width: calc(100% - var(--col) - var(--lead));
+}
+
+.zp .a {
+  position: absolute;
+  left: var(--l, 0px);
+  top: calc(var(--t, 0) * var(--px));
+}
+
+/* Neue Haas Grotesk Display 55 Roman (400) and 65 Medium (500). */
+.zp .t {
+  width: calc(var(--w) * var(--px));
+  font-family: 'Neue Haas Grotesk Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--fs, 20) * var(--px));
+  line-height: 1.2;
+  color: #fff;
+  word-break: break-word;
+}
+.zp .t.black { color: #000; }
+.zp .t.mid   { font-weight: 500; }
+
+/* Colour swatches: full-width bands whose height is fixed. */
+.zp .band { width: var(--wp); height: calc(var(--h) * var(--px)); background: var(--c); }
+.zp .palette { list-style: none; margin: 0; padding: 0; }
+
+/* Pieces that stretch with the screen: a percentage of the block's width,
+   at the design's aspect ratio. */
+.zp .fl {
+  position: relative;
+  margin-left: var(--col);
+  margin-top: calc(var(--mt, 0) * var(--px));
+  width: calc(100% - var(--col) - var(--lead));
+  aspect-ratio: var(--w) / var(--h);
+}
+.zp .fl img, .zp .fl video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+/* The gradient and the close-up sit side by side, and the pair is as tall
+   as the gradient. The symbol sits over the gradient at the design's spot. */
+/* The pair spans the hero's width; its two halves keep the design's proportions
+   (588 and 586 wide with 50 between, out of 1224). */
+.zp .pair {
+  position: relative;
+  margin-top: calc(var(--mt, 0) * var(--px));
+  margin-left: var(--col);
+  width: calc(100% - var(--col) - var(--lead));
+}
+.zp .grad-hero {
+  position: relative;
+  width: 48.0392%;
+  aspect-ratio: 588 / 532;
+  background-image: linear-gradient(180deg, rgb(217,217,217) 0%, rgb(176,192,199) 37.981%, rgb(89,103,110) 76.442%, rgb(66,73,76) 100%);
+}
+.zp .pair-photo {
+  position: absolute;
+  left: 52.1242%;
+  top: calc(2 * var(--px));
+  width: 47.8758%;
+  aspect-ratio: 586 / 530;
+  overflow: hidden;
+}
+.zp .pair-photo img {
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 120.71%;
+  left: -10.85%;
+  top: 0;
+  max-width: none;
+  object-fit: fill;
+}
+.zp .pair-logo {
+  position: absolute;
+  left: 40.4762%;
+  top: 38.9098%;
+  width: 21.5629%;                       /* 126.79 of the gradient's 588 */
+  aspect-ratio: 126.79 / 113.32;
+}
+.zp .pair-logo img { display: block; width: 100%; height: 100%; }
+
+/* ---------- narrow screens: stack it ---------- */
+
+@media (max-width: 820px) {
+  .zp { --px: 1px; padding: 0 6% 40px; }   /* the same 6% side margins as the hero and the text */
+  .zp .row, .zp .pair { height: auto; margin-left: 0; width: auto; margin-bottom: 20px; }
+  .zp .a { position: static; }
+  .zp .t { width: auto; font-size: clamp(11px, calc(var(--fs, 20) * 0.8px), 30px); margin: 0; }
+  .zp .band { display: none; }
+  .zp .palette li {
+    background: var(--c);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    column-gap: 16px;
+    align-items: baseline;
+  }
+  /* name | RGB, HEX labels | their values (child 1 is the hidden band) */
+  .zp .palette li > :nth-child(2) { grid-column: 1; grid-row: 1 / span 2; }
+  .zp .palette li > :nth-child(3) { grid-column: 2; grid-row: 1; }
+  .zp .palette li > :nth-child(4) { grid-column: 2; grid-row: 2; }
+  .zp .palette li > :nth-child(5) { grid-column: 3; grid-row: 1; }
+  .zp .palette li > :nth-child(6) { grid-column: 3; grid-row: 2; }
+  .zp .fl { margin: 0 0 20px; width: 100%; }
+  .zp .grad-hero { margin: 0 0 20px; width: 100%; }
+  .zp .pair-photo { position: relative; left: auto; top: auto; width: 100%; margin-bottom: 20px; }
+  .zp .pair-logo { display: none; }
+}

@@ -6,6 +6,7 @@
   <title>Yuetu &mdash; Annabel Yang</title>
   <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <script src="js/scale.js"></script>
   <style>
     /* =============================================
        Yuetu - worldbuilding case study
@@ -53,7 +54,7 @@
     .yt-hero {
       width: 100%;
       aspect-ratio: 1440 / 819;
-      max-height: 74vh;
+      max-height: calc(74 * var(--vh, 1vh));
       object-fit: cover;
       object-position: center;
       display: block;
