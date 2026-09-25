@@ -105,10 +105,10 @@
     .zro-intro {
       display: grid;
       grid-template-columns: calc(var(--col) - var(--lead)) 1fr;
-      padding: 80px var(--lead);
+      padding: 32px var(--lead) 80px;   /* close under the tab bar */
     }
 
-    /* The title's ceiling meets the top of the hero video: the video starts 104px
+    /* The title's ceiling meets the top of the hero video: the video starts 24px
        down, and the title's capitals start 0.194em below the top of its line box
        (measured), so the box is lifted by exactly that. Its size follows the page
        width below 1440 (its widest line, "Web and App", is 5.6x the font size, so
@@ -119,7 +119,7 @@
       font-weight: 400;
       line-height: 1.15;
       color: #fff;
-      margin-top: calc(104px - 0.194em);
+      margin-top: calc(24px - 0.194em);
       margin-bottom: 48px;
     }
 
@@ -151,7 +151,7 @@
       aspect-ratio: 952 / 484;
       object-fit: cover;
       display: block;
-      margin-top: 104px;
+      margin-top: 24px;
     }
 
     /* Project details, aligned under the homepage still */
@@ -262,7 +262,7 @@
       .zro-intro {
         grid-template-columns: 1fr;
         gap: 40px;
-        padding: 56px 6%;
+        padding: 24px 6% 56px;
       }
       .zro-hero { margin-top: 0; }
       .zro-title { font-size: 36px; margin-top: 0; }
