@@ -191,13 +191,15 @@
        Centred row. Columns shrink below their 345px
        design width so all three always stay on screen.
        ============================================= */
-    .zro-phones { padding: 60px 8.33% 0; }
+    /* On the hero's edges like the other media: the first phone starts on its
+       left edge and the last ends on its right, with the space between shared. */
+    .zro-phones { padding: 60px var(--lead) 0 var(--col); }
 
     .zro-phones-row {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: flex-start;
-      gap: clamp(20px, 5.5vw, 80px);
+      gap: 20px;
     }
     .zro-phone-col {
       flex: 0 1 345px;

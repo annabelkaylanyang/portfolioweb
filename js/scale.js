@@ -18,8 +18,8 @@
 (function () {
   /* REF is the width everything is scaled against. 2560 matches the 4K monitor
      exactly, which read as too small on a MacBook; 2000 is the middle ground
-     (1800: a 1512 px MacBook gets 84%). Raise it to shrink more, lower to shrink less. */
-  var REF = 1800, MIN = 0.5, DESKTOP_MIN = 1100;
+     (1535: the home page shows its third preview one-third in view, at any laptop width; a 1512 px MacBook gets 98.5%). Raise it to shrink more, lower to shrink less. */
+  var REF = 1535, MIN = 0.5, DESKTOP_MIN = 1100;
   var root = document.documentElement;
   function apply() {
     var w = window.innerWidth;
