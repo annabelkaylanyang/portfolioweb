@@ -8,7 +8,7 @@
    miniature of the 4K layout - same spacing, same relationships, just
    smaller.
 
-     - 2560 px and wider: no change
+     - REF px and wider: no change
      - desktop widths below that: scaled, never below MIN
      - under DESKTOP_MIN (tablets, phones): no change; those widths have
        their own stacked layouts
@@ -16,7 +16,10 @@
    Loaded in <head>, before anything paints, so there is no jump.
    ============================================= */
 (function () {
-  var REF = 2560, MIN = 0.5, DESKTOP_MIN = 1100;
+  /* REF is the width everything is scaled against. 2560 matches the 4K monitor
+     exactly, which read as too small on a MacBook; 2000 is the middle ground
+     (a 1512 px MacBook gets 76%). Raise it to shrink more, lower to shrink less. */
+  var REF = 2000, MIN = 0.5, DESKTOP_MIN = 1100;
   var root = document.documentElement;
   function apply() {
     var w = window.innerWidth;

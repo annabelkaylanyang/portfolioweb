@@ -680,8 +680,12 @@
 
   window.addEventListener('pointermove', function (e) {
     if (e.pointerType && e.pointerType !== 'mouse') return;
+    /* The page may be zoomed (js/scale.js), and the dot lives inside it, so a
+       px offset gets zoomed too. Divide it back out, or the dot only covers
+       part of the screen. */
+    var z = parseFloat(document.documentElement.style.zoom) || 1;
     dot.style.transform =
-      'translate(' + e.clientX + 'px,' + e.clientY + 'px) translate(-50%,-50%)';
+      'translate(' + (e.clientX / z) + 'px,' + (e.clientY / z) + 'px) translate(-50%,-50%)';
     dot.style.opacity = '1';
   }, { passive: true });
 
