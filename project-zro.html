@@ -394,7 +394,7 @@
       <div class="zro-label">Context</div>
       <div class="zro-body">
         <p>Zr&oslash; is a reflective digital experience that helps users notice what is already present in their own words without explicitly providing advice.</p>
-        <p>As the product design lead on the project, I was responsible for translating Zr&oslash;&rsquo;s philosophy and vision into a cohesive digital experience. I defined the interaction model, primary visual language, motion principles, and brand identity across mobile and web, transforming abstract concepts into a unified product.</p>
+        <p>As a product design intern on the project, I was responsible for translating Zr&oslash;&rsquo;s philosophy and vision into a cohesive digital experience. I defined the interaction model, primary visual language, motion principles, and brand identity across mobile and web, transforming abstract concepts into a unified product.</p>
       </div>
     </section>
 
@@ -578,7 +578,7 @@
   <script src="js/main.js"></script>
   <script>
     /* The side contents stays out of the way over the intro, fades in once the
-       Context section has scrolled up to the top half of the screen, and stays
+       Context section has scrolled up near the top of the screen (top fifth), and stays
        from there down. */
     (function () {
       var toc = document.querySelector('.zro-toc');
@@ -590,7 +590,7 @@
         /* Positions come back in the page's zoomed units (js/scale.js), the screen
            height in real pixels; put both in the same units. */
         var z = parseFloat(document.documentElement.style.zoom) || 1;
-        var show = ctx.getBoundingClientRect().top * z < window.innerHeight * 0.5;
+        var show = ctx.getBoundingClientRect().top * z < window.innerHeight * 0.2;
         toc.classList.toggle('is-visible', show);
       }
       window.addEventListener('scroll', function () {
