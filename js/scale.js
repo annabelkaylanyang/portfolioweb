@@ -19,8 +19,10 @@
   /* REF is the width everything is scaled against. 2560 matches the 4K monitor
      exactly, which read as too small on a MacBook; 2000 is the middle ground
      (1535: the home page shows its third preview one-third in view, at any laptop width; a 1512 px MacBook gets 98.5%). Raise it to shrink more, lower to shrink less. */
-  var REF = 1535, MIN = 0.5, DESKTOP_MIN = 1100;
   var root = document.documentElement;
+  /* A page can set its own reference width with <html data-scale-ref="...">.
+     The about page uses 2560 so a laptop sees the exact 4K composition. */
+  var REF = parseFloat(root.getAttribute('data-scale-ref')) || 1535, MIN = 0.5, DESKTOP_MIN = 1100;
   function apply() {
     var w = window.innerWidth;
     var z = (w >= DESKTOP_MIN && w < REF) ? Math.max(MIN, w / REF) : 1;

@@ -132,6 +132,16 @@
       display: flex;
       flex-direction: column;
       gap: 19px;
+      /* Hidden over the intro; fades in once Context reaches the screen (see
+         the script at the end of the page). */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+    .zro-toc.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.4s ease, visibility 0s;
     }
     .zro-toc a {
       font-size: 13px;
@@ -566,6 +576,30 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script>
+    /* The side contents stays out of the way over the intro, fades in once the
+       Context section has scrolled up to the top half of the screen, and stays
+       from there down. */
+    (function () {
+      var toc = document.querySelector('.zro-toc');
+      var ctx = document.getElementById('context');
+      if (!toc || !ctx) return;
+      var ticking = false;
+      function update() {
+        ticking = false;
+        /* Positions come back in the page's zoomed units (js/scale.js), the screen
+           height in real pixels; put both in the same units. */
+        var z = parseFloat(document.documentElement.style.zoom) || 1;
+        var show = ctx.getBoundingClientRect().top * z < window.innerHeight * 0.5;
+        toc.classList.toggle('is-visible', show);
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
   <script>
     /* Only play the page's videos while they're actually on screen —
        they stay paused (and idle) the rest of the time.
