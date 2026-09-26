@@ -16,7 +16,7 @@
   overflow: hidden;
   container-type: inline-size;
   --px: min(1px, calc(100cqw / 1440));
-  background: #000;
+  background: transparent;   /* the page is black anyway; lets the scroll backdrop show */
   /* room between the last piece and the Context section below */
   padding-bottom: calc(var(--pb, 0) * var(--px));
 }
@@ -84,15 +84,15 @@
 }
 .zp .grad-hero {
   position: relative;
-  width: 48.0392%;
+  width: calc((100% - 7 * var(--px)) / 2);   /* the gap between the two = the 7 above them, in the same unit */
   aspect-ratio: 588 / 532;
   background-image: linear-gradient(180deg, rgb(217,217,217) 0%, rgb(176,192,199) 37.981%, rgb(89,103,110) 76.442%, rgb(66,73,76) 100%);
 }
 .zp .pair-photo {
   position: absolute;
-  left: 52.1242%;
+  left: calc((100% + 7 * var(--px)) / 2);
   top: calc(2 * var(--px));
-  width: 47.8758%;
+  width: calc((100% - 7 * var(--px)) / 2);
   aspect-ratio: 586 / 530;
   overflow: hidden;
 }
@@ -142,3 +142,115 @@
   .zp .pair-photo { position: relative; left: auto; top: auto; width: 100%; margin-bottom: 20px; }
   .zp .pair-logo { display: none; }
 }
+
+/* =============================================
+   SPLIT (project-zro.html, after the aperture paragraph)
+   A full-screen black stage. One cool-gray block sits in the middle; the
+   palette colours slide out from behind it into a column, which then open to
+   the full width. Each band is the same size as the block.
+   ============================================= */
+.zsplit {
+  --band-h: calc(9.5 * var(--sh, 1vh));
+  --gap: max(2px, calc(0.3 * var(--sh, 1vh)));
+  position: relative;
+  width: 100vw;                    /* exact width set by the script */
+  height: calc(100 * var(--sh, 1vh));
+  margin-top: calc(240 * var(--px, 1px));   /* left edge set by the script */
+  background: #000;
+  overflow: hidden;
+}
+.zsplit-stage { position: absolute; inset: 0; }
+.zsplit-seed,
+.zsplit-band {
+  position: absolute;
+  height: var(--band-h);
+  will-change: transform, opacity;
+}
+.zsplit-seed {
+  left: 50%;
+  top: 50%;
+  width: calc(var(--band-h) * 1.7);
+  margin: calc(var(--band-h) / -2) 0 0 calc(var(--band-h) * -0.85);
+  background: #bfccd7;
+}
+.zsplit-band {
+  left: 0;
+  width: 100%;
+  /* cool gray (--i:3) sits where the block was; darker above, lighter below */
+  top: calc(50% - var(--band-h) / 2 + (var(--i) - 3) * (var(--band-h) + var(--gap)));
+}
+.zsplit-band > i {
+  position: absolute;
+  inset: 0;
+  background: var(--c);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.zsplit.is-static .zsplit-seed { display: none; }
+.zsplit.is-static .zsplit-full { opacity: 1; }
+/* Labels, laid out like the palette at the bottom of the page */
+.zsplit-band > span {
+  position: absolute;
+  top: calc(var(--band-h) * 0.12);
+  z-index: 1;
+  color: #000;
+  font-family: 'Neue Haas Grotesk Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: calc(var(--band-h) * 0.16);
+  line-height: 1.15;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.zsplit-band.is-dark > span { color: #fff; }
+.zsplit-name { left: 10.125%; font-weight: 500; }
+.zsplit-keys { left: 61.04%; }
+.zsplit-vals { left: 71.5%; }
+.zsplit.is-static .zsplit-band > span { opacity: 1; }
+
+/* The top image collection (mockup photo, the pair, the motion video): each
+   piece has slightly rounded corners. */
+#palette .fl img, #palette .fl video, #palette .grad-hero, #palette .pair-photo {
+  overflow: hidden;
+  border-radius: calc(10 * var(--px));
+}
+
+
+
+
+/* Glow band behind the motion video: a full-width horizontal band of muted grey-blue
+   light that starts above the video and is back to black by its bottom, so
+   the video's black frame doesn't simply dissolve into the black page. The
+   script places it on the video and fades it in as the video nears the
+   middle of the screen. */
+#palette > .fl, #palette > .pair { position: relative; z-index: 1; }
+.zp-glow {
+  position: absolute;
+  left: 0; right: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgb(8, 9, 12) 8.3%,
+    rgb(28, 34, 44) 16.7%,
+    rgb(56, 69, 88) 25%,
+    rgb(84, 103, 132) 33.3%,
+    rgb(104, 129, 164) 41.7%,
+    rgb(112, 138, 176) 50%,
+    rgb(104, 129, 164) 58.3%,
+    rgb(84, 104, 132) 66.7%,
+    rgb(56, 69, 88) 75%,
+    rgb(28, 34, 44) 83.3%,
+    rgb(8, 9, 12) 91.7%,
+    rgba(0, 0, 0, 0) 100%);   /* a smooth bell (sin²) from black to a soft blue-grey and back: no ridge at the peak */
+  /* kept to the image column: full strength across the images, falling off
+     softly just outside them on an eased ramp (no visible edge) - fully black
+     by the side contents on the left and by the right edge */
+  -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.000) 13.0%, rgba(0,0,0,0.016) 14.9%, rgba(0,0,0,0.104) 16.8%, rgba(0,0,0,0.275) 18.6%, rgba(0,0,0,0.500) 20.5%, rgba(0,0,0,0.725) 22.4%, rgba(0,0,0,0.896) 24.3%, rgba(0,0,0,0.984) 26.1%, rgba(0,0,0,1.000) 28.0%, rgba(0,0,0,0.965) 88.3%, rgba(0,0,0,0.790) 90.7%, rgba(0,0,0,0.500) 93.0%, rgba(0,0,0,0.210) 95.3%, rgba(0,0,0,0.035) 97.7%, rgba(0,0,0,0.000) 100.0%);
+          mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.000) 13.0%, rgba(0,0,0,0.016) 14.9%, rgba(0,0,0,0.104) 16.8%, rgba(0,0,0,0.275) 18.6%, rgba(0,0,0,0.500) 20.5%, rgba(0,0,0,0.725) 22.4%, rgba(0,0,0,0.896) 24.3%, rgba(0,0,0,0.984) 26.1%, rgba(0,0,0,1.000) 28.0%, rgba(0,0,0,0.965) 88.3%, rgba(0,0,0,0.790) 90.7%, rgba(0,0,0,0.500) 93.0%, rgba(0,0,0,0.210) 95.3%, rgba(0,0,0,0.035) 97.7%, rgba(0,0,0,0.000) 100.0%);
+  will-change: opacity;
+}
+
+/* The left panel of the pair holds the logo animation: it fills the panel,
+   its height fitted and its sides cropped (the logo stays centred). */
+.zp .grad-hero video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; background: #000; }
+.zp .grad-hero { background: #000; }

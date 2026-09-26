@@ -1,0 +1,15 @@
+# Large media that is in the repo but not used by any page.
+# Kept in git, never uploaded to Vercel, so each deployment stays small.
+images/zro/zro1.gif
+images/zro/zro2.gif
+images/zro/zro2.mp4
+images/zro/zro2.mov
+images/untitled/untitled3.gif
+images/untitled/untitled4.gif
+images/play/balloon.gif
+images/yuetu/yuetu1.gif
+
+# Local-only work files
+lab/
+*.old.html
+*.figma.html
