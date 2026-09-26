@@ -32,6 +32,27 @@
        calc(100 * var(--vh)) instead of 100vh). */
     root.style.setProperty('--vh', (window.innerHeight / 100 / z) + 'px');
   }
-  apply();
-  window.addEventListener('resize', apply);
+  /* Content scale: a page can scale its main content separately from the top
+     bar. <html data-content-ref="2560" data-content-boost="1.2"> sizes any
+     [data-scale-content] block as if the screen were laid out 2560 wide, then
+     1.2x larger - so the about page keeps its 4K-style breathing room while
+     its top bar matches the rest of the site. */
+  var CREF = parseFloat(root.getAttribute('data-content-ref')) || 0;
+  var BOOST = parseFloat(root.getAttribute('data-content-boost')) || 1;
+  function applyContent() {
+    if (!CREF) return;
+    var w = window.innerWidth;
+    var z = parseFloat(root.style.zoom) || 1;
+    var total = w >= DESKTOP_MIN ? Math.min(1, BOOST * w / CREF) : 1;
+    var inner = total / z;
+    document.querySelectorAll('[data-scale-content]').forEach(function (el) {
+      el.style.zoom = inner === 1 ? '' : String(inner);
+      /* keep full-screen heights true inside the extra zoom */
+      el.style.setProperty('--vh', (window.innerHeight / 100 / (z * inner)) + 'px');
+    });
+  }
+  function all() { apply(); applyContent(); }
+  all();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyContent);
+  window.addEventListener('resize', all);
 })();
