@@ -31,6 +31,9 @@
        paint while it loads - the burst on the home page hands straight
        over to this. */
     html, body { background: #000; }
+    /* Nothing scrolls sideways: anything that reaches past the right edge
+       (full-bleed sections, glow) is simply cut off. */
+    html, body { overflow-x: clip; }
 
     .zro {
       background: transparent;   /* body is black; the scroll backdrop shows through */
