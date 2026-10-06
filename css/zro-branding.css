@@ -91,9 +91,9 @@
 .zp .pair-photo {
   position: absolute;
   left: calc((100% + 7 * var(--px)) / 2);
-  top: calc(2 * var(--px));
+  top: 0;                                  /* level with the panel beside it */
   width: calc((100% - 7 * var(--px)) / 2);
-  aspect-ratio: 586 / 530;
+  height: 100%;                            /* exactly as tall as the panel, so both share top and bottom edges */
   overflow: hidden;
 }
 .zp .pair-photo img {
