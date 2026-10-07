@@ -301,7 +301,7 @@
     /* grey band 1104 tall: the video 161 down from its top, 20 in from the left */
     .zt-band {
       background: #1e1e1e;
-      padding: calc(161 * var(--u)) calc(12 * var(--u)) calc(151 * var(--u)) calc(20 * var(--u));
+      padding: calc(161 * var(--u)) calc(16 * var(--u)) calc(151 * var(--u));   /* equal sides: centred */
     }
     .zt-motion {
       width: 100%;
@@ -313,6 +313,11 @@
     /* Large screens: the motion video becomes an inset card on the band,
        with the proportions of Apple's product pages - about 57% of the
        screen wide, centred, generous grey above and below, softer corners. */
+    /* Laptops (MacBook widths): the video sits inset with room on both sides */
+    @media (min-width: 1100px) and (max-width: 1699px) {
+      .zt-band { padding: calc(120 * var(--u)) 0 calc(110 * var(--u)); }
+      .zt-motion { width: 78%; margin: 0 auto; border-radius: 24px; }
+    }
     @media (min-width: 1700px) {
       .zt-band { padding: 120px 0 110px; }
       .zt-motion { width: 57%; margin: 0 auto; border-radius: 28px; }

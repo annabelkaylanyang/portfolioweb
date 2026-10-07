@@ -183,12 +183,29 @@ html.is-loading body {
   justify-self: start;
   display: block;
   height: var(--logo-h);
+  position: relative;
 }
 .nav-logo img {
   height: 100%;
   width: auto;
   object-fit: contain;
+  transition: opacity 0.2s;
 }
+/* Hover: the logo turns pink - a pink layer cut to the logo's own shape
+   fades in over it (works in light and dark mode alike). */
+.nav-logo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--pink);
+  -webkit-mask: url('https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616') left center / contain no-repeat;
+          mask: url('https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616') left center / contain no-repeat;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.nav-logo:hover::after { opacity: 1; }
+.nav-logo:hover img { opacity: 0; }
 [data-theme="dark"] .nav-logo img { filter: invert(1); }
 
 /* Light | Dark toggle — no rectangle, opacity contrast */
@@ -309,7 +326,7 @@ html.is-loading body {
   color: #767676;
 }
 .hero-now a {
-  color: inherit;
+  color: var(--pink);
   text-decoration: none;
   transition: color 0.2s;
 }
