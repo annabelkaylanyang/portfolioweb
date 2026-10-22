@@ -340,6 +340,28 @@
       max-width: none;
     }
     .zdive-vid, .zdive-black, .zdive-pal { display: none; }
+    /* The clip's background isn't pure black (a faint studio glow), so its
+       edges dissolve into the page instead of showing as a box: the sides, and
+       the top (for screens tall enough to show the picture's top edge). */
+    .zdive-img, .zdive-vid {
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%),
+                          linear-gradient(to bottom, transparent 0%, #000 22%);
+      -webkit-mask-composite: source-in;
+              mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%),
+                          linear-gradient(to bottom, transparent 0%, #000 22%);
+              mask-composite: intersect;
+    }
+    /* The top of the phone dissolves into the black (like Apple's close-ups).
+       Drawn on the screen, not the picture, so it shows whatever the screen's
+       shape - on a wide screen the picture's own top is off screen. */
+    .zdive-fade { display: none; }
+    .zdive.is-live .zdive-fade {
+      display: block;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.75) 8%, rgba(0,0,0,0.3) 17%, transparent 28%);
+    }
 
     /* Live: a tall section with a full-screen stage pinned while it scrolls
        past. Its length is the scroll distance the whole sequence takes (a
@@ -380,15 +402,42 @@
     .zdive.is-live .zdive-title {
       display: block;
       position: absolute;
-      left: 0; right: 0;
-      bottom: calc(50% + 37 * var(--vh, 1vh));   /* just above the top band */
+      left: 10.125%;                       /* the colour names' line */
+      top: calc(4 * var(--vh, 1vh));
       margin: 0;
-      text-align: center;
       font-size: clamp(28px, 2.6cqw, 44px);
       font-weight: 500;
       letter-spacing: -0.01em;
       color: #f5f5f7;
       opacity: 0;
+      z-index: 20;
+    }
+    /* "Color" heading and its rule, like Typography's: on the colour names'
+       line, just above the top band; they come in once the bands have
+       opened to the full width. */
+    .zdive-sub, .zdive-subrule { display: none; }
+    .zdive.is-live .zdive-sub {
+      display: block;
+      position: absolute;
+      left: 10.125%;
+      bottom: calc(50% + 36.4 * var(--vh, 1vh));
+      margin: 0;
+      font-size: clamp(20px, 1.7cqw, 28px);
+      font-weight: 500;
+      color: #f5f5f7;
+      opacity: 0;
+      z-index: 20;
+    }
+    .zdive.is-live .zdive-subrule {
+      display: block;
+      position: absolute;
+      left: 10.125%;
+      right: 10.125%;
+      bottom: calc(50% + 35.2 * var(--vh, 1vh));
+      height: 0;
+      border-top: 1px solid #2c2c2e;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
       z-index: 20;
     }
     .zdive-band {
@@ -420,6 +469,60 @@
     .zdive-name { left: 10.125%; font-weight: 500; }
     .zdive-keys { left: 61.04%; }
     .zdive-vals { left: 71.5%; }
+
+    /* TYPOGRAPHY sheet, right under the colour palette. Left edge on the
+       colour names' line (10.125%), the sizes on the colour values' line
+       (71.5%); each size sits on its own sample's baseline. Plays once it
+       comes on screen (script at the end of the page). */
+    .ztype {
+      position: relative;
+      z-index: 1;
+      margin-top: calc(-16 * var(--vh, 1vh));   /* up into the black under the bands */
+      padding: 0 10.125% 160px;
+      color: #f5f5f7;
+    }
+    .ztype-title {
+      font-size: clamp(20px, 1.7cqw, 28px);
+      font-weight: 500;
+      margin: 0;
+    }
+    .ztype-rule {
+      height: 0;
+      border: 0;
+      border-top: 1px solid #2c2c2e;
+      margin: 14px 0 48px;
+      transform-origin: 0 50%;
+    }
+    .ztype-face {
+      font-size: 18px;
+      color: #86868b;
+      margin: 0 0 32px;
+    }
+    .ztype-list { list-style: none; margin: 0; padding: 0; }
+    .ztype-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 76.96% 1fr;   /* 71.5% of the page, from the 10.125% edge */
+      align-items: end;                    /* each size sits on the line under its sample */
+      margin-bottom: 18px;
+    }
+    .ztype-sample {
+      font-size: calc(var(--fs) * 1px);
+      font-weight: var(--fw);
+      line-height: 1;
+      letter-spacing: -0.005em;
+    }
+    .ztype-row:nth-child(7) .ztype-sample { letter-spacing: 0.05em; }
+    .ztype-spec { font-size: 14px; line-height: 1; color: #86868b; white-space: nowrap; }
+    @media (max-width: 820px) {
+      .ztype { padding: 32px 6% 96px; }
+      .ztype-row { grid-template-columns: 1fr auto; gap: 16px; }
+    }
+    .ztype.is-ready .ztype-title,
+    .ztype.is-ready .ztype-face,
+    .ztype.is-ready .ztype-sample,
+    .ztype.is-ready .ztype-spec { opacity: 0; }
+    .ztype.is-ready .ztype-rule { transform: scaleX(0); }
 
     .zt-logo { width: 100%; aspect-ratio: 3840 / 1896; object-fit: cover; }
     #goal { scroll-margin-top: 40px; }
@@ -462,6 +565,225 @@
       .zro-phones-row { flex-direction: column; align-items: center; gap: 40px; }
       .zro-phone-col  { flex: 0 0 auto; width: min(300px, 80vw); }
     }
+
+    /* =============================================
+       CASE STUDY (Figma frame 2:2, 1585 wide). --u is one frame px, scaled
+       with the page; x offsets and media widths use it. Type sizes, line
+       heights and vertical gaps are the frame's px. Weights: 45 Light (300),
+       55 Roman (400), 56 Italic, 65 Medium (500), 75 Bold (700).
+       ============================================= */
+    .zro {
+      --u: calc(100cqw / 1585);
+      /* a phone video's width: the frame's 626 px, but never taller than 80% of the screen */
+      --phw: min(calc(626 * var(--u)), calc(80 * var(--vh, 1vh) * 626 / 1113));
+      /* the screen inside a phone video (the frame's 485 of 626), and the
+         distance between the centres of a side-by-side pair: one screen plus
+         a 64px gap */
+      --scr: calc(var(--phw) * 485 / 626);
+      --pair: calc(var(--scr) + 64px);
+    }
+    .zro-title { font-weight: 300; }
+    .zc-row, .zgoal, .zc-table, .zc-note, .zc-before, .zc-after, .zc-learning,
+    .zc-compare, .zc-question, .zc-history, .zc-phonevid, .zc-wide,
+    .zc-reflections, .zc-grid { margin-top: var(--mt, 0); }
+
+    /* Side navigation: pinned on the left, hidden over the intro; fades in
+       once Context reaches the top fifth of the screen and out again where the
+       full-bleed media at the end begins. The current section is white. */
+    .zro-toc {
+      position: fixed;
+      left: 28px;                        /* the very left: the site logo's edge */
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      gap: 19px;
+      max-width: calc(309 * 100vw / 1585 - 56px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+    .zro-toc.is-visible { opacity: 1; visibility: visible; transition: opacity 0.4s ease, visibility 0s; }
+    .zro-toc a {
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      color: #767676;
+      transition: color 0.2s;
+    }
+    .zro-toc a:hover, .zro-toc a.is-current { color: #fff; }
+    @media (max-width: 820px) { .zro-toc { display: none; } }
+
+    .zc-table-rule, .zc-reflections-rule, .zgoal-rule { height: 0; border: 0; border-top: 1px solid #424245; }
+
+    /* label | heading + body */
+    .zc-row {
+      display: grid;
+      grid-template-columns: calc((646 - var(--x)) * var(--u)) minmax(0, 1fr);
+      padding: 0 calc(40 * var(--u)) 0 calc(var(--x) * var(--u));
+    }
+    .zc-label {
+      font-size: 24px;
+      font-weight: 300;
+      line-height: 41.4px;
+      color: #86868b;
+      max-width: 260px;
+      margin: 0;
+    }
+    .zc-content { padding-top: var(--hy, 9px); }
+    .zc-head {
+      font-size: 38px;
+      font-weight: 400;
+      line-height: 33px;
+      color: #fff;
+      max-width: 737px;
+      margin: 0;
+    }
+    .zc-body {
+      font-size: 20px;
+      line-height: 33px;
+      color: #fff;
+      max-width: 670px;
+      margin: var(--by, 30px) 0 0;
+    }
+    .zc-head:empty { display: none; }
+    .zc-head:empty + .zc-body { margin-top: 0; }
+    .zc-body + .zc-body { margin-top: 144px; }   /* Problem: the frame's gap between the two paragraphs */
+    .zc-row b, .zc-after b { font-weight: 700; }
+
+    /* Goal: centred eyebrow, headline, rule, body */
+    .zgoal { --mt: 305px; padding: 0 0 0; text-align: center; }
+    .zgoal-eyebrow { font-size: 24px; font-weight: 300; line-height: 29px; letter-spacing: 0.23px; color: #86868b; margin: 0 0 10px; }
+    .zgoal-headline { max-width: 1024px; font-size: 72px; font-weight: 500; line-height: 76.3px; letter-spacing: -1.08px; }
+    .zgoal-rule { width: calc(1151 * var(--u)); border-top-color: #424245; margin: 76px auto 0; }
+    .zgoal-body { max-width: 670px; margin: 75px auto 0; font-size: 20px; line-height: 33px; color: #fff; }
+
+    /* What we saw | What we want: the frame's two columns brought 60 px
+       closer, and the block (icons to the end of the right column) centred */
+    .zc-table { --mt: 159px; position: relative; }
+    .zc-table-head {
+      display: grid;
+      grid-template-columns: calc((717 - 285) * var(--u)) 1fr;
+      padding-left: calc((285 + 49) * var(--u));
+    }
+    .zc-table-head h3 { margin: 0; font-size: 38px; font-weight: 700; line-height: 33px; color: #fff; }
+    .zc-table-rule { width: calc(976 * var(--u)); margin: 31px 0 0 calc((286 + 49) * var(--u)); border-top-color: #424245; }
+    .zc-trow {
+      display: grid;
+      grid-template-columns: calc((717 - 258) * var(--u)) 1fr;
+      padding-left: calc((258 + 49) * var(--u));
+      margin-top: 40px;
+    }
+    .zc-trow + .zc-trow { margin-top: 74px; }
+    .zc-saw { display: flex; align-items: center; margin-top: var(--iy); }
+    .zc-saw p { margin: 0; width: 235px; font-size: 32px; line-height: 33px; color: #fff; }
+    .zc-icon { width: calc(var(--s) * 1px); height: calc(var(--s) * 1px); margin-right: calc((337 - 258) * var(--u) - var(--s) * 1px); flex: none; padding: calc(var(--s) * 0.0833px); box-sizing: border-box; }
+    .zc-want .zc-label { max-width: none; }
+    .zc-want-text { margin: calc(var(--dy, 38px) - 41.4px) 0 0; max-width: 512px; font-size: 24px; line-height: 33px; color: #fff; }
+
+    .zc-note { --mt: 217px; margin-left: calc(660 * var(--u)); max-width: 710px; font-size: 20px; line-height: 33px; color: #fff; margin-bottom: 0; }
+
+    /* the two earlier versions: each the size of a phone screen above and
+       below it, a pair spaced like Spotify | Zrø's Chat UI, fading out at the
+       bottom */
+    .zc-before { --mt: 186px; --imh: calc(var(--scr) * 859 / 426); position: relative; height: calc(var(--imh) + 61px + 23px); margin-left: 0; margin-right: 0; }
+    .zc-before img { position: absolute; top: 0; display: block; object-fit: cover; width: var(--scr); }
+    .zc-before-a { left: calc(50% - var(--pair) / 2 - var(--scr) / 2); aspect-ratio: 426 / 859; border-radius: calc(var(--scr) * 41.92 / 426); }
+    .zc-before-b { left: calc(50% + var(--pair) / 2 - var(--scr) / 2); aspect-ratio: 425 / 858; border-radius: calc(var(--scr) * 44.39 / 426); }
+    .zc-before-fade {
+      position: absolute;
+      left: calc(50% - var(--pair) / 2 - var(--scr)); width: calc(var(--pair) + 2 * var(--scr));
+      top: calc(var(--imh) * 650 / 859); height: calc(var(--imh) * 237 / 859);
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.428) 29.808%, rgba(0,0,0,0.908) 75%, #000 100%);
+    }
+    .zc-caption { margin: 0; font-size: 20.17px; line-height: normal; color: #767676; text-align: center; }
+    .zc-before .zc-caption { position: absolute; left: 0; right: 0; top: calc(var(--imh) + 61px); }
+
+    /* phone-mockup videos: 626 x 1113 in the frame, centred */
+    .zc-phonevid { position: relative; width: calc(var(--phw) * var(--w, 626) / 626); aspect-ratio: 626 / 1113; margin-left: auto; margin-right: auto; }
+    .zc-phonevid > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* an empty slot shows which file goes there */
+    .is-empty { background: #0d0d0d; outline: 1px dashed #333; outline-offset: -1px; }
+    .is-empty::after {
+      content: 'Video ' attr(data-slot);
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      font-size: 14px; color: #555; letter-spacing: 0.05em; pointer-events: none;
+    }
+
+    .zc-after { --mt: 61px; margin-left: calc(646 * var(--u)); max-width: 670px; font-size: 20px; line-height: 33px; color: #fff; margin-bottom: 0; }
+
+    /* Learning: between two full-width hairlines */
+    .zc-learning { --mt: 138px; border-top: 1px solid #424245; border-bottom: 1px solid #424245; padding: 56px 0 59px; text-align: center; }
+    .zc-learning h3 { margin: 0; font-size: 38px; font-weight: 700; line-height: 33px; color: #fff; }
+    .zc-learning p { margin: 32px auto 0; max-width: 1072px; font-size: 32px; line-height: 33px; color: #fff; }
+
+    /* Spotify Lyrics | Zrø's Chat UI */
+    .zc-compare { --mt: 152px; position: relative; height: calc(96px + var(--phw) * 1113 / 626 + 32px + 23px); }
+    .zc-compare h3 { position: absolute; top: 0; width: var(--phw); margin: 0; font-size: 38px; font-weight: 700; line-height: 33px; color: #fff; text-align: center; }
+    .zc-compare-a { left: calc(50% - var(--pair) / 2 - var(--phw) / 2); }
+    .zc-compare-b { left: calc(50% + var(--pair) / 2 - var(--phw) / 2); }
+    .zc-compare-phone { position: absolute; top: 96px; left: calc(50% - var(--pair) / 2 - var(--phw) / 2); margin: 0; }   /* centred under its heading */
+    .zc-compare-phone--b { left: calc(50% + var(--pair) / 2 - var(--phw) / 2); }
+    .zc-spotify { position: absolute; left: calc(70 / 626 * 100%); top: calc(31 / 1113 * 100%); width: calc(485 / 626 * 100%); aspect-ratio: 485 / 1051; border-radius: calc(var(--phw) * 72 / 626); overflow: hidden; margin: 0; }
+    .zc-spotify > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .zc-spotify-bar { position: absolute; left: calc(97 / 626 * 100%); top: calc(41 / 1113 * 100%); width: calc(424 / 626 * 100%); height: calc(53 / 1113 * 100%); border-radius: calc(var(--phw) * 26.5 / 626); background: #767576; }
+    .zc-compare .zc-caption { position: absolute; left: 0; right: 0; top: calc(96px + var(--phw) * 1113 / 626 + 32px); }
+
+    /* the new question, between two full-width hairlines */
+    .zc-question { --mt: 206px; border-top: 1px solid #424245; border-bottom: 1px solid #424245; padding: 74px 0 74px; text-align: center; }
+    .zc-question p { margin: 0 auto; max-width: 1077px; font-size: 38px; line-height: 33px; color: #fff; }
+    .zc-question i { font-style: italic; }
+
+    /* other tools' history sidebars: three overlapping cards, the middle one
+       on top, like a carousel. The set is the frame's 682 x 399 arrangement at
+       55%, centred; each card's place is a share of the set. */
+    .zc-history { --mt: 116px; margin-left: 0; margin-right: 0; }
+    .zc-history-set { position: relative; width: calc(682 * var(--u) * 0.55); aspect-ratio: 682 / 399; margin: 0 auto; }
+    .zc-history-set > * { position: absolute; display: block; }
+    .zc-history-a { left: 0; top: 0; width: calc(253 / 682 * 100%); aspect-ratio: 253 / 319; border-radius: 11%; object-fit: cover; z-index: 1; }
+    .zc-history-c { left: calc(393 / 682 * 100%); top: calc(15 / 399 * 100%); width: calc(289 / 682 * 100%); aspect-ratio: 289 / 288; border-radius: 9.5%; object-fit: cover; z-index: 1; }
+    .zc-history-b { left: calc(180 / 682 * 100%); top: calc(73 / 399 * 100%); width: calc(261 / 682 * 100%); aspect-ratio: 261 / 326; border-radius: 7.5%; overflow: hidden; z-index: 2; }
+    .zc-history-b img { position: absolute; left: 0; top: -18.96%; width: 99.7%; height: 187.2%; max-width: none; }
+    /* Coming in: hidden until the script sends them round the arc */
+    .zc-history.is-ready .zc-history-set > * { opacity: 0; }
+
+    /* wide stills: 1022 wide at x 309 */
+    .zc-wide { display: block; margin-left: calc(309 * var(--u)); width: calc(1022 * var(--u)); height: auto; }
+
+    /* Reflections */
+    .zc-reflections { --mt: 410px; }
+    .zc-reflections-title { margin: 0 auto; max-width: 1024px; text-align: center; font-size: 72px; font-weight: 500; line-height: 76.3px; letter-spacing: -1.08px; color: #f5f5f7; }
+    .zc-reflections-rule { width: calc(1151 * var(--u)); margin: 47px 0 0 calc(217 * var(--u)); border-top-color: #424245; }
+    .zc-reflections-body { margin: 64px auto 0; max-width: 1042px; }
+    .zc-reflections-body p { margin: 0; font-size: 24px; line-height: 33px; color: #fff; text-align: center; }
+    .zc-reflections-body p + p { margin-top: 33px; }
+
+    /* homepage concepts, 2 x 2 */
+    .zc-grid { --mt: 157px; position: relative; height: calc(715 * var(--u)); margin-left: 0; margin-right: 0; }
+    .zc-grid > * { position: absolute; display: block; }
+    .zc-grid > :nth-child(1) { left: calc(175 * var(--u)); top: 0; width: calc(608 * var(--u)); aspect-ratio: 608 / 342; }
+    .zc-grid > :nth-child(2) { left: calc(803 * var(--u)); top: 0; width: calc(607 * var(--u)); aspect-ratio: 607 / 342; }
+    .zc-grid > :nth-child(3) { left: calc(185 * var(--u)); top: calc(372 * var(--u)); width: calc(608 * var(--u)); aspect-ratio: 608 / 343; overflow: hidden; }
+    .zc-grid > :nth-child(4) { left: calc(803 * var(--u)); top: calc(371 * var(--u)); width: calc(608 * var(--u)); aspect-ratio: 608 / 344; }
+    .zc-grid img { object-fit: cover; }
+    .zc-grid-crop img { position: absolute; left: -5.54%; top: 0; width: 110.54%; height: 100%; max-width: none; }
+
+    /* launch: the homepage animation, full width */
+    .zt { margin-top: 111px; }   /* the Launch text to the logo animation */
+    .zt-phone { margin-top: 89px; }   /* the frame: 90px between the logo animation and the phone */
+
+    @media (max-width: 820px) {
+      .zc-row { grid-template-columns: 1fr; padding: 0 6%; }
+      .zc-label { margin-bottom: 8px; }
+      .zc-head { font-size: 28px; line-height: 30px; }
+      .zgoal-headline, .zc-reflections-title { font-size: 40px; line-height: 44px; }
+      .zc-table-head, .zc-trow { padding-left: 6%; grid-template-columns: 1fr; gap: 16px; }
+      .zc-note, .zc-after { margin-left: 6%; margin-right: 6%; }
+      .zc-learning p, .zc-question p { font-size: 24px; line-height: 30px; padding: 0 6%; }
+      .zc-reflections-body { margin-left: 6%; margin-right: 6%; }
+      .zc-wide { margin-left: 6%; width: 88%; }
+    }
   </style>
   <!-- Vercel Web Analytics (page views; enabled in the Vercel dashboard) -->
   <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
@@ -499,6 +821,19 @@
 
 
 
+
+  <!-- Side navigation: lives outside <main> because <main> is a container,
+       which would anchor anything fixed inside it and make it scroll away. -->
+  <nav class="zro-toc" aria-label="Page sections">
+    <a href="#context">Context</a>
+    <a href="#problem">Problem</a>
+    <a href="#goal">Goal</a>
+    <a href="#break">Breaking the message model</a>
+    <a href="#revisitable">Making reflections revisitable</a>
+    <a href="#familiar">Homepage</a>
+    <a href="#reflections">Reflections</a>
+    <a href="#launch">Launch</a>
+  </nav>
 
   <main class="zro" aria-label="Zr&oslash; project">
 
@@ -554,19 +889,269 @@
       </div>
     </section>
 
-    <!-- CONTEXT -->
-    <section class="zro-row zro-row--ctx" id="context">
-      <div class="zro-label" data-reveal>Context</div>
-      <div class="zro-body" data-reveal>
-        <p>Zr&oslash; is a reflective digital experience that helps users notice what is already present in their own words without explicitly providing advice.</p>
-        <p>As a product design intern on the project, I was responsible for translating Zr&oslash;&rsquo;s philosophy and vision into a cohesive digital experience. I defined the interaction model, primary visual language, motion principles, and brand identity across mobile and web, transforming abstract concepts into a unified product.</p>
+<!-- ===== CASE STUDY (Figma frame 2:2). x positions are the frame's px
+         (1585 wide) scaled with the page (--u); type sizes, line heights and
+         vertical gaps are the frame's px. Video slots marked is-empty are
+         waiting for their files. ===== -->
+
+    <section class="zc-row" id="context" style="--x:402;--hy:5px;--by:30px;--mt:80px">
+      <div class="zc-label" data-reveal>CONTEXT</div>
+      <div class="zc-content" data-reveal>
+        <h2 class="zc-head" style="max-width:786px">Zrø is a space for thinking through everyday uncertainty.</h2>
+        <p class="zc-body">Zrø is designed for the small uncertainties people carry through everyday life. Whether it's a decision they’re unsure about or an interaction they keep playing, Zrø reflects users’ own thoughts back from a different angle instead of providing direct advice. The premise is that the most useful shift often isn’t deciding what to do, but changing how the situation is understood in the first place.</p>
       </div>
     </section>
 
-    <!-- MEDIA (Figma node 252:2, below the intro): sizes and offsets are the
-         frame's design px, scaled with the page width (--u); on large screens
-         the motion video sits as an inset card, see the style block. -->
+    <figure class="zc-phonevid" style="--mt:123px" data-slot="V1" data-reveal>
+      <video src="images/zro/v2/phone-v1.mp4" data-autoplay-in-view muted loop playsinline preload="metadata" aria-label="Zrø on a phone"></video>
+    </figure>
+
+    <section class="zc-row" id="role" style="--x:402;--hy:5px;--by:30px;--mt:115px">
+      <div class="zc-label" data-reveal>ROLE</div>
+      <div class="zc-content" data-reveal>
+        <h2 class="zc-head">I led the redesign of Zrø’s product experience and interface.</h2>
+        <p class="zc-body">I turned user-testing findings into new interaction models, like replacing the chat interface with a continuous thought stream. I also built Zrø’s identity system, from logo to motion, across 20+ screens and components.</p>
+      </div>
+    </section>
+
+    <section class="zc-row" id="problem" style="--x:402;--hy:5px;--by:30px;--mt:183px">
+      <div class="zc-label" data-reveal>PROBLEM</div>
+      <div class="zc-content" data-reveal>
+        <h2 class="zc-head">Users looked to Zrø for answers instead of reflecting on their own thoughts.</h2>
+        <p class="zc-body">In early testing, 5 of 6 participants repeatedly treated Zrø as a conversational partner. They asked for advice, waited for the next response, and continued directing questions toward the AI even after it became clear that Zrø would not provide direct solutions.</p>
+        <p class="zc-body">Responses weren’t the issue: when participants did stop to interpret a response, some reconsidered what they’d originally written. We suspected the interface instead. Alternating message bubbles, distinct AI colors and a familiar back-and-forth rhythm framed every response as the next turn in a conversation. I led the redesign that tested our hypothesis.</p>
+      </div>
+    </section>
+
+    <!-- GOAL -->
+    <section class="zgoal" id="goal">
+      <p class="zgoal-eyebrow" data-reveal>GOAL</p>
+      <h2 class="zgoal-headline" data-reveal>How might the interface shift attention from the AI’s response back to the user’s own thinking?</h2>
+      <hr class="zgoal-rule" data-reveal />
+      <p class="zgoal-body" data-reveal>Success meant reversing what we saw in testing. I used this question to evaluate whether each design decision moved users toward three reflection behaviors: pause, reconsider and continue:</p>
+    </section>
+
+    <!-- WHAT WE SAW / WHAT WE WANT -->
+    <section class="zc-table" aria-label="What we saw and what we want">
+      <div class="zc-table-head" data-reveal><h3>What we saw</h3><h3>What we want</h3></div>
+      <hr class="zc-table-rule" data-reveal />
+      <div class="zc-trow" style="--iy:8px" data-reveal>
+        <div class="zc-saw"><img src="images/zro/v2/icon-pause.svg" alt="" width="46" height="46" class="zc-icon" style="--s:51" /><p>Waiting for the next reply</p></div>
+        <div class="zc-want"><p class="zc-label">PAUSE</p><p class="zc-want-text">Instead of waiting for the next response, they spend time interpreting it.</p></div>
+      </div>
+      <div class="zc-trow" style="--iy:-3px;--dy:42px" data-reveal>
+        <div class="zc-saw"><img src="images/zro/v2/icon-reconsider.svg" alt="" class="zc-icon" style="--s:52" /><p>Directing questions at Zrø</p></div>
+        <div class="zc-want"><p class="zc-label">RECONSIDER</p><p class="zc-want-text">Instead of directing the next question at Zrø, they turn back to their own words.</p></div>
+      </div>
+      <div class="zc-trow" style="--iy:-5px;--dy:42px;margin-top:69px" data-reveal>
+        <div class="zc-saw"><img src="images/zro/v2/icon-continue.svg" alt="" class="zc-icon" style="--s:54" /><p>Asking for advice</p></div>
+        <div class="zc-want"><p class="zc-label">CONTINUE</p><p class="zc-want-text">Instead of asking for advice, they move forward on their own.</p></div>
+      </div>
+    </section>
+
+    <p class="zc-note" data-reveal>Since interaction patterns shape how users understand a product before any explanation does, the interface became the first place to intervene.</p>
+
+    <section class="zc-row" id="break" style="--x:309;--hy:9px;--by:30px;--mt:194px">
+      <div class="zc-label">BREAK THE MESSAGE-BY-MESSAGE MODEL</div>
+      <div class="zc-content">
+        <h2 class="zc-head">How can reflection stop feeling like a series of messages?</h2>
+        <p class="zc-body">Early versions of Zrø moved from chat bubbles to cards, but both still treated reflection as a sequence of separate exchanges. I wanted to rethink the interaction itself, not just how each message looked.</p>
+      </div>
+    </section>
+
+    <!-- the two earlier versions, fading out at the bottom -->
+    <figure class="zc-before">
+      <img class="zc-before-a" src="images/zro/v2/chat-bubbles.png" alt="Earlier Zrø: a chat interface with message bubbles" data-reveal />
+      <img class="zc-before-b" src="images/zro/v2/chat-cards.png" alt="Earlier Zrø: exchanges shown as cards" data-reveal />
+      <div class="zc-before-fade"></div>
+      <figcaption class="zc-caption">These versions existed before I joined the team</figcaption>
+    </figure>
+
+    <section class="zc-row" id="first-direction" style="--x:309;--hy:9px;--by:30px;--mt:172px">
+      <div class="zc-label">FIRST DIRECTION</div>
+      <div class="zc-content">
+        <h2 class="zc-head">I removed the two-speaker layout, but separating exchanges separated the thought.</h2>
+        <p class="zc-body">I explored a horizontal swipe model that paired the user’s thought and Zrø’s response on one screen. Without the left/right layout, it no longer felt like two speakers, and swiping back to earlier moments felt familiar.</p>
+      </div>
+    </section>
+
+    <figure class="zc-phonevid" style="--mt:106px" data-slot="V2" data-reveal>
+      <video src="images/zro/v2/swipe-v2.mp4" data-autoplay-in-view muted loop playsinline preload="metadata" aria-label="The swipe model on a phone"></video>
+    </figure>
+
+    <p class="zc-after" style="--mt:61px">In walkthroughs with the founder, swiping helped <b>Pause</b>: each moment got full attention. But it weakened <b>Reconsider</b>. Earlier thoughts were never visible next to the current one, so it was hard to see how ideas developed.</p>
+
+    <!-- LEARNING -->
+    <section class="zc-learning">
+      <h3>Learning</h3>
+      <p>Removing the chat structure wasn’t enough. Reflection also needed continuity.</p>
+    </section>
+
+    <section class="zc-row" id="final-direction" style="--x:309;--hy:9px;--by:30px;--mt:197px">
+      <div class="zc-label">FINAL DIRECTION</div>
+      <div class="zc-content">
+        <h2 class="zc-head">I reframed the exchange as one continuous train of thought.</h2>
+        <p class="zc-body">Inspired by how Spotify’s lyrics view keeps surrounding lines visible while bringing one into focus, I designed reflections as a continuous stream. This was designed to support <b>Reconsider </b>by keeping earlier thoughts visible, and<b> Pause </b>by allowing one exchange to fill the screen again.</p>
+      </div>
+    </section>
+
+    <!-- SPOTIFY LYRICS / ZRØ'S CHAT UI -->
+    <section class="zc-compare">
+      <h3 class="zc-compare-a">Spotify Lyrics</h3>
+      <h3 class="zc-compare-b">Zrø’s Chat UI</h3>
+      <figure class="zc-phonevid zc-compare-phone" data-slot="V3" data-reveal>
+        <video src="images/zro/v2/phone-v1.mp4" data-autoplay-in-view muted loop playsinline preload="metadata" aria-label="Phone frame"></video>
+        <figure class="zc-spotify" data-slot="V4">
+          <video src="images/zro/v2/spotify-v4.mp4" data-autoplay-in-view muted loop playsinline preload="metadata" aria-label="Spotify's lyrics view, recorded on a phone"></video>
+        </figure>
+        <div class="zc-spotify-bar"></div>
+      </figure>
+      <figure class="zc-phonevid zc-compare-phone zc-compare-phone--b" data-slot="V5" data-reveal>
+        <video src="images/zro/v2/stream-v5.mp4" data-autoplay-in-view muted loop playsinline preload="metadata" aria-label="Zrø's continuous stream, on a phone"></video>
+      </figure>
+      <p class="zc-caption">Users could scroll through the larger stream, then tap an exchange to bring it to focus.</p>
+    </section>
+
+    <section class="zc-row" id="tradeoff-1" style="--x:309;--hy:9px;--by:20px;--mt:204px">
+      <div class="zc-label">TRADEOFF</div>
+      <div class="zc-content">
+        <h2 class="zc-head">More continuity, but less authorship.</h2>
+        <p class="zc-body">In one stream, it got harder to tell whose words were whose, especially when looking back.</p>
+      </div>
+    </section>
+
+    <section class="zc-row" id="solution-1" style="--x:309;--hy:9px;--by:36px;--mt:153px">
+      <div class="zc-label">SOLUTION</div>
+      <div class="zc-content">
+        <h2 class="zc-head" style="max-width:692px">Let type, not position, separate the user from Zrø.</h2>
+        <p class="zc-body">I made the user’s words larger and bolder, and quieted Zrø’s response. The core tension was that Zrø needed to respond without becoming the center. Now it still responds, but the user’s own thinking is the most prominent thing on screen, and what they build from next.</p>
+      </div>
+    </section>
+
+    <!-- THE NEW QUESTION -->
+    <section class="zc-question">
+      <p>That turned to a new question, How should users return to a reflection that <i>isn’t</i> a chat log?</p>
+    </section>
+
+    <section class="zc-row" id="revisitable" style="--x:309;--hy:9px;--by:30px;--mt:216px">
+      <div class="zc-label">MAKING REFLECTIONS<br>REVISITABLE</div>
+      <div class="zc-content">
+        <h2 class="zc-head">How should users return to a reflection that isn’t a chat log?</h2>
+        <p class="zc-body">Most AI tools organize history for retrieval: titles, dates, and a sidebar make past tasks easy to find. But Zrø wasn’t designed around retrieving information. Returning should bring back the state of mind behind a reflection.</p>
+      </div>
+    </section>
+
+    <!-- how other AI tools show history -->
+    <figure class="zc-history" aria-label="Chat history sidebars in other AI tools">
+      <div class="zc-history-set">
+        <img class="zc-history-a" src="images/zro/v2/history-chatgpt.png" alt="A chat-history list in another AI tool" />
+        <img class="zc-history-c" src="images/zro/v2/history-claude.png" alt="A chat-history list in another AI tool" />
+        <div class="zc-history-b"><img src="images/zro/v2/history-other.png" alt="A chat-history list in another AI tool" /></div>
+      </div>
+    </figure>
+
+    <section class="zc-row" id="turning-point" style="--x:301;--hy:4px;--by:30px;--mt:82px">
+      <div class="zc-label">MAKING REFLECTIONS<br>REVISITABLE</div>
+      <div class="zc-content">
+        <h2 class="zc-head">I built each memory around its turning point, not its title</h2>
+        <p class="zc-body">Each session became a visual space previewed by one significant exchange. The system algorithmically selects an exchange that may represent a turning point in the user’s thinking. The user’s own words remain visually dominant, carrying the same hierarchy from the live reflection into memory.</p>
+      </div>
+    </section>
+
+    <figure class="zc-phonevid" style="--mt:97px;--w:618" data-slot="V6" data-reveal>
+      <video src="images/zro/v2/memory-v6.mp4" data-autoplay-in-view muted loop playsinline preload="metadata" aria-label="Zrø’s memory view on a phone"></video>
+    </figure>
+
+    <section class="zc-row" id="tradeoff-2" style="--x:309;--hy:9px;--by:20px;--mt:94px">
+      <div class="zc-label">TRADEOFF</div>
+      <div class="zc-content">
+        <h2 class="zc-head">More meaning, less scannability.</h2>
+        <p class="zc-body">In design review, we realized the visual memory system gave each reflection more context, but sacrificed some of the quick scanning people expect from conventional history.</p>
+      </div>
+    </section>
+
+    <section class="zc-row" id="solution-2" style="--x:309;--hy:9px;--by:20px;--mt:156px">
+      <div class="zc-label">SOLUTION</div>
+      <div class="zc-content">
+        <h2 class="zc-head">Bring titles back, in sync.</h2>
+        <p class="zc-body">I reintroduced a lightweight title list for fast retrieval. Selecting a title immediately brings its visual memory into focus, so <b>finding a known reflection and rediscovering one can coexist.</b> Knowing which familiar convention to keep mattered as much as knowing which to remove.</p>
+      </div>
+    </section>
+
+    <img class="zc-wide" style="--mt:95px" src="images/zro/v2/memory-titles.png" alt="Zrø's memory view with a title list beside the visual memories" data-reveal />
+
+    <section class="zc-row" id="familiar" style="--x:309;--hy:0px;--by:25px;--mt:157px">
+      <div class="zc-label"></div>
+      <div class="zc-content">
+        <h2 class="zc-head">A more reflective model was also a less familiar one.</h2>
+        <p class="zc-body">Across the stream and memory system, I had replaced conventions users already knew from chat. That raised the next question:</p>
+      </div>
+    </section>
+
+    <section class="zc-row" id="solution-3" style="--x:309;--hy:9px;--by:24px;--mt:558px">
+      <div class="zc-label">SOLUTION</div>
+      <div class="zc-content">
+        <h2 class="zc-head">The first interaction had to teach users how to approach Zrø</h2>
+        <p class="zc-body">By replacing familiar chat patterns across both reflection and memory, Zrø became more aligned with its purpose — but also less immediately recognizable. The homepage became the first opportunity to set expectations before users entered the experience.</p>
+      </div>
+    </section>
+
+    <section class="zc-row" id="direction" style="--x:309;--hy:9px;--by:27px;--mt:174px">
+      <div class="zc-label">DIRECTION</div>
+      <div class="zc-content">
+        <h2 class="zc-head">Turn the product philosophy into an interaction</h2>
+        <p class="zc-body">Rather than explaining reflection through instructions, I used gradual focus as the interaction itself. Inspired by aperture, I explored blur, motion, and shifting clarity to make the homepage move from uncertainty toward focus as users engage with it.</p>
+      </div>
+    </section>
+
+    <img class="zc-wide" style="--mt:163px" src="images/zro/v2/homepage-blur.png" alt="Zrø's homepage, blurred, as clarity begins to emerge" data-reveal />
+
+    <section class="zc-row" id="takeaways" style="--x:309;--hy:5px;--by:0px;--mt:124px">
+      <div class="zc-label">TAKEAWAYS</div>
+      <div class="zc-content">
+        <p class="zc-body">Onboarding didn’t have to mean more explanation. The interaction itself could demonstrate how Zrø asks users to slow down, engage, and let clarity emerge.</p>
+      </div>
+    </section>
+
+    <!-- REFLECTIONS -->
+    <section class="zc-reflections" id="reflections">
+      <h2 class="zc-reflections-title">Reflections</h2>
+      <hr class="zc-reflections-rule" />
+      <div class="zc-reflections-body">
+        <p>What I enjoyed most was realizing how much meaning can live in seemingly small interface decisions. A bubble, a swipe, or a line of type can quietly tell someone whether they’re supposed to talk, browse, pause, or think. Zrø made me much more curious about designing those invisible cues deliberately.</p>
+        <p>If I continued on Zrø’s interface, I would validate the final system more directly against Pause, Reconsider, and Continue. A lot of my decisions were shaped through design review and qualitative feedback, and I’d want to see more directly how those patterns changed the way people actually thought and responded over time.</p>
+        <p>Prior to this project, I had limited experience with WebGL. It was fun to explore a new tool, and I’m excited to work more with experimental visuals in the future. Super grateful for the opportunity to expand into visuals and product launch toward the end of my project!</p>
+      </div>
+    </section>
+
+    <!-- homepage concepts, 2 x 2 -->
+    <figure class="zc-grid" aria-label="Homepage concepts">
+      <img src="images/zro/v2/concept-orb.png" alt="Homepage concept: a soft white orb on black with floating phrases" data-reveal />
+      <img src="images/zro/v2/concept-gradient.png" alt="Homepage concept: a grey gradient with a dim orb" data-reveal />
+      <div class="zc-grid-crop" data-reveal><img src="images/zro/v2/concept-dark.png" alt="Homepage concept: the Zrø mark on black under two soft lights" /></div>
+      <img src="images/zro/v2/concept-color.png" alt="Homepage concept: the Zrø mark over a colourful blurred aperture" data-reveal />
+    </figure>
+
+    <section class="zc-row" id="launch" style="--x:309;--hy:9px;--by:24px;--mt:179px">
+      <div class="zc-label">LAUNCH</div>
+      <div class="zc-content">
+        <h2 class="zc-head">Experimental visuals for branding &amp; commercial concepts</h2>
+        <p class="zc-body">Series of branding concepts for Zrø’s launch.</p>
+      </div>
+    </section>
+
+
+    <!-- MEDIA (after Launch in the frame): the logo animation, the phone in
+         water, the motion video on its grey band, then the dive into the
+         palette. Sizes are the 1440 design px scaled with the page (--u); on
+         large screens the motion video sits as an inset card. -->
     <section class="zt" aria-label="Zr&oslash; mockups and motion">
+
+      <!-- The logo animation: full width, at its own 3840x1896 proportions -->
+      <video class="zt-logo" data-autoplay-in-view
+             src="images/zro/zrologoanimation.mp4"
+             muted loop playsinline preload="auto"
+             aria-label="Zr&oslash; logo animation: a light passes behind the mark, then a gleam runs down its slash"></video>
 
       <!-- 252:48 phone in water -->
       <div class="zt-phone">
@@ -595,8 +1180,11 @@
                alt="Close-up of a phone showing the Zr&oslash; input bar" />
           <video class="zdive-vid" data-src="images/zro/zrophonedive.mp4"
                  muted playsinline preload="auto" aria-hidden="true"></video>
+          <div class="zdive-fade"></div>
           <div class="zdive-black"></div>
           <p class="zdive-title">Design System</p>
+          <p class="zdive-sub">Color</p>
+          <div class="zdive-subrule"></div>
           <div class="zdive-pal" aria-hidden="true">
             <div class="zdive-band is-dark" style="--i:0;--c:#000000"><i></i><i></i><span class="zdive-name">BLACK</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">0, 0, 0<br>#000000</span></div>
             <div class="zdive-band is-dark" style="--i:1;--c:#0f0f0f"><i></i><i></i><span class="zdive-name">CHARCOAL BLACK</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">15, 15, 15<br>#0F0F0F</span></div>
@@ -608,113 +1196,31 @@
         </div>
       </div>
 
-      <!-- The logo animation (not in the Figma frame): under the close-up,
-           centred and full width, at its own 3840x1896 proportions -->
-      <video class="zt-logo" data-autoplay-in-view
-             src="images/zro/zrologoanimation.mp4"
-             muted loop playsinline preload="auto"
-             aria-label="Zr&oslash; logo animation: a light passes behind the mark, then a gleam runs down its slash"></video>
-
-    </section>
-
-    <!-- GOAL: a centred lockup (eyebrow, headline, rule) laid out like Apple's
-         product-page lockups; each line rises into place as it comes on screen
-         (script at the end of the page). -->
-    <section class="zgoal" id="goal">
-      <p class="zgoal-eyebrow" data-reveal>Goal</p>
-      <h2 class="zgoal-headline" data-reveal>Designing a visual language for a product that didn&rsquo;t fit existing interaction patterns.</h2>
-      <hr class="zgoal-rule" data-reveal />
-    </section>
-
-    <!-- CASE #1 -->
-    <section class="zro-row" id="case1">
-      <div class="zro-label" data-reveal>Not<br>Another<br>Chatbot</div>
-      <div class="zro-body" data-reveal>
-        <p>Early versions of Zr&oslash; used a conventional chat interface with message bubbles and a persistent AI identity. While familiar, users immediately associated the experience with existing AI assistants and conversational products. This shifted their expectations toward asking questions and receiving answers&mdash;the opposite of the reflective experience Zr&oslash; was designed to create.</p>
-      </div>
-    </section>
-
-    <div class="zro-phones">
-      <div class="zro-phones-row">
-        <div class="zro-phone-col" data-reveal>
-          <img class="zro-phone-img zro-phone-img--a"
-               src="images/zro/chat1ui.png"
-               alt="Old chat mode &mdash; message bubble interface" />
-          <p class="zro-caption">Old &ldquo;Chat&rdquo; Mode</p>
-          <p class="zro-caption-sub">stale, too permanent, and reminiscent of classic AI chat tools</p>
-        </div>
-        <div class="zro-phone-col" data-reveal>
-          <img class="zro-phone-img zro-phone-img--b"
-               src="images/zro/chat2ui.png"
-               alt="Old card mode &mdash; response cards interface" />
-          <p class="zro-caption">Old &ldquo;Card&rdquo; Mode</p>
-          <p class="zro-caption-sub">cards felt better than bubbles, but didn&rsquo;t serve a particular purpose</p>
-        </div>
-        <div class="zro-phone-col" data-reveal>
-          <img class="zro-phone-img zro-phone-img--c"
-               src="images/zro/image2.png"
-               alt="Final UI &mdash; continuous text stream" />
-          <p class="zro-caption">Final</p>
-          <p class="zro-caption-sub">Feels like your own thoughts visualized instead of someone talking to you</p>
+      <!-- TYPOGRAPHY: right under the colour palette. The page's own type
+           styles. Once it comes on screen it plays through by itself: the
+           title and rule come in, each style rolls out from behind the one
+           above it, then the sizes and weights fade in one by one. Without the
+           script (or with reduced motion) it is a plain list. -->
+      <div class="ztype" id="typography">
+        <div class="ztype-inner">
+          <h3 class="ztype-title">Typography</h3>
+          <hr class="ztype-rule" />
+          <p class="ztype-face">Neue Haas Grotesk Display</p>
+          <ol class="ztype-list">
+            <li class="ztype-row" style="--i:0;--fs:72;--fw:500"><span class="ztype-sample">Display</span><span class="ztype-spec">72px &middot; Medium</span></li>
+            <li class="ztype-row" style="--i:1;--fs:40;--fw:400"><span class="ztype-sample">Title</span><span class="ztype-spec">40px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:2;--fs:36;--fw:400"><span class="ztype-sample">Heading</span><span class="ztype-spec">36px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:3;--fs:21;--fw:500"><span class="ztype-sample">Eyebrow</span><span class="ztype-spec">21px &middot; Medium</span></li>
+            <li class="ztype-row" style="--i:4;--fs:20;--fw:400"><span class="ztype-sample">Body</span><span class="ztype-spec">20px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:5;--fs:16;--fw:400"><span class="ztype-sample">Detail</span><span class="ztype-spec">16px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:6;--fs:15;--fw:400"><span class="ztype-sample">LABEL</span><span class="ztype-spec">15px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:7;--fs:10;--fw:400"><span class="ztype-sample">Caption</span><span class="ztype-spec">10px &middot; Roman</span></li>
+          </ol>
         </div>
       </div>
-    </div>
 
-    <div class="zro-row zro-row--pushed">
-      <div class="zro-label"></div>
-      <div class="zro-body">
-        <p>I noticed that interaction patterns communicate a product&rsquo;s purpose long before reading any text. Therefore, I removed any hint toward conversational structure, replacing previous interfaces with a continuous stream of language that unfolds naturally like our thoughts themselves.</p>
-      </div>
-    </div>
 
-    <!-- CASE #2 -->
-    <section class="zro-row" id="case2">
-      <div class="zro-label">Rethinking<br>Memory</div>
-      <div class="zro-body">
-        <p>The traditional AI chat sidebar prioritizes recency and scannability for users to quickly index previous conversations. This kind of interface conflicted with the product&rsquo;s goal of encouraging users to revisit reflections as meaningful experiences rather than completed exchanges.</p>
-      </div>
     </section>
-
-    <div class="zro-wide">
-      <video data-reveal data-autoplay-in-view
-             src="images/zro/cardui.mp4"
-             poster="images/zro/image4.png"
-             muted loop playsinline preload="metadata"
-             aria-label="Redesigned session navigation &mdash; box previews of past reflections"></video>
-    </div>
-
-    <div class="zro-row zro-row--tight">
-      <div class="zro-label"></div>
-      <div class="zro-body">
-        <p>Rather than presenting previous sessions as conversations, I redesigned them as individual spaces that users could return to. Each chat became more easily visualized through a box preview, which provoked feelings of entering a room or past memory. The improved navigation emphasized entering and revisiting experiences instead of scrolling through archived chats.</p>
-      </div>
-    </div>
-
-    <!-- CASE #3 -->
-    <section class="zro-row" id="case3">
-      <div class="zro-label">From<br>Philosophy<br>To Form</div>
-      <div class="zro-body">
-        <p>One of Zr&oslash;&rsquo;s central ideas was that clarity doesn&rsquo;t appear instantly, just as answers don&rsquo;t come to us right away. In fact, it gradually comes into focus as our attention shifts. I focused the feelings I associated with the concept of aperture: uncertainty, emergence, focus, and changing perspective. The challenge was translating this abstract philosophy into a visual experience without relying on literal camera imagery or explanatory graphics.</p>
-      </div>
-    </section>
-
-    <div class="zro-wide">
-      <video data-reveal data-autoplay-in-view
-             src="images/zro/zroaperturedemo.mp4"
-             poster="images/zro/image5.png"
-             muted loop playsinline preload="metadata"
-             aria-label="Aperture-inspired visual explorations &mdash; blur and focus studies"></video>
-    </div>
-
-    <div class="zro-row zro-row--tight">
-      <div class="zro-label"></div>
-      <div class="zro-body">
-        <p>I explored dynamic blur systems, motion studies, and interactive visual experiments inspired by the behavior of an aperture. Through multiple iterations, these ideas evolved into a fluid landing experience where clarity subtly emerges through the interaction of users themselves.</p>
-      </div>
-    </div>
-
-
-
   </main>
 
   <footer class="site-footer">
@@ -889,9 +1395,17 @@
       // fades up over 700ms, 110ms after the one above; its letters settle in
       // 250ms later, 50ms apart.
       var title = sec.querySelector('.zdive-title');
+      var sub = sec.querySelector('.zdive-sub'), subrule = sec.querySelector('.zdive-subrule');
       var waved = false, running = [];
       function wave() {
         waved = true;
+        // "Color" rises in and its rule draws across, left to right
+        running.push(sub.animate([
+          { opacity: 0, transform: 'translateY(12px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ], { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }));
+        running.push(subrule.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+          { duration: 900, delay: 100, easing: 'cubic-bezier(0.45, 0, 0.55, 1)', fill: 'both' }));
         bands.forEach(function (b) {
           var i = +b.style.getPropertyValue('--i'), f = i * 110;
           running.push(b.children[1].animate([{ opacity: 0 }, { opacity: 1 }],
@@ -922,7 +1436,10 @@
         var gone = p >= T.blackB;
         var push = Math.pow(T.PUSH, inOut(range(p, T.pushA, T.pushB)));
         img.style.transform = vid.style.transform = 'scale(' + push + ')';
-        img.style.visibility = vid.style.visibility = gone ? 'hidden' : '';
+        vid.style.visibility = gone ? 'hidden' : '';
+        // the still only stands in until the clip has a frame: under the clip's
+        // faded top it would show through as a ghost of the phone
+        img.style.visibility = gone || dur ? 'hidden' : '';
         black.style.opacity = inOut(range(p, T.blackA, T.blackB));
 
         // the palette, inside the screen
@@ -952,6 +1469,123 @@
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onResize);
       window.addEventListener('load', onResize);
+    })();
+  </script>
+  <script>
+    /* Typography: plays by itself once a third of it is on screen (no
+       scrubbing): the title rises in and its rule draws across, the face name
+       appears, then top down each style and its size settle in together,
+       110ms apart (the palette letters' soft settle, not a big entrance). It resets once it has gone back below the screen, so coming down
+       to it again plays it again. */
+    (function () {
+      var sec = document.getElementById('typography');
+      if (!sec || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var title = sec.querySelector('.ztype-title');
+      var rule = sec.querySelector('.ztype-rule');
+      var face = sec.querySelector('.ztype-face');
+      var rows = [].slice.call(sec.querySelectorAll('.ztype-row'));
+      sec.classList.add('is-ready');
+
+      var EASE = 'cubic-bezier(0.45, 0, 0.55, 1)', SOFT = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      var running = [], played = false;
+      function anim(el, kf, opt) { running.push(el.animate(kf, Object.assign({ fill: 'both' }, opt))); }
+      function play() {
+        played = true;
+        // the palette letters' settle: 6px up and in, 600ms, soft finish
+        function settle(el, d, dist) {
+          anim(el, [{ opacity: 0, transform: 'translateY(' + (dist || 6) + 'px)' },
+                    { opacity: 1, transform: 'translateY(0)' }],
+            { duration: 700, delay: d, easing: SOFT });
+        }
+        settle(title, 0, 10);
+        anim(rule, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+          { duration: 900, delay: 100, easing: EASE });
+        settle(face, 300);
+        // top down, each style and its size together, 110ms apart
+        rows.forEach(function (row, i) {
+          var d = 500 + i * 110;
+          settle(row.querySelector('.ztype-sample'), d);
+          settle(row.querySelector('.ztype-spec'), d);
+        });
+      }
+      function reset() {
+        played = false;
+        running.forEach(function (a) { a.cancel(); });
+        running = [];
+      }
+      new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        if (e.isIntersecting && !played) play();
+        else if (!e.isIntersecting && played && e.boundingClientRect.top > 0) reset();
+      }, { threshold: 0.33 }).observe(sec);
+    })();
+  </script>
+  <script>
+    /* Side navigation: shown from Context down to the end of Launch; the link
+       for the section on screen is white. */
+    (function () {
+      var toc = document.querySelector('.zro-toc');
+      var ctx = document.getElementById('context');
+      var end = document.querySelector('.zt');
+      if (!toc || !ctx) return;
+      var links = [].slice.call(toc.querySelectorAll('a'));
+      var targets = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+      var ticking = false;
+      function update() {
+        ticking = false;
+        // positions come back in the page's zoomed units (js/scale.js); the
+        // screen height in real pixels - put both in the same units
+        var z = parseFloat(document.documentElement.style.zoom) || 1, H = window.innerHeight;
+        var show = ctx.getBoundingClientRect().top * z < H * 0.2 && (!end || end.getBoundingClientRect().top * z > H * 0.5);
+        toc.classList.toggle('is-visible', show);
+        var cur = -1;
+        targets.forEach(function (t, i) { if (t && t.getBoundingClientRect().top * z < H * 0.4) cur = i; });
+        links.forEach(function (a, i) { a.classList.toggle('is-current', i === cur); });
+      }
+      window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+
+    /* History sidebars: once the set is a third of the way on screen, the
+       three cards turn in together like one carousel: they share the same
+       rotation, each starting 70 degrees further back on the left of the
+       circle (higher, smaller, faded) and swinging forward along the curve,
+       a beat apart (90ms) so they overlap, slowing a long way into place. The middle card sits at the front of the circle,
+       the side cards 38 degrees either side. Once only. */
+    (function () {
+      var h = document.querySelector('.zc-history');
+      if (!h || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var set = h.querySelector('.zc-history-set');
+      var cards = [h.querySelector('.zc-history-a'), h.querySelector('.zc-history-b'), h.querySelector('.zc-history-c')];
+      var END = [-38, 0, 38], TRAVEL = 70, DUR = 2000, STAGGER = 90, STEPS = 60;
+      h.classList.add('is-ready');
+      // quintic ease-out: a quick start that slows a long way into place
+      function easeOut(t) { return 1 - Math.pow(1 - t, 5); }
+      function play() {
+        var W = set.offsetWidth, H = set.offsetHeight;
+        var rx = W * 0.62, ry = H * 0.22;       // the circle, seen from slightly above
+        function at(deg) { var r = deg * Math.PI / 180; return { x: rx * Math.sin(r), y: ry * Math.cos(r), s: 0.8 + 0.2 * Math.cos(r) }; }
+        cards.forEach(function (el, i) {
+          var end = at(END[i]), frames = [];
+          for (var k = 0; k <= STEPS; k++) {
+            var t = k / STEPS, e = easeOut(t), p = at(END[i] - TRAVEL * (1 - e));
+            frames.push({
+              transform: 'translate(' + (p.x - end.x).toFixed(1) + 'px,' + (p.y - end.y).toFixed(1) + 'px) scale(' + (p.s / end.s).toFixed(3) + ')',
+              opacity: Math.min(1, t * 3.5).toFixed(3)
+            });
+          }
+          el.animate(frames, { duration: DUR, delay: i * STAGGER, easing: 'linear', fill: 'both' });
+        });
+      }
+      var io = new IntersectionObserver(function (e) {
+        if (!e[0].isIntersecting) return;
+        io.disconnect();
+        play();
+      }, { threshold: 0.33 });
+      io.observe(h);
     })();
   </script>
   <script>

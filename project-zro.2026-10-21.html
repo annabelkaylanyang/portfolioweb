@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zr&oslash; &mdash; Annabel Yang</title>
+  <meta name="description" content="Annabel Yang designs tools for interactions and expression. currently marketing @ Newlab" />
+  <!-- Link previews (iMessage, Slack, LinkedIn, X...): the abel logo on white -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Annabel Yang" />
+  <meta property="og:title" content="Zr&oslash; &mdash; Annabel Yang" />
+  <meta property="og:description" content="Annabel Yang designs tools for interactions and expression. currently marketing @ Newlab" />
+  <meta property="og:url" content="https://www.annabelyang.me/project-zro.html" />
+  <meta property="og:image" content="https://www.annabelyang.me/images/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The abel logo on a white background" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Zr&oslash; &mdash; Annabel Yang" />
+  <meta name="twitter:description" content="Annabel Yang designs tools for interactions and expression. currently marketing @ Newlab" />
+  <meta name="twitter:image" content="https://www.annabelyang.me/images/og-image.png" />
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/scale.js"></script>
+  <!-- ?v= ties this stylesheet to this page's markup: bump it whenever css/zro-branding.css
+       changes, so a browser can never pair new markup with an old copy of it. -->
+  <link rel="stylesheet" href="css/zro-branding.css?v=30" />
+  <style>
+    /* Receiving half of the hand-off from the home page: the browser
+       holds that page's last frame - fully covered by the burst - until
+       this one is ready to paint, so there's no blank between them. No
+       animation; the burst already did the work. */
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+
+    /* =============================================
+       Zro project page - always dark, black background
+       Design reference: 12-column grid, 1440px width
+       ============================================= */
+
+    /* The page is black end to end, so the browser has nothing white to
+       paint while it loads - the burst on the home page hands straight
+       over to this. */
+    html, body { background: #000; }
+    /* Nothing scrolls sideways: anything that reaches past the right edge
+       (full-bleed sections, glow) is simply cut off. */
+    html, body { overflow-x: clip; }
+    /* Dark scrollbar: track a shade lighter than the grey band (#1e1e1e)
+       around the motion video, thumb a mid grey on it. */
+    html { scrollbar-color: #5a5a5a #2a2a2a; }
+    ::-webkit-scrollbar { width: 12px; background: #2a2a2a; }
+    ::-webkit-scrollbar-track { background: #2a2a2a; }
+    ::-webkit-scrollbar-thumb { background: #5a5a5a; border-radius: 6px; border: 3px solid #2a2a2a; }
+
+    .zro {
+      background: transparent;   /* body is black; the scroll backdrop shows through */
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      font-family: 'Neue Haas Grotesk Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    /* Generic two-column row: label | body */
+    /* Nav bar: black, white text, hairline rule underneath.
+       Also cancels the global hero pull-up so the bar sits above
+       the content instead of behind it. */
+    .site-nav {
+      margin-bottom: 0;
+      background: #000;
+      border-bottom: 1px solid #1f1f1f;
+    }
+    .site-nav .nav-links a,
+    .site-nav .nav-links a.active { color: #fff; }
+    .site-nav .nav-links a:hover { color: var(--pink); }
+    /* This page is always dark, so the logo stays inverted (white)
+       even when the site is in light mode. */
+    .site-nav .nav-logo img { filter: invert(1); }
+
+    /* Footer matches the nav: black bar, white type, white logo. */
+    .site-footer { background: #000; }
+    .site-footer .footer-copy { color: #fff; }
+    .site-footer .footer-logo img { filter: invert(1); }
+
+    /* Two lines frame the hero image, both as a share of the page width plus a
+       few px (Figma node 1:2); cqw is the page width:
+         --col        the hero's left edge (25% + 6px). Every section title
+                      starts here, and so do the mockups and videos below.
+         --lead       what is left on the right, so the hero's right edge is
+                      the right edge for all of it too (8.33% + 2px)
+         --title-gap  how far a description sits from its title. Title and
+                      description move together as one unit; this is their
+                      fixed distance apart. */
+    .zro { container-type: inline-size; --lead: calc(8.33cqw + 2px); --col: calc(25cqw + 6px); --title-gap: 244px; }
+
+    .zro-row {
+      display: grid;
+      grid-template-columns: var(--title-gap) 1fr;
+      padding: 80px var(--lead) 80px var(--col);
+    }
+    .zro-row--tight { padding-top: 40px; }
+    /* Context: extra room before the mockups below it */
+    .zro-row--ctx { padding-bottom: 200px; }
+    /* Extra breathing room under the mockup row; also pushes
+       every following section down by the same amount. */
+    .zro-row--pushed { padding-top: 140px; }
+
+    .zro-label {
+      font-size: 36px;
+      line-height: 1.15;
+      color: #fff;
+      padding-right: 32px;
+    }
+
+    .zro-body {
+      font-size: 20px;
+      line-height: 1.65;
+      color: #fff;
+      max-width: 670px;
+    }
+    .zro-body p + p { margin-top: 1.5em; }
+
+    /* =============================================
+       INTRO
+       ============================================= */
+    /* Two columns: title + contents on the left, homepage still
+       and project details on the right (starting at the 25% mark). */
+    .zro-intro {
+      display: grid;
+      grid-template-columns: calc(var(--col) - var(--lead)) 1fr;
+      padding: 32px var(--lead) 80px;   /* close under the tab bar */
+    }
+
+    /* The title's ceiling meets the top of the hero video: the video starts 24px
+       down, and the title's capitals start 0.194em below the top of its line box
+       (measured), so the box is lifted by exactly that. Its size follows the page
+       width below 1440 (its widest line, "Web and App", is 5.6x the font size, so
+       it has to shrink to stay inside the column beside the video) and is
+       capped at 40px, just above the original 36px, on anything wider. */
+    .zro-title {
+      font-size: clamp(24px, 2.78cqw, 40px);
+      font-weight: 400;
+      line-height: 1.15;
+      color: #fff;
+      margin-top: calc(24px - 0.194em);
+      margin-bottom: 48px;
+    }
+
+
+    /* Home scrolls to the very top, site nav included, not just to the intro. */
+    #home { scroll-margin-top: var(--nav-h, 64px); }
+
+    /* Zro homepage still - 2:1, spans the right column */
+    .zro-hero {
+      width: 100%;
+      aspect-ratio: 952 / 484;
+      object-fit: cover;
+      display: block;
+      margin-top: 24px;
+    }
+
+    /* Project details, aligned under the homepage still */
+    /* The design puts the four columns 245 / 240 / 246px apart under a 952px
+       still (the still is the frame's 952px wide), so ROLE starts on the
+       still's left edge and the rest follow at those offsets, kept as shares
+       of the still's width so they stretch with it. */
+    .zro-meta {
+      display: grid;
+      grid-template-columns: 25.7353% 25.2101% 25.8403% 1fr;
+      margin-top: 28px;
+    }
+    .zro-meta-item { display: flex; flex-direction: column; gap: 6px; padding-right: 20px; }
+
+    .zro-meta-key {
+      font-size: 15px;
+      color: #767676;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .zro-meta-val {
+      font-size: 16px;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* GOAL lockup: centred eyebrow, headline and a hairline rule, sized and
+       spaced like Apple's large product-page lockups (eyebrow 21px, headline
+       up to 72px, tight tracking). Medium (500) stands in for Apple's
+       semibold - it is the heaviest cut of the face loaded here. The large
+       bottom padding is the gap before the next section. */
+    .zgoal {
+      padding: 140px var(--lead) 260px;
+      text-align: center;
+    }
+    .zgoal-eyebrow {
+      font-size: 21px;
+      font-weight: 500;
+      line-height: 1.38;
+      letter-spacing: 0.011em;
+      color: #86868b;
+      margin: 0 0 14px;
+    }
+    .zgoal-headline {
+      font-size: clamp(40px, 4.6cqw, 72px);
+      font-weight: 500;
+      line-height: 1.06;
+      letter-spacing: -0.015em;
+      color: #f5f5f7;
+      max-width: 15.5em;
+      margin: 0 auto;
+      text-wrap: balance;
+    }
+    .zgoal-rule {
+      width: min(832px, 100%);
+      height: 0;
+      margin: 72px auto 0;
+      border: 0;
+      border-top: 1px solid #424245;
+    }
+
+    /* Reveal (Apple's lockup entrance, measured from their page): each line
+       starts 30px low and transparent, then rises over 680ms and fades in
+       over 880ms, both on a symmetric ease-in-out, 150ms after the line
+       above it. Set by the script; without it everything simply shows. */
+    .is-reveal-ready [data-reveal] { opacity: 0; transform: translateY(30px); }
+
+    /* =============================================
+       PHONE MOCKUPS
+       Centred row. Columns shrink below their 345px
+       design width so all three always stay on screen.
+       ============================================= */
+    /* Centred on the page, the three phones evenly spaced. */
+    .zro-phones { padding: 60px var(--lead) 0; }
+
+    .zro-phones-row {
+      display: flex;
+      justify-content: center;
+      gap: clamp(20px, 4cqw, 72px);
+      align-items: flex-start;
+    }
+    .zro-phone-col {
+      flex: 0 1 345px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .zro-phone-img {
+      width: 100%;
+      aspect-ratio: 345 / 697;
+      object-fit: cover;
+      display: block;
+    }
+    .zro-phone-img--a { border-radius: clamp(20px, 2.4vw, 34px); }
+    .zro-phone-img--b { border-radius: clamp(21px, 2.5vw, 36px); }
+    .zro-phone-img--c {
+      border-radius: clamp(31px, 3.7vw, 53px);
+      border: 1px solid #1a1a1a;
+    }
+    .zro-caption {
+      font-size: 20px;
+      color: #767676;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .zro-caption-sub {
+      font-size: 10px;
+      color: #767676;
+      text-align: center;
+      max-width: 167px;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+
+    /* =============================================
+       FULL-WIDTH IMAGES
+       ============================================= */
+    /* Full-width media rows sit on the hero's edges too: --col on the left,
+       --lead on the right. The 60px above is unchanged. */
+    .zro-wide { padding: 60px var(--lead) 0 var(--col); }
+    .zro-wide img,
+    .zro-wide video { width: 100%; height: auto; display: block; }
+    .zro-wide video { border-radius: clamp(12px, 1.4cqw, 24px); }
+
+
+    /* =============================================
+       MEDIA below the intro (Figma node 252:2). In page flow; sizes and
+       offsets are the frame's design px (--u: one 1440-frame px, scaled
+       with the page width).
+       ============================================= */
+    .zt { --u: calc(100cqw / 1440); }
+    .zt img, .zt video { display: block; }
+    .zt-phone { width: calc(1428 * var(--u)); aspect-ratio: 1428 / 1071; margin: 0 auto; }
+    .zt-phone img { width: 100%; height: 100%; object-fit: cover; }
+    /* grey band 1104 tall: the video 161 down from its top, 20 in from the left */
+    .zt-band {
+      background: #1e1e1e;
+      padding: calc(161 * var(--u)) calc(16 * var(--u)) calc(151 * var(--u));   /* equal sides: centred */
+    }
+    .zt-motion {
+      width: 100%;
+      aspect-ratio: 1408 / 792;
+      object-fit: cover;
+      border-radius: calc(60 * var(--u));
+      background: #000;
+    }
+    /* Large screens: the motion video becomes an inset card on the band,
+       with the proportions of Apple's product pages - about 57% of the
+       screen wide, centred, generous grey above and below, softer corners. */
+    /* Laptops (MacBook widths): the video sits inset with room on both sides */
+    @media (min-width: 1100px) and (max-width: 1699px) {
+      .zt-band { padding: calc(120 * var(--u)) 0 calc(110 * var(--u)); }
+      .zt-motion { width: 78%; margin: 0 auto; border-radius: 24px; }
+    }
+    @media (min-width: 1700px) {
+      .zt-band { padding: 120px 0 110px; }
+      .zt-motion { width: 57%; margin: 0 auto; border-radius: 28px; }
+    }
+    /* DIVE (the close-up, scroll-driven). Without .is-live (no script, or
+       reduced motion) it is the plain close-up with Figma's crop. */
+    .zdive-stage {
+      position: relative;
+      overflow: hidden;
+      width: calc(1238 * var(--u));
+      margin-left: calc(95 * var(--u));
+      aspect-ratio: 1238 / 1121;
+    }
+    .zdive-img {                          /* Figma's crop of the close-up */
+      position: absolute;
+      top: 0;
+      left: -10.85%;
+      width: 120.71%;
+      height: 100%;
+      max-width: none;
+    }
+    .zdive-vid, .zdive-black, .zdive-pal { display: none; }
+    /* The clip's background isn't pure black (a faint studio glow), so its
+       edges dissolve into the page instead of showing as a box: the sides, and
+       the top (for screens tall enough to show the picture's top edge). */
+    .zdive-img, .zdive-vid {
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%),
+                          linear-gradient(to bottom, transparent 0%, #000 22%);
+      -webkit-mask-composite: source-in;
+              mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 91%, transparent 100%),
+                          linear-gradient(to bottom, transparent 0%, #000 22%);
+              mask-composite: intersect;
+    }
+    /* The top of the phone dissolves into the black (like Apple's close-ups).
+       Drawn on the screen, not the picture, so it shows whatever the screen's
+       shape - on a wide screen the picture's own top is off screen. */
+    .zdive-fade { display: none; }
+    .zdive.is-live .zdive-fade {
+      display: block;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.75) 8%, rgba(0,0,0,0.3) 17%, transparent 28%);
+    }
+
+    /* Live: a tall section with a full-screen stage pinned while it scrolls
+       past. Its length is the scroll distance the whole sequence takes (a
+       longer section is a slower sequence); the timing within it is in the
+       script. */
+    .zdive.is-live { height: calc(700 * var(--vh, 1vh)); }
+    .zdive.is-live .zdive-stage {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: calc(100 * var(--vh, 1vh));
+      margin: 0;
+      aspect-ratio: auto;
+      background: #000;
+    }
+    /* the close-up and the clip share one box (size and place set by the
+       script); the close-up shows until the clip has a frame to show */
+    .zdive.is-live .zdive-img,
+    .zdive.is-live .zdive-vid {
+      display: block; position: absolute; left: 0; top: 0; max-width: none;
+      transform-origin: 50% 38%;           /* the upper glass, where the push heads */
+      will-change: transform;
+    }
+    .zdive.is-live .zdive-vid { opacity: 0; }
+    .zdive.is-live .zdive-vid.is-ready { opacity: 1; }
+    .zdive.is-live .zdive-black { display: block; position: absolute; inset: 0; background: #000; opacity: 0; }
+
+    /* The palette, the same block and bands as the split at the bottom of the
+       page: cool gray in the middle, darker above, lighter below */
+    .zdive.is-live .zdive-pal {
+      --band-h: calc(9.5 * var(--vh, 1vh));
+      --gap: max(2px, calc(0.3 * var(--vh, 1vh)));
+      display: block;
+      position: absolute;
+      inset: 0;
+    }
+    .zdive-title { display: none; }
+    .zdive.is-live .zdive-title {
+      display: block;
+      position: absolute;
+      left: 10.125%;                       /* the colour names' line */
+      top: calc(4 * var(--vh, 1vh));
+      margin: 0;
+      font-size: clamp(28px, 2.6cqw, 44px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: #f5f5f7;
+      opacity: 0;
+      z-index: 20;
+    }
+    /* "Color" heading and its rule, like Typography's: on the colour names'
+       line, just above the top band; they come in once the bands have
+       opened to the full width. */
+    .zdive-sub, .zdive-subrule { display: none; }
+    .zdive.is-live .zdive-sub {
+      display: block;
+      position: absolute;
+      left: 10.125%;
+      bottom: calc(50% + 36.4 * var(--vh, 1vh));
+      margin: 0;
+      font-size: clamp(20px, 1.7cqw, 28px);
+      font-weight: 500;
+      color: #f5f5f7;
+      opacity: 0;
+      z-index: 20;
+    }
+    .zdive.is-live .zdive-subrule {
+      display: block;
+      position: absolute;
+      left: 10.125%;
+      right: 10.125%;
+      bottom: calc(50% + 35.2 * var(--vh, 1vh));
+      height: 0;
+      border-top: 1px solid #2c2c2e;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      z-index: 20;
+    }
+    .zdive-band {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: var(--band-h);
+      top: calc(50% - var(--band-h) / 2 + (var(--i) - 3) * (var(--band-h) + var(--gap)));
+      will-change: transform;
+    }
+    .zdive-band > i {
+      position: absolute;
+      inset: 0;
+      background: var(--c);
+      opacity: 0;
+      will-change: opacity;
+    }
+    .zdive-band > span {
+      position: absolute;
+      top: calc(var(--band-h) * 0.12);
+      z-index: 1;
+      color: #000;
+      font-size: calc(var(--band-h) * 0.16);
+      line-height: 1.15;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .zdive-band.is-dark > span { color: #fff; }
+    .zdive-name { left: 10.125%; font-weight: 500; }
+    .zdive-keys { left: 61.04%; }
+    .zdive-vals { left: 71.5%; }
+
+    /* TYPOGRAPHY sheet, right under the colour palette. Left edge on the
+       colour names' line (10.125%), the sizes on the colour values' line
+       (71.5%); each size sits on its own sample's baseline. Plays once it
+       comes on screen (script at the end of the page). */
+    .ztype {
+      position: relative;
+      z-index: 1;
+      margin-top: calc(-16 * var(--vh, 1vh));   /* up into the black under the bands */
+      padding: 0 10.125% 160px;
+      color: #f5f5f7;
+    }
+    .ztype-title {
+      font-size: clamp(20px, 1.7cqw, 28px);
+      font-weight: 500;
+      margin: 0;
+    }
+    .ztype-rule {
+      height: 0;
+      border: 0;
+      border-top: 1px solid #2c2c2e;
+      margin: 14px 0 48px;
+      transform-origin: 0 50%;
+    }
+    .ztype-face {
+      font-size: 18px;
+      color: #86868b;
+      margin: 0 0 32px;
+    }
+    .ztype-list { list-style: none; margin: 0; padding: 0; }
+    .ztype-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 76.96% 1fr;   /* 71.5% of the page, from the 10.125% edge */
+      align-items: end;                    /* each size sits on the line under its sample */
+      margin-bottom: 18px;
+    }
+    .ztype-sample {
+      font-size: calc(var(--fs) * 1px);
+      font-weight: var(--fw);
+      line-height: 1;
+      letter-spacing: -0.005em;
+    }
+    .ztype-row:nth-child(7) .ztype-sample { letter-spacing: 0.05em; }
+    .ztype-spec { font-size: 14px; line-height: 1; color: #86868b; white-space: nowrap; }
+    @media (max-width: 820px) {
+      .ztype { padding: 32px 6% 96px; }
+      .ztype-row { grid-template-columns: 1fr auto; gap: 16px; }
+    }
+    .ztype.is-ready .ztype-title,
+    .ztype.is-ready .ztype-face,
+    .ztype.is-ready .ztype-sample,
+    .ztype.is-ready .ztype-spec { opacity: 0; }
+    .ztype.is-ready .ztype-rule { transform: scaleX(0); }
+
+    .zt-logo { width: 100%; aspect-ratio: 3840 / 1896; object-fit: cover; }
+    #goal { scroll-margin-top: 40px; }
+
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 820px) {
+      .zro-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 56px 6%;
+      }
+      .zro-row--tight { padding-top: 24px; }
+      .zro-label { font-size: 28px; }
+      .zro-body  { font-size: 17px; max-width: 100%; }
+      .zgoal { padding: 80px 6% 160px; }
+      .zgoal-eyebrow { font-size: 17px; }
+      .zgoal-rule { margin-top: 48px; }
+
+      /* Stack the intro: title + contents, then the still, then details */
+      .zro-intro {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 24px 6% 56px;
+      }
+      .zro-hero { margin-top: 0; }
+      .zro-title { font-size: 36px; margin-top: 0; }
+
+      .zro-phones { padding: 40px 6% 0; }
+      .zro-wide   { padding: 40px 6% 0; }
+
+      .zro-meta {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px 16px;
+        margin-top: 32px;
+      }
+
+      /* Stack the mockups once three across gets too narrow */
+      .zro-phones-row { flex-direction: column; align-items: center; gap: 40px; }
+      .zro-phone-col  { flex: 0 0 auto; width: min(300px, 80vw); }
+    }
+  </style>
+  <!-- Vercel Web Analytics (page views; enabled in the Vercel dashboard) -->
+  <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+  <script>
+    /* The transition on the home page hands over to this page by showing
+       it, in a frame, at the top. If the browser restored a previous
+       scroll position instead, the hand-off would visibly jump - so pin
+       this page to the top and take scroll restoration off the browser. */
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+    window.addEventListener('pageshow', function () { window.scrollTo(0, 0); });
+  </script>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang &mdash; home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work" class="active">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+
+
+
+
+  <main class="zro" aria-label="Zr&oslash; project">
+
+    <!-- INTRO -->
+    <section class="zro-intro" id="home">
+      <div class="zro-intro-left">
+        <h1 class="zro-title">Zr&oslash; 2026<br>Web and App</h1>
+      </div>
+
+      <div class="zro-intro-right">
+        <!-- No poster image: the still shown before playback is the video's
+             own first frame, decoded from the file. A separate poster can
+             never match it exactly, and the mismatch shows during the
+             transition from the home page. preload="auto" so that frame is
+             ready rather than leaving the slot blank. -->
+        <video class="zro-hero" id="zroHero" data-autoplay-in-view data-start-delay="1000"
+               src="images/zro/zrohomeanimation.mp4"
+               muted loop playsinline preload="auto"
+               aria-label="Zr&oslash; homepage &mdash; aperture landing experience"></video>
+        <script>
+          /* If we arrived through the transition, it left us the exact
+             first frame of this video. Use it as the poster so the slot is
+             filled on the very first paint, rather than sitting black
+             while the file decodes. Runs during parse, before paint. */
+          (function () {
+            try {
+              var v = document.getElementById('zroHero');
+              var still = sessionStorage.getItem(
+                'zroHeroStill:' + v.getAttribute('src').split('/').pop());
+              if (still) v.setAttribute('poster', still);
+            } catch (e) {}
+          })();
+        </script>
+
+        <div class="zro-meta" aria-label="Project details">
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">ROLE</span>
+            <span class="zro-meta-val">Product Designer</span>
+          </div>
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">TIMELINE</span>
+            <span class="zro-meta-val">June &ndash; August, 2026</span>
+          </div>
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">TOOLS</span>
+            <span class="zro-meta-val">Figma, Illustrator, AE, TouchDesigner<br>Js/HTML/CSS, WebGL</span>
+          </div>
+          <div class="zro-meta-item">
+            <span class="zro-meta-key">DOMAIN</span>
+            <span class="zro-meta-val">UX Concept<br>UI Design<br>Creative Direction<br>Logo Design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTEXT -->
+    <section class="zro-row zro-row--ctx" id="context">
+      <div class="zro-label" data-reveal>Context</div>
+      <div class="zro-body" data-reveal>
+        <p>Zr&oslash; is a reflective digital experience that helps users notice what is already present in their own words without explicitly providing advice.</p>
+        <p>As a product design intern on the project, I was responsible for translating Zr&oslash;&rsquo;s philosophy and vision into a cohesive digital experience. I defined the interaction model, primary visual language, motion principles, and brand identity across mobile and web, transforming abstract concepts into a unified product.</p>
+      </div>
+    </section>
+
+    <!-- MEDIA (Figma node 252:2, below the intro): sizes and offsets are the
+         frame's design px, scaled with the page width (--u); on large screens
+         the motion video sits as an inset card, see the style block. -->
+    <section class="zt" aria-label="Zr&oslash; mockups and motion">
+
+      <!-- 252:48 phone in water -->
+      <div class="zt-phone">
+        <img src="images/zro/figma/phone-mockup-full.png" alt="A phone running Zr&oslash;, dropped into still water" />
+      </div>
+
+      <!-- 252:55 grey band, 252:49 motion video on it -->
+      <div class="zt-band">
+        <video class="zt-motion" data-autoplay-in-view
+               src="images/zro/zromotion.mp4" poster="images/zro/figma/zromotion-still.png"
+               muted loop playsinline preload="auto"
+               aria-label="Zr&oslash; motion piece: &ldquo;You may already know.&rdquo;"></video>
+      </div>
+
+      <!-- DIVE: the phone close-up, scroll-driven. A generated clip (Seedance
+           2.5 on Higgsfield, from the close-up) turns the phone to face the
+           camera and pushes into its screen; inside the black screen the full
+           palette animation plays: the cool-gray block, the colours sliding out
+           into a column, each band opening to the full width, then coming up to
+           full strength with its values. Scroll drives all of it, both ways.
+           Without the script (or with reduced motion) it is the plain close-up.
+           Styles in the page's style block, script at the end of the page. -->
+      <div class="zdive" id="dive">
+        <div class="zdive-stage">
+          <img class="zdive-img" src="images/zro/figma/phone-closeup-mockup.png"
+               alt="Close-up of a phone showing the Zr&oslash; input bar" />
+          <video class="zdive-vid" data-src="images/zro/zrophonedive.mp4"
+                 muted playsinline preload="auto" aria-hidden="true"></video>
+          <div class="zdive-fade"></div>
+          <div class="zdive-black"></div>
+          <p class="zdive-title">Design System</p>
+          <p class="zdive-sub">Color</p>
+          <div class="zdive-subrule"></div>
+          <div class="zdive-pal" aria-hidden="true">
+            <div class="zdive-band is-dark" style="--i:0;--c:#000000"><i></i><i></i><span class="zdive-name">BLACK</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">0, 0, 0<br>#000000</span></div>
+            <div class="zdive-band is-dark" style="--i:1;--c:#0f0f0f"><i></i><i></i><span class="zdive-name">CHARCOAL BLACK</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">15, 15, 15<br>#0F0F0F</span></div>
+            <div class="zdive-band" style="--i:2;--c:#90959b"><i></i><i></i><span class="zdive-name">SMOKE GRAY</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">144, 149, 155<br>#90959B</span></div>
+            <div class="zdive-band" style="--i:3;--c:#bfccd7"><i></i><i></i><span class="zdive-name">COOL GRAY</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">191, 204, 215<br>#BFCCD7</span></div>
+            <div class="zdive-band" style="--i:4;--c:#e0e7ee"><i></i><i></i><span class="zdive-name">SLATE-200</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">224, 231, 238<br>#E0E7EE</span></div>
+            <div class="zdive-band" style="--i:5;--c:#ffffff"><i></i><i></i><span class="zdive-name">WHITE</span><span class="zdive-keys">RGB<br>HEX</span><span class="zdive-vals">255, 255, 255<br>#FFFFFF</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TYPOGRAPHY: right under the colour palette. The page's own type
+           styles. Once it comes on screen it plays through by itself: the
+           title and rule come in, each style rolls out from behind the one
+           above it, then the sizes and weights fade in one by one. Without the
+           script (or with reduced motion) it is a plain list. -->
+      <div class="ztype" id="typography">
+        <div class="ztype-inner">
+          <h3 class="ztype-title">Typography</h3>
+          <hr class="ztype-rule" />
+          <p class="ztype-face">Neue Haas Grotesk Display</p>
+          <ol class="ztype-list">
+            <li class="ztype-row" style="--i:0;--fs:72;--fw:500"><span class="ztype-sample">Display</span><span class="ztype-spec">72px &middot; Medium</span></li>
+            <li class="ztype-row" style="--i:1;--fs:40;--fw:400"><span class="ztype-sample">Title</span><span class="ztype-spec">40px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:2;--fs:36;--fw:400"><span class="ztype-sample">Heading</span><span class="ztype-spec">36px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:3;--fs:21;--fw:500"><span class="ztype-sample">Eyebrow</span><span class="ztype-spec">21px &middot; Medium</span></li>
+            <li class="ztype-row" style="--i:4;--fs:20;--fw:400"><span class="ztype-sample">Body</span><span class="ztype-spec">20px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:5;--fs:16;--fw:400"><span class="ztype-sample">Detail</span><span class="ztype-spec">16px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:6;--fs:15;--fw:400"><span class="ztype-sample">LABEL</span><span class="ztype-spec">15px &middot; Roman</span></li>
+            <li class="ztype-row" style="--i:7;--fs:10;--fw:400"><span class="ztype-sample">Caption</span><span class="ztype-spec">10px &middot; Roman</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- The logo animation (not in the Figma frame): under the close-up,
+           centred and full width, at its own 3840x1896 proportions -->
+      <video class="zt-logo" data-autoplay-in-view
+             src="images/zro/zrologoanimation.mp4"
+             muted loop playsinline preload="auto"
+             aria-label="Zr&oslash; logo animation: a light passes behind the mark, then a gleam runs down its slash"></video>
+
+    </section>
+
+    <!-- GOAL: a centred lockup (eyebrow, headline, rule) laid out like Apple's
+         product-page lockups; each line rises into place as it comes on screen
+         (script at the end of the page). -->
+    <section class="zgoal" id="goal">
+      <p class="zgoal-eyebrow" data-reveal>Goal</p>
+      <h2 class="zgoal-headline" data-reveal>Designing a visual language for a product that didn&rsquo;t fit existing interaction patterns.</h2>
+      <hr class="zgoal-rule" data-reveal />
+    </section>
+
+    <!-- CASE #1 -->
+    <section class="zro-row" id="case1">
+      <div class="zro-label" data-reveal>Not<br>Another<br>Chatbot</div>
+      <div class="zro-body" data-reveal>
+        <p>Early versions of Zr&oslash; used a conventional chat interface with message bubbles and a persistent AI identity. While familiar, users immediately associated the experience with existing AI assistants and conversational products. This shifted their expectations toward asking questions and receiving answers&mdash;the opposite of the reflective experience Zr&oslash; was designed to create.</p>
+      </div>
+    </section>
+
+    <div class="zro-phones">
+      <div class="zro-phones-row">
+        <div class="zro-phone-col" data-reveal>
+          <img class="zro-phone-img zro-phone-img--a"
+               src="images/zro/chat1ui.png"
+               alt="Old chat mode &mdash; message bubble interface" />
+          <p class="zro-caption">Old &ldquo;Chat&rdquo; Mode</p>
+          <p class="zro-caption-sub">stale, too permanent, and reminiscent of classic AI chat tools</p>
+        </div>
+        <div class="zro-phone-col" data-reveal>
+          <img class="zro-phone-img zro-phone-img--b"
+               src="images/zro/chat2ui.png"
+               alt="Old card mode &mdash; response cards interface" />
+          <p class="zro-caption">Old &ldquo;Card&rdquo; Mode</p>
+          <p class="zro-caption-sub">cards felt better than bubbles, but didn&rsquo;t serve a particular purpose</p>
+        </div>
+        <div class="zro-phone-col" data-reveal>
+          <img class="zro-phone-img zro-phone-img--c"
+               src="images/zro/image2.png"
+               alt="Final UI &mdash; continuous text stream" />
+          <p class="zro-caption">Final</p>
+          <p class="zro-caption-sub">Feels like your own thoughts visualized instead of someone talking to you</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="zro-row zro-row--pushed">
+      <div class="zro-label"></div>
+      <div class="zro-body">
+        <p>I noticed that interaction patterns communicate a product&rsquo;s purpose long before reading any text. Therefore, I removed any hint toward conversational structure, replacing previous interfaces with a continuous stream of language that unfolds naturally like our thoughts themselves.</p>
+      </div>
+    </div>
+
+    <!-- CASE #2 -->
+    <section class="zro-row" id="case2">
+      <div class="zro-label">Rethinking<br>Memory</div>
+      <div class="zro-body">
+        <p>The traditional AI chat sidebar prioritizes recency and scannability for users to quickly index previous conversations. This kind of interface conflicted with the product&rsquo;s goal of encouraging users to revisit reflections as meaningful experiences rather than completed exchanges.</p>
+      </div>
+    </section>
+
+    <div class="zro-wide">
+      <video data-reveal data-autoplay-in-view
+             src="images/zro/cardui.mp4"
+             poster="images/zro/image4.png"
+             muted loop playsinline preload="metadata"
+             aria-label="Redesigned session navigation &mdash; box previews of past reflections"></video>
+    </div>
+
+    <div class="zro-row zro-row--tight">
+      <div class="zro-label"></div>
+      <div class="zro-body">
+        <p>Rather than presenting previous sessions as conversations, I redesigned them as individual spaces that users could return to. Each chat became more easily visualized through a box preview, which provoked feelings of entering a room or past memory. The improved navigation emphasized entering and revisiting experiences instead of scrolling through archived chats.</p>
+      </div>
+    </div>
+
+    <!-- CASE #3 -->
+    <section class="zro-row" id="case3">
+      <div class="zro-label">From<br>Philosophy<br>To Form</div>
+      <div class="zro-body">
+        <p>One of Zr&oslash;&rsquo;s central ideas was that clarity doesn&rsquo;t appear instantly, just as answers don&rsquo;t come to us right away. In fact, it gradually comes into focus as our attention shifts. I focused the feelings I associated with the concept of aperture: uncertainty, emergence, focus, and changing perspective. The challenge was translating this abstract philosophy into a visual experience without relying on literal camera imagery or explanatory graphics.</p>
+      </div>
+    </section>
+
+    <div class="zro-wide">
+      <video data-reveal data-autoplay-in-view
+             src="images/zro/zroaperturedemo.mp4"
+             poster="images/zro/image5.png"
+             muted loop playsinline preload="metadata"
+             aria-label="Aperture-inspired visual explorations &mdash; blur and focus studies"></video>
+    </div>
+
+    <div class="zro-row zro-row--tight">
+      <div class="zro-label"></div>
+      <div class="zro-body">
+        <p>I explored dynamic blur systems, motion studies, and interactive visual experiments inspired by the behavior of an aperture. Through multiple iterations, these ideas evolved into a fluid landing experience where clarity subtly emerges through the interaction of users themselves.</p>
+      </div>
+    </div>
+
+
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* Only play the page's videos while they're actually on screen —
+       they stay paused (and idle) the rest of the time.
+
+       Two extra rules:
+       - Inside the home page's transition frame nothing ever plays, so
+         the frame and this page show the same still at the hand-off.
+       - A video marked data-start-delay sits on its own first frame for
+         that long after arrival, so the page settles before it moves. */
+    (function () {
+      var vids = document.querySelectorAll('video[data-autoplay-in-view]');
+      if (!vids.length) return;
+
+      /* Make sure a held video is actually showing its first frame rather
+         than an empty box - in the frame as well as on the real page, so
+         the two are identical at the hand-off. */
+      Array.prototype.forEach.call(vids, function (v) {
+        if (!v.dataset.startDelay) return;
+        if (v.readyState >= 2) return;
+        v.addEventListener('loadedmetadata', function () {
+          try { v.currentTime = 0; } catch (e) {}
+        }, { once: true });
+      });
+
+      var inFrame = window.top !== window.self;
+      if (inFrame) return;
+
+      var landed = Date.now();
+
+      if (!('IntersectionObserver' in window)) {
+        Array.prototype.forEach.call(vids, function (v) { v.play(); });
+        return;
+      }
+
+      function play(v) {
+        var wait = parseInt(v.dataset.startDelay || 0, 10) -
+                   (Date.now() - landed);
+
+        if (wait > 0) {
+          if (v.dataset.pending) return;
+          v.dataset.pending = '1';
+          window.setTimeout(function () {
+            v.dataset.pending = '';
+            if (v.dataset.inView && !document.hidden) play(v);
+          }, wait);
+          return;
+        }
+
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          e.target.dataset.inView = e.isIntersecting ? '1' : '';
+          if (e.isIntersecting && !document.hidden) play(e.target);
+          else e.target.pause();
+        });
+      }, { threshold: 0.25 });
+
+      Array.prototype.forEach.call(vids, function (v) { io.observe(v); });
+
+      // Also stop when the tab itself is hidden; resume what's on screen.
+      document.addEventListener('visibilitychange', function () {
+        Array.prototype.forEach.call(vids, function (v) {
+          if (document.hidden) v.pause();
+          else if (v.dataset.inView) play(v);
+        });
+      });
+    })();
+  </script>
+  <script>
+    /* Dive: scroll position drives the scene directly - the section's scroll
+       progress p (0 at its top, 1 when its stage lets go) maps to one exact
+       frame, so it plays the same backwards, after a resize, or after a jump.
+       Timeline (fractions of p):
+         0    - .04   hold on the close-up as it sits on the page
+         .04  - .34   the clip: the phone turns to face the camera, then the
+                      camera starts pushing into its screen
+         .34  - .43   the push carries on past the clip's last frame, into the
+                      upper glass, and settles to pure black (.37 - .43)
+         .44  - .49   inside the screen, the cool-gray block appears
+         .51  - .61   the other colours slide out from behind it into a column
+         .62  - .79   top down, each band opens to the full width, half strength
+         .80          reaching here plays the full-strength wave (timed, not
+                      scrubbed): each band comes up to full, values settling in
+         .80  - 1     hold
+       Only transform, opacity and the clip's time change. */
+    (function () {
+      var sec = document.getElementById('dive');
+      if (!sec) return;
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;                    // stays the plain close-up
+
+      var stage = sec.querySelector('.zdive-stage');
+      var img = sec.querySelector('.zdive-img');
+      var vid = sec.querySelector('.zdive-vid');
+      var black = sec.querySelector('.zdive-black');
+      var bands = [].slice.call(sec.querySelectorAll('.zdive-band'));
+      sec.classList.add('is-live');
+
+      var T = {
+        clipA: 0.04, clipB: 0.34,
+        pushA: 0.34, pushB: 0.43, PUSH: 3.2, // how far past the clip's last frame
+        blackA: 0.37, blackB: 0.43,
+        seedA: 0.44, seedB: 0.49,
+        splitA: 0.51, splitB: 0.61,
+        openA: 0.62, openLen: 0.08,         // each band; the next starts STAGGER later
+        fullA: 0.80, fullLen: 0.035,        // the full-strength wave: quicker, so a
+        FULL_STAGGER: 0.009,                // little scroll brings the colours up
+        STAGGER: 0.018
+      };
+      var AR = 4 / 3;                        // the close-up and the clip
+
+      function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+      function range(p, a, b) { return clamp((p - a) / (b - a)); }
+      function inOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+      function inOut5(t) { return t < 0.5 ? 16 * Math.pow(t, 5) : 1 - Math.pow(-2 * t + 2, 5) / 2; }
+      function out(t) { return 1 - Math.pow(1 - t, 3); }
+      function expoOut(t) { return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+      // The clip: scroll sets the time it should show; a seek is only asked
+      // for when the last one has landed, so fast scrolling never queues up.
+      var dur = 0, want = 0;
+      function seek() {
+        if (!dur || vid.seeking) return;
+        if (Math.abs(vid.currentTime - want) > 1 / 120) vid.currentTime = want;
+      }
+      function ready() {
+        dur = vid.duration || 0;
+        vid.classList.add('is-ready');
+        render();
+      }
+      vid.addEventListener('loadeddata', ready);
+      vid.addEventListener('seeked', seek);
+      // Load the whole clip (4 MB) into memory first: then every seek is
+      // local and instant, whatever the server does with range requests.
+      var src = vid.getAttribute('data-src');
+      fetch(src).then(function (res) {
+        if (!res.ok) throw 0;
+        return res.blob();
+      }).then(function (blob) {
+        vid.src = URL.createObjectURL(blob);
+      }).catch(function () { vid.src = src; });
+
+      var W, H;
+      function measure() {
+        W = stage.clientWidth;
+        H = stage.clientHeight;
+        // the whole close-up, a touch larger than fitting, centred
+        var w = Math.min(Math.max(W, H * AR), Math.min(W, H * AR) * 1.12), h = w / AR;
+        [img, vid].forEach(function (el) {
+          el.style.width = w + 'px';
+          el.style.height = h + 'px';
+          el.style.left = (W - w) / 2 + 'px';
+          el.style.top = (H - h) / 2 + 'px';
+        });
+      }
+
+      // Full-strength wave, top down (original palette timing): each band
+      // fades up over 700ms, 110ms after the one above; its letters settle in
+      // 250ms later, 50ms apart.
+      var title = sec.querySelector('.zdive-title');
+      var sub = sec.querySelector('.zdive-sub'), subrule = sec.querySelector('.zdive-subrule');
+      var waved = false, running = [];
+      function wave() {
+        waved = true;
+        // "Color" rises in and its rule draws across, left to right
+        running.push(sub.animate([
+          { opacity: 0, transform: 'translateY(12px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ], { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }));
+        running.push(subrule.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+          { duration: 900, delay: 100, easing: 'cubic-bezier(0.45, 0, 0.55, 1)', fill: 'both' }));
+        bands.forEach(function (b) {
+          var i = +b.style.getPropertyValue('--i'), f = i * 110;
+          running.push(b.children[1].animate([{ opacity: 0 }, { opacity: 1 }],
+            { duration: 700, delay: f, easing: 'cubic-bezier(0.45, 0, 0.55, 1)', fill: 'both' }));
+          [].slice.call(b.querySelectorAll('span')).forEach(function (sp, k) {
+            running.push(sp.animate([
+              { opacity: 0, transform: 'translateY(6px)' },
+              { opacity: 1, transform: 'translateY(0)' }
+            ], { duration: 600, delay: f + 250 + k * 50, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'both' }));
+          });
+        });
+      }
+      function unwave() {
+        waved = false;
+        running.forEach(function (a) { a.cancel(); });
+        running = [];
+      }
+
+      var ticking = false;
+      function render() {
+        ticking = false;
+        var r = sec.getBoundingClientRect(), st = stage.getBoundingClientRect();
+        var p = clamp(-r.top / (r.height - st.height));
+
+        // the phone
+        want = range(p, T.clipA, T.clipB) * Math.max(0, dur - 0.04);
+        seek();
+        var gone = p >= T.blackB;
+        var push = Math.pow(T.PUSH, inOut(range(p, T.pushA, T.pushB)));
+        img.style.transform = vid.style.transform = 'scale(' + push + ')';
+        vid.style.visibility = gone ? 'hidden' : '';
+        // the still only stands in until the clip has a frame: under the clip's
+        // faded top it would show through as a ghost of the phone
+        img.style.visibility = gone || dur ? 'hidden' : '';
+        black.style.opacity = inOut(range(p, T.blackA, T.blackB));
+
+        // the palette, inside the screen
+        var bandH = bands[0].offsetHeight, step = bandH + Math.max(2, H * 0.003);
+        var sx = bandH * 1.7 / W;            // the block's width, as a share of a band's
+        var seed = out(range(p, T.seedA, T.seedB));
+        var split = inOut5(range(p, T.splitA, T.splitB));
+        bands.forEach(function (b) {
+          var i = +b.style.getPropertyValue('--i'), d = i - 3;
+          var open = expoOut(range(p, T.openA + i * T.STAGGER, T.openA + i * T.STAGGER + T.openLen));
+          var k = d === 0 ? 0.9 + 0.1 * seed : 1;
+          b.style.zIndex = 10 - Math.abs(d);
+          b.style.transform = 'translateY(' + -d * step * (1 - split) + 'px) scale(' + (sx + (1 - sx) * open) * k + ',' + k + ')';
+          b.children[0].style.opacity = (d === 0 ? seed : split > 0 ? 1 : 0) * (1 - 0.5 * open);
+        });
+        title.style.opacity = out(range(p, T.seedA, T.seedB));
+        // the full-strength wave is not scrubbed: reaching it plays it, on
+        // the palette's original timing; scrolling back above it resets it
+        if (p >= T.fullA && !waved) wave();
+        else if (p < T.fullA && waved) unwave();
+      }
+
+      function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(render); } }
+      function onResize() { measure(); render(); }
+      measure();
+      render();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onResize);
+      window.addEventListener('load', onResize);
+    })();
+  </script>
+  <script>
+    /* Typography: plays by itself once a third of it is on screen (no
+       scrubbing): the title rises in and its rule draws across, the face name
+       appears, then top down each style and its size settle in together,
+       110ms apart (the palette letters' soft settle, not a big entrance). It resets once it has gone back below the screen, so coming down
+       to it again plays it again. */
+    (function () {
+      var sec = document.getElementById('typography');
+      if (!sec || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var title = sec.querySelector('.ztype-title');
+      var rule = sec.querySelector('.ztype-rule');
+      var face = sec.querySelector('.ztype-face');
+      var rows = [].slice.call(sec.querySelectorAll('.ztype-row'));
+      sec.classList.add('is-ready');
+
+      var EASE = 'cubic-bezier(0.45, 0, 0.55, 1)', SOFT = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      var running = [], played = false;
+      function anim(el, kf, opt) { running.push(el.animate(kf, Object.assign({ fill: 'both' }, opt))); }
+      function play() {
+        played = true;
+        // the palette letters' settle: 6px up and in, 600ms, soft finish
+        function settle(el, d, dist) {
+          anim(el, [{ opacity: 0, transform: 'translateY(' + (dist || 6) + 'px)' },
+                    { opacity: 1, transform: 'translateY(0)' }],
+            { duration: 700, delay: d, easing: SOFT });
+        }
+        settle(title, 0, 10);
+        anim(rule, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }],
+          { duration: 900, delay: 100, easing: EASE });
+        settle(face, 300);
+        // top down, each style and its size together, 110ms apart
+        rows.forEach(function (row, i) {
+          var d = 500 + i * 110;
+          settle(row.querySelector('.ztype-sample'), d);
+          settle(row.querySelector('.ztype-spec'), d);
+        });
+      }
+      function reset() {
+        played = false;
+        running.forEach(function (a) { a.cancel(); });
+        running = [];
+      }
+      new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        if (e.isIntersecting && !played) play();
+        else if (!e.isIntersecting && played && e.boundingClientRect.top > 0) reset();
+      }, { threshold: 0.33 }).observe(sec);
+    })();
+  </script>
+  <script>
+    /* Reveal (Apple's entrance, measured from their iPhone page): anything
+       marked data-reveal starts 30px low and transparent, then rises over
+       680ms and fades in over 880ms, both ease-in-out. Things that come on
+       screen together go one after another, 150ms apart, in page order -
+       a title, then its text; the three phones one at a time. Once only.
+       Without the script everything simply shows. */
+    (function () {
+      var els = [].slice.call(document.querySelectorAll('[data-reveal]'));
+      if (!els.length || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+      document.documentElement.classList.add('is-reveal-ready');
+
+      var EASE = 'cubic-bezier(0.42, 0, 0.58, 1)', LEAD = 60, STAGGER = 150;
+      var queue = [], last = 0;
+      function reveal(el) {
+        // keep the 150ms rhythm even when the next one arrives a moment later
+        var now = performance.now();
+        var d = Math.min(600, Math.max(LEAD, last + STAGGER - now));   // never more than 0.6s behind
+        last = now + d;
+        el.animate([{ transform: 'translateY(30px)' }, { transform: 'translateY(0)' }],
+          { duration: 680, delay: d, easing: EASE, fill: 'forwards' });
+        el.animate([{ opacity: 0 }, { opacity: 1 }],
+          { duration: 880, delay: d, easing: EASE, fill: 'forwards' });
+      }
+      // starts once something is 10% up from the bottom of the screen
+      var io = new IntersectionObserver(function (entries) {
+        entries.filter(function (e) { return e.isIntersecting; })
+          .map(function (e) { return e.target; })
+          .sort(function (x, y) { return els.indexOf(x) - els.indexOf(y); })
+          .forEach(function (el) { io.unobserve(el); reveal(el); });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      els.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
+</body>
+</html>

@@ -23,6 +23,27 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'Neue Haas Grotesk Display';
+  src: url('../fonts/NeueHaasDisplayLight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display';
+  src: url('../fonts/NeueHaasDisplayBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Haas Grotesk Display';
+  src: url('../fonts/NeueHaasDisplayRomanItalic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
   font-family: 'DeFonte Reduced';
   src: url('../fonts/DeFonte-Reduced.woff2') format('woff2'),
        url('../fonts/DeFonte-Reduced.woff') format('woff');
@@ -326,11 +347,11 @@ html.is-loading body {
   color: #767676;
 }
 .hero-now a {
-  color: var(--pink);
+  color: var(--fg);
   text-decoration: none;
   transition: color 0.2s;
 }
-.hero-now a:hover { color: var(--fg); }
+.hero-now a:hover { color: var(--pink); }
 @media (max-width: 720px) {
   .hero-bio {
     font-size: clamp(22px, 6vw, 34px);
