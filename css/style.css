@@ -943,6 +943,22 @@ html.is-loading body {
   transition: opacity 0.22s;
 }
 .gallery-card:hover { opacity: 0.8; }
+/* A label that shows on hover (data-label="..."), over the bottom of the card */
+.gallery-card[data-label] { position: relative; }
+.gallery-card[data-label]::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 28px 12px 10px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  opacity: 0;
+  transition: opacity 0.22s;
+  pointer-events: none;
+}
+.gallery-card[data-label]:hover::after { opacity: 1; }
 /* Artwork that sits on white would otherwise bleed into the page and lose its
    edges. A hairline keeps the piece contained. box-sizing is border-box
    globally, so this never changes the column width. */
