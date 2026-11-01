@@ -49,8 +49,10 @@
     .sc-frame {
       --px: min(1px, calc(100cqw / 1440));
       position: relative;
-      height: calc(2450 * var(--px));      /* to just past "WIP", with room below it */
+      height: calc(520 * var(--px));       /* to just past the Home paragraph; the write-up follows in .sc-flow */
     }
+
+    .sc-banner { display: block; width: 100%; height: auto; aspect-ratio: 60836.3 / 11822.2; }
 
     /* Every placed piece: left = --l, top = --t (design px), width = --w */
     .sc-a {
@@ -104,6 +106,45 @@
     }
 
     /* =============================================
+       THE WRITE-UP: normal flow on the frame's grid - a grey label at
+       8.33%, its text at 33.33% (670 wide, like the Home paragraph),
+       pictures centred at the screenshot width with slightly rounded corners
+       ============================================= */
+    .sc-flow { --px: min(1px, calc(100cqw / 1440)); padding-bottom: calc(160 * var(--px)); }
+    .sc-row { position: relative; margin-top: calc(160 * var(--px)); }
+    .sc-row > h2 { position: absolute; left: calc(8.33% + 8 * var(--px)); top: calc(-6 * var(--px)); width: calc(25% - 41 * var(--px));   /* ends 40 short of the text column */ margin: 0; font-weight: 400; }
+    .sc-body { margin-left: calc(33.33% + 7 * var(--px)); width: calc(670 * var(--px)); }
+    .sc-body p { margin: 0; }
+    .sc-body p + p { margin-top: 1.2em; }
+    .sc-body b { font-weight: 500; }
+    .sc-body ul { margin: 1.2em 0 0; padding-left: 1.1em; }
+    .sc-body li + li { margin-top: 0.5em; }
+    .sc-body ul + p { margin-top: 1.2em; }
+    .sc-row--tight { margin-top: calc(64 * var(--px)); }   /* text continuing after a picture */
+    /* the question: set between two lines, like the questions on the Zro page */
+    .sc-q {
+      margin: calc(206 * var(--px)) calc(8.33% + 8 * var(--px)) 0;
+      padding: calc(74 * var(--px)) calc(100% / 12) ;
+      border-top: 1px solid rgba(128, 128, 128, 0.4);
+      border-bottom: 1px solid rgba(128, 128, 128, 0.4);
+      text-align: center;
+    }
+    .sc-q + .sc-row { margin-top: calc(206 * var(--px)); }
+    .sc-fig { width: calc(1179 * var(--px)); margin: calc(64 * var(--px)) auto 0; }
+    /* the same drop shadow as the import screenshot; drawn as a filter on the
+       figure so it follows the picture's corners and, on cut-off screens, its fade */
+    .sc-fig { filter: drop-shadow(0 calc(18 * var(--px)) calc(11.6 * var(--px)) rgba(0, 0, 0, 0.25)); }
+    .sc-fig img, .sc-fig video { display: block; width: 100%; height: auto; border-radius: calc(20 * var(--px)); }
+    /* screens cut off at the bottom fade out there, like the earlier versions on the Zro page */
+    .sc-fade img {
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 62%, rgba(0,0,0,0.57) 76%, rgba(0,0,0,0.09) 92%, transparent 100%);
+              mask-image: linear-gradient(180deg, #000 0%, #000 62%, rgba(0,0,0,0.57) 76%, rgba(0,0,0,0.09) 92%, transparent 100%);
+    }
+    .sc-pair { display: flex; gap: calc(24 * var(--px)); width: calc(1179 * var(--px)); margin: 0 auto; }
+    .sc-pair .sc-fig { flex: 1; width: auto; }
+    .sc-fig--room { margin-top: calc(140 * var(--px)); margin-bottom: calc(140 * var(--px)); }   /* the homepage: more air around it */
+
+    /* =============================================
        NARROW SCREENS: stack everything in order
        ============================================= */
     @media (max-width: 900px) {
@@ -115,6 +156,12 @@
       .sc-t { font-size: calc(var(--fs) * 0.8px); }
       .sc-meta { font-size: 13px; }
       .sc-c { text-align: center; }
+      .sc-flow { padding: 0 6% 96px; }
+      .sc-row { margin-top: 56px; }
+      .sc-row > h2 { position: static; width: auto; margin-bottom: 12px; }
+      .sc-body, .sc-q, .sc-fig, .sc-pair { width: auto; margin-left: 0; margin-right: 0; }
+      .sc-q { margin-top: 56px; }
+      .sc-fig { margin-top: 24px; }
     }
   </style>
   <!-- Vercel Web Analytics (page views; enabled in the Vercel dashboard) -->
@@ -143,37 +190,131 @@
   <main class="sc" aria-label="Scout project">
     <!-- Figma y - 64 for --t. Order matches the frame's stacking: the grey
          card is painted under the home screenshot. -->
+    <!-- banner: the full width of the screen, at its own proportions -->
+    <img class="sc-banner" src="images/scout/scout-banner.svg" alt="Find work worth designing for. Scout" />
+
     <div class="sc-frame">
 
-      <!-- 225:146 grey card, 223:144 home screenshot -->
-      <div class="sc-a sc-card" aria-hidden="true"
-           style="--l:50%;--t:64;--w:1110;height:calc(664 * var(--px))"></div>
-      <div class="sc-a sc-shot sc-home" style="--l:50%;--t:34;--w:1171;--h:661">
-        <img src="images/scout/scout-home.png"
-             alt="Scout&rsquo;s home screen: a list of design internships with company, type, location and status" />
-      </div>
-
       <!-- 223:106 title -->
-      <h1 class="sc-a sc-t sc-title" style="--l:calc(8.33% + 5 * var(--px));--t:795;--w:486;--fs:36">Scout<br><em>Internship Tracker</em></h1>
+      <h1 class="sc-a sc-t sc-title" style="--l:calc(8.33% + 5 * var(--px));--t:100;--w:486;--fs:36">Scout<br><em>Internship Tracker</em></h1>
 
       <!-- 223:113 / 223:114 / 223:115 details -->
-      <p class="sc-a sc-meta" style="--l:calc(50% + 10 * var(--px));--t:806;--w:230"><span class="k">ROLE</span><span class="gap"></span>Designer</p>
-      <p class="sc-a sc-meta" style="--l:calc(66.67% + 12 * var(--px));--t:806;--w:230"><span class="k">TOOLS</span><span class="gap"></span></p>
-      <p class="sc-a sc-meta" style="--l:calc(83.33% + 18 * var(--px));--t:806;--w:230"><span class="k">DOMAIN</span><span class="gap"></span>UI<br>3D Modeling<br>Animation</p>
+      <p class="sc-a sc-meta" style="--l:calc(50% + 10 * var(--px));--t:111;--w:230"><span class="k">ROLE</span><span class="gap"></span>Designer</p>
+      <p class="sc-a sc-meta" style="--l:calc(66.67% + 12 * var(--px));--t:111;--w:230"><span class="k">TOOLS</span><span class="gap"></span>Figma<br>Photoshop<br>Illustrator</p>
+      <p class="sc-a sc-meta" style="--l:calc(83.33% + 18 * var(--px));--t:111;--w:230"><span class="k">DOMAIN</span><span class="gap"></span>UI/UX<br>Branding</p>
 
       <!-- 223:107 label, 223:116 body -->
-      <h2 class="sc-a sc-t sc-gray" style="--l:calc(8.33% + 8 * var(--px));--t:1000;--w:486;--fs:24;font-weight:400">Home</h2>
-      <p class="sc-a sc-t" style="--l:calc(33.33% + 7 * var(--px));--t:1006;--w:670;--fs:20">Scout is a internship tracking app/website for designers! I made this tool after struggling to find an effective job searching app for internships that aligned specifically with my design and creative tech interests. You can link whatever external applications you want to Scout--Handshake, Linkedin, and school career networks--so that you can find all your potential opportunities all in one spot. Scout not only helps you find opportunities, but serves as a place for you to organize applications after applying.</p>
+      <h2 class="sc-a sc-t sc-gray" style="--l:calc(8.33% + 8 * var(--px));--t:305;--w:486;--fs:24;font-weight:400">Home</h2>
+      <p class="sc-a sc-t" style="--l:calc(33.33% + 7 * var(--px));--t:311;--w:670;--fs:20">Scout is a internship tracking app/website for designers! I made this tool after struggling to find an effective job searching app for internships that aligned specifically with my design and creative tech interests. You can link whatever external applications you want to Scout--Handshake, Linkedin, and school career networks--so that you can find all your potential opportunities all in one spot. Scout not only helps you find opportunities, but serves as a place for you to organize applications after applying.</p>
 
-      <!-- 224:145 import screenshot, 225:147 caption -->
-      <div class="sc-a sc-shot sc-import" style="--l:50%;--t:1339;--w:1179;--h:661">
-        <img src="images/scout/scout-import.png"
-             alt="A Google Sheets spreadsheet of applications imported into Scout&rsquo;s table view" loading="lazy" />
-      </div>
-      <p class="sc-a sc-t sc-c" style="--l:calc(25% + 370 * var(--px));--t:2036;--w:670;--fs:20">importing a google sheets spreadsheet onto Scout</p>
+    </div>
 
-      <!-- 240:2 -->
-      <p class="sc-a sc-t sc-gray sc-c" style="--l:calc(33.33% + 234 * var(--px));--t:2221;--w:486;--fs:24">WIP</p>
+    <!-- The write-up: in normal flow, on the frame's grid (label column at
+         8.33%, text column at 33.33%, pictures centred). -->
+    <div class="sc-flow">
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">A better place to look for what&rsquo;s next.</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>When I started applying for internships, I was constantly switching between LinkedIn and Handshake. I&rsquo;d spend a few days on one, then move to the other, trying to catch whatever I might have missed. Every application went into a Google spreadsheet, which I had to remember to update myself.</p>
+          <p>Even with filters, finding the right roles was frustrating. Searching for design internships brought up software engineering, architecture, industrial design, and full-time positions I wasn&rsquo;t eligible for. Motion design and creative technology roles were even harder to find. AI-powered searches weren&rsquo;t much better. I was spending so much time looking for opportunities that I was missing some of them entirely.</p>
+        </div>
+      </section>
+
+      <p class="sc-q sc-t" style="--fs:36">How might I bring the different parts of my internship search into one place, without making it feel like another job board?</p>
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">One place to look</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>Scout started with a simple idea: bring listings from the places I already searched into one feed.</p>
+          <p>Instead of choosing between LinkedIn, Handshake, school boards, and community-maintained lists, I wanted to see everything together. More importantly, I wanted the results to reflect the kinds of design work I was actually interested in. Scout uses information provided during onboarding, alongside user preferences, to prioritize relevant internships across different creative disciplines. But putting everything in one place introduced another problem. With more listings coming in, how would I know which ones deserved my attention first?</p>
+        </div>
+      </section>
+      <figure class="sc-fig sc-fade"><img src="images/scout/cs-jobs.webp" alt="Scout&rsquo;s feed: internship listings from different sources in one list" loading="lazy" /></figure>
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">Finding what&rsquo;s worth opening</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>When you&rsquo;re applying for internships, timing matters. Finding the right position two weeks after it opens can mean missing the best window to apply. I introduced a match percentage to help surface the opportunities I cared about most. The score considers three things:</p>
+          <ul>
+            <li><b>Company:</b> whether it&rsquo;s somewhere you&rsquo;ve specifically expressed interest in.</li>
+            <li><b>Role fit:</b> how closely the position matches your preferred disciplines, location, experience level, and other criteria.</li>
+            <li><b>Freshness:</b> how recently the opportunity was posted.</li>
+          </ul>
+          <p>Newer, more relevant opportunities move toward the top, so I can spend less time sorting and more time applying.</p>
+        </div>
+      </section>
+      <figure class="sc-fig"><video src="images/scout/clip-score.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Hovering over match scores shows the reasoning behind each one"></video></figure>
+      <section class="sc-row sc-row--tight">
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>One distinction felt important to me: the percentage isn&rsquo;t supposed to tell you how qualified you are.</p>
+          <p>I&rsquo;ve never liked the idea of reducing someone&rsquo;s chances of getting an interview to a number. Hiring is unpredictable, and there&rsquo;s so much that a r&eacute;sum&eacute; or portfolio can&rsquo;t communicate. I wanted the score to reflect how well a job aligns with what you&rsquo;re looking for, rather than deciding whether you should apply.</p>
+        </div>
+      </section>
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">Less opening, more deciding</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>My old workflow involved opening listing after listing in new tabs, reading through descriptions, then trying to remember which ones were worth returning to.</p>
+          <p>In Scout, selecting a role opens a detail panel beside the feed. I can read the description, check the requirements and pay, and go directly to the original application without losing my place. From there, I can save it, put it aside, archive it, or mark it as an application I&rsquo;m preparing. I wanted browsing to feel less like collecting endless tabs and more like making small, manageable decisions.</p>
+        </div>
+      </section>
+      <figure class="sc-fig"><video src="images/scout/clip-open.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Opening a role in a panel, saving it, closing it and opening the next one"></video></figure>
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">Somewhere for everything to go</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>I used to keep my applications in a Google spreadsheet. It worked, but the searching and tracking happened in completely different places.</p>
+          <p>Scout brings those steps together. Listings can be placed into Maybe, Saved, or Archived, depending on whether I want to reconsider them, return to them, or stop seeing them.</p>
+        </div>
+      </section>
+      <figure class="sc-fig"><video src="images/scout/clip-sort.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Saving one role and archiving another, then finding them under Saved and Archive"></video></figure>
+      <section class="sc-row sc-row--tight">
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>Once I start preparing or applying, they become part of my application tracker. The tracker actually started as a Kanban board. I liked the visual organization at first, but as the number of applications grew, it became harder to scan and compare everything.</p>
+          <p>I eventually moved toward a table. It&rsquo;s less visually elaborate, but much easier to read when you&rsquo;re keeping track of lots of applications, dates, salaries, and locations. It also made importing an existing spreadsheet a more natural part of the experience. Sometimes the more familiar interface is simply the better one.</p>
+        </div>
+      </section>
+      <figure class="sc-fig sc-fade"><img src="images/scout/cs-tracker.webp" alt="The application tracker as a table: company, role, date applied, salary and location" loading="lazy" /></figure>
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">Looking beyond the feed</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>Not every opportunity appears as a job posting, and some of the biggest internship programs follow predictable recruiting schedules.</p>
+          <p>I added a calendar to keep track of when certain programs typically open, so students can prepare before applications go live.</p>
+        </div>
+      </section>
+      <figure class="sc-fig sc-fade"><img src="images/scout/cs-calendar.webp" alt="The calendar: programs and when they typically open" loading="lazy" /></figure>
+      <section class="sc-row sc-row--tight">
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>I also wanted a place for the opportunities that don&rsquo;t fit neatly into the internship category: ambassador programs, residencies, student communities, and other ways to get involved.</p>
+          <p>These became Scout&rsquo;s Outreach section. For me, finding creative work isn&rsquo;t always just about submitting applications. It&rsquo;s also about discovering communities, meeting people, and finding unexpected ways into the field.</p>
+        </div>
+      </section>
+      <figure class="sc-fig sc-fade"><img src="images/scout/cs-outreach.webp" alt="Outreach: ambassador programs, residencies and student communities" loading="lazy" /></figure>
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">Making the experience feel different</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>One of my biggest references was Jobright. I found some of its functionality genuinely useful, but the interface felt crowded and uncomfortable to spend time in. And when you&rsquo;re already stressed about applications, the last thing you want is another overwhelming dashboard.</p>
+          <p>For Scout&rsquo;s interface, I wanted something quieter. Clear typography, generous spacing, fewer competing elements, and just enough visual information to make scanning easy. I initially left company logos out of the listings. Adding them later made a surprisingly big difference. The feed felt less like a database of anonymous positions and more like a collection of actual places I could imagine working. But I didn&rsquo;t want the entire product to feel restrained. The homepage takes a different approach, using blurred photography, color, and softer imagery to bring some warmth into an otherwise practical tool.</p>
+        </div>
+      </section>
+      <figure class="sc-fig sc-fig--room"><video src="images/scout/clip-home.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Scout&rsquo;s homepage: blurred photos shifting inside the logo shape, above &ldquo;Find work worth designing for.&rdquo;"></video></figure>
+      <section class="sc-row sc-row--tight">
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>Applying for jobs has become an increasingly digital and impersonal experience. Interviews happen through screens, applications disappear into automated systems, and rejections often arrive without a human response. After a while, the whole process can start to feel mechanical.</p>
+          <p>I didn&rsquo;t want Scout to reinforce that feeling. The imagery is deliberately a little ambiguous. It&rsquo;s less about showing a particular workplace and more about imagining somewhere you might end up. That uncertainty can be intimidating, but it can also be exciting. I wanted Scout to leave room for that excitement.</p>
+        </div>
+      </section>
+
+      <section class="sc-row">
+        <h2 class="sc-t sc-gray" style="--fs:24">What I learned</h2>
+        <div class="sc-body sc-t" style="--fs:20">
+          <p>I initially thought Scout was mostly an organizational problem. If I could bring all my sources together, rank the listings, and replace my spreadsheet, the experience would be better. And in a practical sense, it was. Scout has become something I prefer using over the platforms that inspired me to build it. But working on it also made me realize how much the tools we use shape the way we experience something.</p>
+          <p>A job search is already full of uncertainty. I can&rsquo;t design away rejection, make every opportunity a perfect fit, or guarantee someone gets an interview. What I can do is make the process feel a little less overwhelming, a little more personal, and maybe even something to look forward to. Scout is currently a functioning local web app. Next, I want to bring it online, improve the accuracy and freshness of its listings, and explore how r&eacute;sum&eacute; information can make its recommendations more useful without turning the match score into a judgment of someone&rsquo;s potential.</p>
+        </div>
+      </section>
 
     </div>
   </main>

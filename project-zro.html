@@ -659,22 +659,20 @@
     .zgoal-rule { width: calc(1151 * var(--u)); border-top-color: #424245; margin: 76px auto 0; }
     .zgoal-body { max-width: 670px; margin: 75px auto 0; font-size: 20px; line-height: 33px; color: #fff; }
 
-    /* What we saw | What we want: the frame's two columns brought 60 px
-       closer, and the block (icons to the end of the right column) centred */
-    .zc-table { --mt: 159px; position: relative; }
-    .zc-table-head {
+    /* What we saw | What we want: the two columns meet at the page's centre
+       line (the line the Goal headline centres on), 40px either side of it.
+       --lw is the left column (icon, gap, text); the right column is up to
+       512px of text. The rule runs under both. */
+    .zc-table { --mt: 159px; position: relative; --lw: calc((337 - 258) * var(--u) + 235px); --gap2: 40px; }
+    .zc-table-head, .zc-trow {
       display: grid;
-      grid-template-columns: calc((717 - 285) * var(--u)) 1fr;
-      padding-left: calc((285 + 49) * var(--u));
+      grid-template-columns: var(--lw) 512px;
+      column-gap: calc(2 * var(--gap2));
+      padding-left: calc(50% - var(--gap2) - var(--lw));
     }
     .zc-table-head h3 { margin: 0; font-size: 38px; font-weight: 700; line-height: 33px; color: #fff; }
-    .zc-table-rule { width: calc(976 * var(--u)); margin: 31px 0 0 calc((286 + 49) * var(--u)); border-top-color: #424245; }
-    .zc-trow {
-      display: grid;
-      grid-template-columns: calc((717 - 258) * var(--u)) 1fr;
-      padding-left: calc((258 + 49) * var(--u));
-      margin-top: 40px;
-    }
+    .zc-table-rule { width: calc(var(--lw) + 2 * var(--gap2) + 512px); margin: 31px 0 0 calc(50% - var(--gap2) - var(--lw)); border-top-color: #424245; }
+    .zc-trow { margin-top: 40px; }
     .zc-trow + .zc-trow { margin-top: 74px; }
     .zc-saw { display: flex; align-items: center; margin-top: var(--iy); }
     .zc-saw p { margin: 0; width: 235px; font-size: 32px; line-height: 33px; color: #fff; }
@@ -760,7 +758,9 @@
     .zc-reflections-body p + p { margin-top: 33px; }
 
     /* homepage concepts, 2 x 2 */
-    .zc-grid { --mt: 157px; position: relative; height: calc(715 * var(--u)); margin-left: 0; margin-right: 0; }
+    .zc-after--q { --mt: 33px; }   /* the follow-up question, one blank line below */
+    .zc-grid-label { margin: 220px auto 0; max-width: 1042px; text-align: center; font-size: 24px; line-height: 33px; color: #fff; }
+    .zc-grid { --mt: 56px; position: relative; height: calc(715 * var(--u)); margin-left: 0; margin-right: 0; }
     .zc-grid > * { position: absolute; display: block; }
     .zc-grid > :nth-child(1) { left: calc(175 * var(--u)); top: 0; width: calc(608 * var(--u)); aspect-ratio: 608 / 342; }
     .zc-grid > :nth-child(2) { left: calc(803 * var(--u)); top: 0; width: calc(607 * var(--u)); aspect-ratio: 607 / 342; }
@@ -928,7 +928,7 @@
       <p class="zgoal-eyebrow" data-reveal>GOAL</p>
       <h2 class="zgoal-headline" data-reveal>How might the interface shift attention from the AI’s response back to the user’s own thinking?</h2>
       <hr class="zgoal-rule" data-reveal />
-      <p class="zgoal-body" data-reveal>Success meant reversing what we saw in testing. I used this question to evaluate whether each design decision moved users toward three reflection behaviors: pause, reconsider and continue:</p>
+      <p class="zgoal-body" data-reveal>Success meant reversing what we saw in testing. I used this question to evaluate whether each design decision moved users toward three reflection behaviors: pause, reconsider and continue.</p>
     </section>
 
     <!-- WHAT WE SAW / WHAT WE WANT -->
@@ -980,6 +980,7 @@
     </figure>
 
     <p class="zc-after" style="--mt:61px">In walkthroughs with the founder, swiping helped <b>Pause</b>: each moment got full attention. But it weakened <b>Reconsider</b>. Earlier thoughts were never visible next to the current one, so it was hard to see how ideas developed.</p>
+    <p class="zc-after zc-after--q">What about <b>continue</b>?</p>
 
     <!-- LEARNING -->
     <section class="zc-learning">
@@ -991,7 +992,7 @@
       <div class="zc-label">FINAL DIRECTION</div>
       <div class="zc-content">
         <h2 class="zc-head">I reframed the exchange as one continuous train of thought.</h2>
-        <p class="zc-body">Inspired by how Spotify’s lyrics view keeps surrounding lines visible while bringing one into focus, I designed reflections as a continuous stream. This was designed to support <b>Reconsider </b>by keeping earlier thoughts visible, and<b> Pause </b>by allowing one exchange to fill the screen again.</p>
+        <p class="zc-body">Inspired by how Spotify’s lyrics view keeps surrounding lines visible while bringing one into focus, I designed reflections as a continuous stream. This was also designed to support <b>Reconsider </b>by keeping earlier thoughts visible, and<b> Pause </b>by allowing one exchange to fill the screen again.</p>
       </div>
     </section>
 
@@ -1023,14 +1024,14 @@
     <section class="zc-row" id="solution-1" style="--x:309;--hy:9px;--by:36px;--mt:153px">
       <div class="zc-label">SOLUTION</div>
       <div class="zc-content">
-        <h2 class="zc-head" style="max-width:692px">Let type, not position, separate the user from Zrø.</h2>
-        <p class="zc-body">I made the user’s words larger and bolder, and quieted Zrø’s response. The core tension was that Zrø needed to respond without becoming the center. Now it still responds, but the user’s own thinking is the most prominent thing on screen, and what they build from next.</p>
+        <h2 class="zc-head" style="max-width:692px">I let type, not position, separate the user from Zrø.</h2>
+        <p class="zc-body">I made the user’s words larger and bolder, and quieted Zrø’s response. The core tension was that Zrø needed to respond without becoming the center. Now it still responds, but the user’s own thinking is the most prominent thing on the screen.</p>
       </div>
     </section>
 
     <!-- THE NEW QUESTION -->
     <section class="zc-question">
-      <p>That turned to a new question, How should users return to a reflection that <i>isn’t</i> a chat log?</p>
+      <p>The chat interface led to a new question, How should users return to a reflection that <i>isn’t</i> a chat log?</p>
     </section>
 
     <section class="zc-row" id="revisitable" style="--x:309;--hy:9px;--by:30px;--mt:216px">
@@ -1050,7 +1051,7 @@
       </div>
     </figure>
 
-    <section class="zc-row" id="turning-point" style="--x:301;--hy:4px;--by:30px;--mt:82px">
+    <section class="zc-row" id="turning-point" style="--x:301;--hy:4px;--by:30px;--mt:200px">
       <div class="zc-label">MAKING REFLECTIONS<br>REVISITABLE</div>
       <div class="zc-content">
         <h2 class="zc-head">I built each memory around its turning point, not its title</h2>
@@ -1062,7 +1063,7 @@
       <video src="images/zro/v2/memory-v6.mp4" data-autoplay-in-view muted loop playsinline preload="metadata" aria-label="Zrø’s memory view on a phone"></video>
     </figure>
 
-    <section class="zc-row" id="tradeoff-2" style="--x:309;--hy:9px;--by:20px;--mt:94px">
+    <section class="zc-row" id="tradeoff-2" style="--x:309;--hy:9px;--by:20px;--mt:160px">
       <div class="zc-label">TRADEOFF</div>
       <div class="zc-content">
         <h2 class="zc-head">More meaning, less scannability.</h2>
@@ -1130,6 +1131,7 @@
     </section>
 
     <!-- homepage concepts, 2 x 2 -->
+    <p class="zc-grid-label">Early explorations of the homepage:</p>
     <figure class="zc-grid" aria-label="Homepage concepts">
       <img src="images/zro/v2/concept-orb.png" alt="Homepage concept: a soft white orb on black with floating phrases" data-reveal />
       <img src="images/zro/v2/concept-gradient.png" alt="Homepage concept: a grey gradient with a dim orb" data-reveal />
