@@ -943,22 +943,6 @@ html.is-loading body {
   transition: opacity 0.22s;
 }
 .gallery-card:hover { opacity: 0.8; }
-/* A label that shows on hover (data-label="..."), over the bottom of the card */
-.gallery-card[data-label] { position: relative; }
-.gallery-card[data-label]::after {
-  content: attr(data-label);
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  padding: 28px 12px 10px;
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: #fff;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-  opacity: 0;
-  transition: opacity 0.22s;
-  pointer-events: none;
-}
-.gallery-card[data-label]:hover::after { opacity: 1; }
 /* Artwork that sits on white would otherwise bleed into the page and lose its
    edges. A hairline keeps the piece contained. box-sizing is border-box
    globally, so this never changes the column width. */
@@ -1414,3 +1398,27 @@ video.lightbox__media {
   /* Width and height are set in exact pixels by the script, to match the
      layout viewport the destination page will get. */
 }
+
+
+/* A note that follows the cursor: "Coming soon!" over unfinished projects' pictures,
+   and the label of a Play card (data-label)
+   (an entry whose link has data-soon). Placed by the script in index.html. */
+.soon-tip {
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 1000;
+  pointer-events: none;
+  font-family: 'Neue Haas Grotesk Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  color: #1d1d1f;
+  /* frosted, whitish-grey glass, no outline */
+  background: rgba(245, 245, 247, 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+          backdrop-filter: blur(16px) saturate(180%);
+  padding: 7px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.soon-tip.is-on { opacity: 1; }

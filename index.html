@@ -312,7 +312,7 @@
     <!-- ── PROJECT: AFTERTONE ─────────────────── -->
     <article class="project-entry">
 
-      <a href="project-aftertone.html" class="project-link">
+      <a href="project-aftertone.html" class="project-link" data-soon="Coming soon!">
         <div class="project-header">
           <h2 class="project-title">Aftertone</h2>
           <p class="project-description">A new, more personal way to discover your next favorite song</p>
@@ -335,7 +335,7 @@
     <!-- ── PROJECT: F-SYSTEM ──────────────────── -->
     <article class="project-entry">
 
-      <a href="project-fsystem.html" class="project-link">
+      <a href="project-fsystem.html" class="project-link" data-soon="Coming soon!">
         <div class="project-header">
           <h2 class="project-title">F-System</h2>
           <p class="project-description">Customizable digital flower generator based on L-system growth</p>
@@ -427,5 +427,26 @@
   <script src="js/zro-transition.js"></script>
   <!-- The three.js import map and js/hero3d.js moved to about.html, where the
        model now renders as the page background. -->
+  <script>
+    /* Coming soon: next to the cursor while it's over an unfinished project's pictures */
+    (function () {
+      var tip = document.createElement('div');
+      tip.className = 'soon-tip';
+      document.body.appendChild(tip);
+      document.addEventListener('mousemove', function (e) {
+        // only over the pictures
+        var pics = e.target.closest && e.target.closest('.project-scroll');
+        var entry = pics && pics.closest('.project-entry');
+        var link = entry && entry.querySelector('[data-soon]');
+        if (!link) { tip.classList.remove('is-on'); return; }
+        tip.textContent = link.getAttribute('data-soon');
+        // js/scale.js may zoom the page; the cursor comes in real pixels
+        var z = parseFloat(document.documentElement.style.zoom) || 1;
+        tip.style.transform = 'translate(' + (e.clientX / z + 14) + 'px,' + (e.clientY / z + 12) + 'px)';
+        tip.classList.add('is-on');
+      });
+      document.addEventListener('mouseleave', function () { tip.classList.remove('is-on'); });
+    })();
+  </script>
 </body>
 </html>

@@ -170,7 +170,6 @@
     ],
     "splash": [
       "images/play/splash/splashstudy.png",
-      "images/play/splash/splash-study2.png",
       "images/play/splash/akalisplash.png",
       "images/play/splash/dianasplash.png",
       "images/play/splash/hweisplash.png",
@@ -219,5 +218,23 @@
 
   <script src="js/main.js"></script>
   <script src="js/play-lightbox.js"></script>
+  <script>
+    /* Label next to the cursor over a card with data-label (e.g. the splash art studies) */
+    (function () {
+      var tip = document.createElement('div');
+      tip.className = 'soon-tip';
+      document.body.appendChild(tip);
+      document.addEventListener('mousemove', function (e) {
+        var card = e.target.closest && e.target.closest('.gallery-card[data-label]');
+        if (!card) { tip.classList.remove('is-on'); return; }
+        tip.textContent = card.getAttribute('data-label');
+        // js/scale.js may zoom the page; the cursor comes in real pixels
+        var z = parseFloat(document.documentElement.style.zoom) || 1;
+        tip.style.transform = 'translate(' + (e.clientX / z + 14) + 'px,' + (e.clientY / z + 12) + 'px)';
+        tip.classList.add('is-on');
+      });
+      document.addEventListener('mouseleave', function () { tip.classList.remove('is-on'); });
+    })();
+  </script>
 </body>
 </html>
