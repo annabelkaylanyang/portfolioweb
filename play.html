@@ -87,22 +87,23 @@
     <!-- Column 1 (slow / far) -->
     <div class="parallax-col" data-speed="0.55">
       <div class="parallax-col-track">
-        <div class="gallery-card" data-group="suntrace"><img src="images/play/suntrace/suntrace1.png" alt="Suntrace" /></div>
-        <div class="gallery-card" data-group="splash" data-label="splash art studies"><img src="images/play/splash/splashstudy.png" alt="Splash studies" /></div>
-        <div class="gallery-card"><img src="images/play/coffeeposter.png" alt="Coffee poster" /></div>
-        <div class="gallery-card"><img src="images/play/cinema.gif" alt="Cinema" /></div>
-        <div class="gallery-card is-framed" data-group="balloonman"><img src="images/balloonman/balloon1.png" alt="Balloon Man" /></div>
+        <div class="gallery-card" data-group="suntrace" data-label="Suntrace, light studies"><img src="images/play/suntrace/suntrace1.png" alt="Suntrace" /></div>
+        <div class="gallery-card" data-group="splash" data-label="league splash art studies! (click me)"><img src="images/play/splash/splashstudy.png" alt="Splash studies" /></div>
+        <div class="gallery-card" data-group="fsystem" data-label="F-System, grown flowers"><img src="images/play/fsystem/f1.png" alt="F-System" /></div>
+        <div class="gallery-card" data-label="Coffee poster"><img src="images/play/coffeeposter.png" alt="Coffee poster" /></div>
+        <div class="gallery-card" data-label="Cinema, in motion"><img src="images/play/cinema.gif" alt="Cinema" /></div>
+        <div class="gallery-card is-framed" data-group="balloonman" data-label="Balloon Man"><img src="images/balloonman/balloon1.png" alt="Balloon Man" /></div>
       </div>
     </div>
 
     <!-- Column 2 (medium) -->
     <div class="parallax-col" data-speed="0.8">
       <div class="parallax-col-track">
-        <div class="gallery-card" data-group="nostalgia" data-view="book"><img src="images/play/nostalgia/nostalgiacover.jpg" alt="Nostalgia" /></div>
-        <div class="gallery-card" data-group="machine"><img src="images/play/machine/machine1.png" alt="Machine" /></div>
-        <div class="gallery-card is-framed"><img src="images/play/rainchain.png" alt="Rain chain" /></div>
-        <div class="gallery-card"><img src="images/play/spring-show-poster/springshowposter.png" alt="Spring show poster" /></div>
-        <div class="gallery-card" data-group="city">
+        <div class="gallery-card" data-group="nostalgia" data-view="book" data-label="Nostalgia, a photobook"><img src="images/play/nostalgia/nostalgiacover.jpg" alt="Nostalgia" /></div>
+        <div class="gallery-card" data-group="machine" data-label="Machine renders"><img src="images/play/machine/machine1.png" alt="Machine" /></div>
+        <div class="gallery-card is-framed" data-label="Rain chain"><img src="images/play/rainchain.png" alt="Rain chain" /></div>
+        <div class="gallery-card" data-label="Spring show poster"><img src="images/play/spring-show-poster/springshowposter.png" alt="Spring show poster" /></div>
+        <div class="gallery-card" data-group="city" data-label="City in motion">
           <video src="images/play/city/city3.mp4" autoplay muted loop playsinline preload="metadata"
                  aria-label="City"></video>
         </div>
@@ -112,10 +113,10 @@
     <!-- Column 3 (near / fast) -->
     <div class="parallax-col" data-speed="1.05">
       <div class="parallax-col-track">
-        <div class="gallery-card" data-group="environment"><img src="images/play/environment/sketchstudy.png" alt="Environment studies" /></div>
-        <div class="gallery-card"><img src="images/play/fallenangels.png" alt="Fallen angels" /></div>
-        <div class="gallery-card"><img src="images/play/selfportrait.gif" alt="Self portrait" /></div>
-        <div class="gallery-card"><img src="images/play/study.png" alt="Study" /></div>
+        <div class="gallery-card" data-group="environment" data-label="Environment studies"><img src="images/play/environment/sketchstudy.png" alt="Environment studies" /></div>
+        <div class="gallery-card" data-label="Fallen Angels poster"><img src="images/play/fallenangels.png" alt="Fallen angels" /></div>
+        <div class="gallery-card" data-label="Animated self portrait"><img src="images/play/selfportrait.gif" alt="Self portrait" /></div>
+        <div class="gallery-card" data-label="Study"><img src="images/play/study.png" alt="Study" /></div>
       </div>
     </div>
 
@@ -140,6 +141,10 @@
        ══════════════════════════════════════════ -->
   <script type="application/json" id="playGroups">
   {
+    "fsystem": [
+      "images/play/fsystem/f1.png",
+      "images/play/fsystem/f2.png"
+    ],
     "suntrace": [
       "images/play/suntrace/suntrace1.png",
       "images/play/suntrace/suntrace2.png",
@@ -170,10 +175,10 @@
     ],
     "splash": [
       "images/play/splash/splashstudy.png",
-      "images/play/splash/akalisplash.png",
-      "images/play/splash/dianasplash.png",
       "images/play/splash/hweisplash.png",
-      "images/play/splash/luxsplash.png"
+      "images/play/splash/dianasplash.png",
+      "images/play/splash/luxsplash.png",
+      "images/play/splash/akalisplash.png"
     ],
     "balloonman": [
       "images/balloonman/balloon1.png",

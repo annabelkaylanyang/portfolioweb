@@ -1422,3 +1422,8 @@ video.lightbox__media {
   transition: opacity 0.15s;
 }
 .soon-tip.is-on { opacity: 1; }
+
+/* A slide whose media is wider than 16:9 keeps the row height and grows sideways */
+.project-slide.project-slide--wide { width: calc(42vw * 9 / 16 * 2560 / 1312); aspect-ratio: 2560 / 1312; }
+@media (max-width: 1024px) { .project-slide.project-slide--wide { width: calc(55vw * 9 / 16 * 2560 / 1312); } }
+@media (max-width: 768px)  { .project-slide.project-slide--wide { width: calc(78vw * 9 / 16 * 2560 / 1312); } }
