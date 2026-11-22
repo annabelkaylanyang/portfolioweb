@@ -695,3 +695,17 @@
   });
   window.addEventListener('blur', function () { dot.style.opacity = '0'; });
 })();
+
+/* Discourage saving images and videos: no right-click menu, no dragging
+   them out, and no long-press save sheet on phones. (Anyone determined can
+   still screenshot or dig through the network tab; this stops the casual
+   "Save image as...".) */
+(function () {
+  function isMedia(t) { return t && t.closest && t.closest('img, video, picture, svg image, .gallery-card, .project-slide'); }
+  document.addEventListener('contextmenu', function (e) { if (isMedia(e.target)) e.preventDefault(); });
+  document.addEventListener('dragstart', function (e) { if (isMedia(e.target)) e.preventDefault(); });
+  document.querySelectorAll('video').forEach(function (v) {
+    v.setAttribute('controlsList', 'nodownload noremoteplayback');
+    v.disablePictureInPicture = true;
+  });
+})();

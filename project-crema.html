@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-content-ref="1900">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crema &mdash; Annabel Yang</title>
+  <meta name="description" content="Crema: coffee discovery made personal &amp; social." />
+  <link rel="icon" type="image/png" href="images/minilogo-tab.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,500,600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/departure-mono@5.2.5/index.css" />
+  <script src="js/scale.js"></script>
+  <style>
+    /* =============================================
+       Crema project page - Zrø's layout and type, in light mode
+       ============================================= */
+    html, body { background: #fff; overflow-x: clip; }
+    /* like Zrø: cancel the global hero pull-up so the intro sits below the nav */
+    .site-nav { margin-bottom: 0; }
+
+    .crema {
+      container-type: inline-size;
+      --lead: calc(8.33cqw + 2px);
+      --col: calc(25cqw + 6px);
+      color: #000;
+      font-family: 'Neue Haas Grotesk Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 400;
+    }
+
+    /* INTRO: title on the left, cover and project details on the right */
+    .cr-intro {
+      display: grid;
+      grid-template-columns: calc(var(--col) - var(--lead)) 1fr;
+      padding: 32px var(--lead) 160px;
+    }
+    .cr-title {
+      font-size: clamp(24px, 2.78cqw, 40px);
+      font-weight: 300;
+      line-height: 1.15;
+      margin: calc(24px - 0.194em) 0 48px;
+    }
+    .cr-hero {
+      width: 100%;
+      aspect-ratio: 952 / 484;
+      object-fit: cover;
+      display: block;
+      margin-top: 24px;
+    }
+    .cr-hero-wrap { position:relative; margin-top:24px; }
+    .cr-hero-wrap .cr-hero { margin-top:0; }
+    .cr-rain { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    .cr-hero.is-placeholder { background: #e4e4e4; }
+    .cr-meta {
+      display: grid;
+      grid-template-columns: 25.7353% 25.2101% 25.8403% 1fr;
+      margin-top: 28px;
+    }
+    .cr-meta-item { display: flex; flex-direction: column; gap: 6px; padding-right: 20px; }
+    .cr-meta-key {
+      font-size: 15px;
+      color: #767676;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .cr-meta-val { font-size: 16px; color: #000; line-height: 1.6; }
+
+    /* CASE STUDY: grey label | heading + body, like Zrø's rows */
+    .crema { --u: calc(100cqw / 1585); }
+    .cr-row {
+      display: grid;
+      grid-template-columns: calc(12cqw) minmax(0, 1fr);
+      padding: 0 25cqw 0 calc(25cqw + 6px);   /* left edge on the cover above; right edge just short of TEAM */
+      margin-top: 180px;
+    }
+    .crema > :last-child { margin-bottom: 200px; }
+    /* a hairline between sections, across the label and text columns */
+    .cr-row:not(.cr-row--cont):not(#overview)::before {
+      content: ""; grid-column: 1 / -1; border-top: 1px solid #e0e0e0; margin-bottom: 56px;
+    }
+    .cr-row:not(.cr-row--cont):not(#overview) { margin-top: 120px; }
+    .cr-head b, .cr-body b, .cr-items b { font-weight: 500; }
+    .cr-body--first { margin-top: 0; }
+    .cr-body.cr-body--gap { margin-top: 96px; }
+    /* a section continuing after a picture: no label, closer to the picture */
+    .cr-row.cr-row--cont { margin-top: 64px; }
+    .cr-sub { font-size: 28px; font-weight: 400; line-height: 1.2; color: #000; margin: 72px 0 0; }
+    .cr-mini { font-size: 20px; font-weight: 500; line-height: 33px; color: #000; margin: 40px 0 0; }
+    .cr-items { margin-top: 40px; font-size: 20px; line-height: 33px; }
+    .cr-items.cr-items--first { margin-top: 0; }
+    .cr-items p { margin: 0; }
+    .cr-items p + p { margin-top: 28px; }
+    .cr-list { padding-left: 1.2em; }
+    .cr-list li + li { margin-top: 8px; }
+    /* picture placeholder: grey, from the label's edge to the right margin */
+    .cr-ph.cr-duo { aspect-ratio:auto; background:none; display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .cr-duo video { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
+    .cr-ph.cr-trio { grid-template-columns:1fr 1fr 1fr; }
+    .cr-trio { gap:32px; }
+    .cr-trio figure { margin:0; }
+    .cr-trio figcaption { font-size:16px; font-weight:500; color:#000; margin-bottom:16px; }
+    .cr-ph.cr-img { display:block; width:calc(50cqw - 6px); height:auto; aspect-ratio:2000/760; object-fit:cover; object-position:center 50%; background:none; }
+    @media (max-width:768px){ .cr-ph.cr-img { width:88%; } }
+    .cr-sub.cr-sub--first { margin-top:56px; font-size:38px; line-height:1.15; }
+    @media (max-width:768px){ .cr-sub.cr-sub--first { font-size:28px; } }
+    .cr-ph.cr-img.cr-img--full { aspect-ratio:auto; }
+    .cr-sub.cr-sub--top { margin-top:0; }
+    .cr-bridge { margin:180px 25cqw 0 calc(25cqw + 6px); padding-bottom:120px; border-bottom:1px solid #e0e0e0; text-align:center; font-size:38px; font-weight:400; line-height:1.15; color:#000; }
+    .cr-bridge + .cr-row { margin-top:56px; }
+    .cr-bridge + .cr-row::before { display:none; }
+    .cr-pair { display:grid; grid-template-columns: 1.45fr 1fr; gap:40px; align-items:end; margin:64px 25cqw 0 calc(25cqw + 6px); }
+    .cr-sub.cr-sub--wide { margin:120px 25cqw 0 calc(25cqw + 6px); max-width:none; }
+    @media (max-width:768px){ .cr-sub.cr-sub--wide { margin:64px 6% 0; } }
+    .cr-ctx { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin:40px 25cqw 0 calc(25cqw + 6px); }
+    .cr-ctx figure { margin:0; }
+    .cr-ctx img { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+    .cr-ctx figcaption { margin-top:16px; font-size:16px; line-height:1.45; color:#000; }
+    .cr-ctx figcaption b { font-weight:500; }
+    /* Design system, coded from the Figma frame; plays in once on screen */
+    .ds { display:grid; grid-template-columns:1.36fr 1fr; gap:4cqw; margin:64px 25cqw 0 calc(25cqw + 6px); padding:56px 44px 64px; background:#edebe7; font-family:Switzer, sans-serif; color:#000; overflow:hidden; }
+    .ds em { font-style:normal; color:#5c5a55; }
+    .ds-title { font:600 22px Switzer, sans-serif; margin:0; letter-spacing:.01em; }
+    .ds-title--gap { margin-top:72px; }
+    .ds-rule { border:0; border-top:1px solid #000; margin:12px 0 24px; transform-origin:left; }
+    .ds-face { font:300 15px Switzer, sans-serif; margin:0 0 4px; }
+    .ds-face--gap { margin-top:36px; }
+    .ds-row { display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:4px 0; }
+    .ds-r { font:300 15px Switzer, sans-serif; white-space:nowrap; }
+    .ds-btns { display:flex; flex-direction:column; align-items:flex-start; gap:16px; }
+    .ds-tabs { display:flex; gap:20px; font:500 14px Switzer, sans-serif; color:#929292; }
+    .ds-tabs b { color:#000; font-weight:500; }
+    .ds-toggles { display:flex; gap:8px; }
+    .ds-toggles i { width:36px; height:22px; border-radius:11px; background:#e3e1dc; position:relative; }
+    .ds-toggles i::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.2); }
+    .ds-toggles i.on { background:#1c1c1c; }
+    .ds-toggles i.on::after { left:16px; }
+    .ds-cta { width:100%; max-width:340px; padding:20px 0; border-radius:32px; background:#1c1c1c; color:#fff; text-align:center; font:500 16px Switzer, sans-serif; box-shadow:0 12px 30px rgba(0,0,0,.12); }
+    .ds-input { display:flex; align-items:center; gap:6px; width:100%; max-width:360px; }
+    .ds-input i { width:40px; height:40px; border-radius:50%; background:#f8f8f8; flex:none; }
+    .ds-input i.send { background:#000; }
+    .ds-input span { flex:1; padding:12px 16px; border-radius:20px; background:#f8f8f8; font:300 12px Switzer, sans-serif; color:#5c5a55; }
+    .ds-swatches { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:340px; }
+    .ds-sw { aspect-ratio:1; border-radius:14px; background:var(--c); position:relative; }
+    .ds-sw span { position:absolute; left:10px; bottom:8px; font:400 10px 'Departure Mono', monospace; color:#5c5a55; opacity:0; transition:opacity .3s; }
+    .ds-sw:hover span { opacity:1; }
+    .ds-sw:nth-child(3) span, .ds-sw:nth-child(4) span, .ds-sw:nth-child(5) span { color:#fff; }
+    .ds.is-armed .ds-rule { transform:scaleX(0); }
+    .ds.is-armed .ds-title, .ds.is-armed .ds-face, .ds.is-armed .ds-row, .ds.is-armed .ds-btns > * { opacity:0; transform:translateY(18px); }
+    .ds.is-armed .ds-sw { opacity:0; transform:scale(.6); }
+    .ds.is-in .ds-rule { transform:none; transition:transform .9s cubic-bezier(.2,.7,.2,1) .15s; }
+    .ds.is-in .ds-title, .ds.is-in .ds-face, .ds.is-in .ds-row, .ds.is-in .ds-btns > * { opacity:1; transform:none; transition:opacity .6s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay:calc(.35s + var(--i,0) * 90ms); }
+    .ds.is-in .ds-sw { opacity:1; transform:none; transition:opacity .5s ease, transform .6s cubic-bezier(.3,1.4,.5,1); transition-delay:calc(.5s + var(--i) * 110ms); }
+    @media (max-width:768px){ .cr-ctx { grid-template-columns:1fr; margin:32px 6% 0; } .ds { grid-template-columns:1fr; margin:40px 6% 0; padding:32px 20px; gap:48px; } }
+    .cr-pair-ph { width:100%; aspect-ratio:1; background:#e4e4e4; }
+    .cr-pair video { width:100%; aspect-ratio:1; object-fit:cover; display:block; }
+    .cr-pair-text .cr-body { font-size:17px; line-height:1.5; }
+    .cr-mini.cr-mini--first { margin-top:0; }
+    @media (max-width:768px){ .cr-bridge { font-size:28px; margin:80px 6% 0; padding-bottom:64px; } .cr-pair { grid-template-columns:1fr; margin:40px 6% 0; gap:20px; } }
+    .cr-ph {
+      margin: 64px 25cqw 0 calc(25cqw + 6px);
+      aspect-ratio: 1143 / 600;
+      background: #e4e4e4;
+    }
+    .cr-label { font-size: 24px; font-weight: 300; line-height: 41.4px; color: #86868b; margin: 0; }
+    .cr-content { padding-top: 9px; }
+    .cr-head { font-size: 38px; font-weight: 400; line-height: 1.15; color: #000; margin: 0; }
+    .cr-body { font-size: 20px; line-height: 33px; color: #000; margin: 30px 0 0; }
+    .cr-intro + .cr-row { margin-top: 40px; }
+
+    /* Side navigation: pinned on the left, shown once Intro reaches the top
+       fifth of the screen; the section on screen turns black */
+    .cr-toc {
+      position: fixed; left: 28px; top: 50%; transform: translateY(-50%); z-index: 15;
+      display: flex; flex-direction: column; gap: 19px;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+    }
+    .cr-toc.is-visible { opacity: 1; visibility: visible; transition: opacity 0.4s ease, visibility 0s; }
+    .cr-toc a { font-size: 13px; letter-spacing: 0.02em; line-height: 1.2; color: #a1a1a6; transition: color 0.2s; }
+    .cr-toc a:hover, .cr-toc a.is-current { color: #000; }
+    .cr-row { scroll-margin-top: 120px; }
+
+    @media (max-width: 820px) {
+      .cr-toc { display: none; }
+      .cr-row { grid-template-columns: 1fr; gap: 12px; padding: 0 6%; margin-top: 100px; }
+      .cr-head { font-size: 28px; }
+      .cr-ph { margin: 40px 6% 0; }
+      .cr-row.cr-row--cont { margin-top: 40px; }
+      .cr-row--cont > div:first-child { display: none; }
+      .cr-body { font-size: 17px; line-height: 1.6; }
+      .cr-intro { grid-template-columns: 1fr; gap: 40px; padding: 24px 6% 56px; }
+      .cr-hero { margin-top: 0; }
+      .cr-title { font-size: 36px; margin: 0; }
+      .cr-meta { grid-template-columns: repeat(2, 1fr); gap: 28px 16px; margin-top: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="Annabel Yang &mdash; home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/184cf284f7cb41e685f881a6a978fa44c96780b2?width=616"
+           alt="Annabel Yang" />
+    </a>
+    <button class="mode-toggle" id="modeToggle" aria-label="Toggle color mode">
+      <span class="m-label light">light</span>
+      <span class="m-sep">&thinsp;|&thinsp;</span>
+      <span class="m-label dark">dark</span>
+    </button>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#work" class="active">work</a></li>
+      <li><a href="play.html">play</a></li>
+      <li><a href="about.html">about</a></li>
+    </ul>
+  </nav>
+
+  <!-- Side navigation: outside <main> (a container would anchor it) -->
+  <nav class="cr-toc" aria-label="Page sections">
+    <a href="#overview">Overview</a>
+    <a href="#role">My Role</a>
+    <a href="#problem">The Problem</a>
+    <a href="#opportunity">Opportunity</a>
+    <a href="#started">Where it started</a>
+    <a href="#home-decision">Decision 01: Home</a>
+    <a href="#community">Decision 02: Community</a>
+    <a href="#taste">Decision 03: Taste Profile</a>
+    <a href="#visual">Visual Direction</a>
+  </nav>
+
+  <main class="crema" data-scale-content aria-label="Crema project">
+
+    <!-- INTRO -->
+    <section class="cr-intro" id="home">
+      <div>
+        <h1 class="cr-title">Crema</h1>
+      </div>
+
+      <div>
+        <div class="cr-hero-wrap"><img class="cr-hero" src="images/crema/hero.webp?v=3" alt="Crema home screen"></div>
+        <div class="cr-meta" aria-label="Project details">
+          <div class="cr-meta-item">
+            <span class="cr-meta-key">ROLE</span>
+            <span class="cr-meta-val">UI/UX Designer</span>
+          </div>
+          <div class="cr-meta-item">
+            <span class="cr-meta-key">TOOLS</span>
+            <span class="cr-meta-val">Figma, ProtoPie<br>Photoshop, Illustrator</span>
+          </div>
+          <div class="cr-meta-item">
+            <span class="cr-meta-key">TIMELINE</span>
+            <span class="cr-meta-val">Oct &ndash; Nov 2026 (5 weeks)</span>
+          </div>
+          <div class="cr-meta-item">
+            <span class="cr-meta-key">TEAM</span>
+            <span class="cr-meta-val">Lindsay Liu<br>Deven Mangar</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cr-row" id="overview">
+      <div class="cr-label">Overview</div>
+      <div class="cr-content">
+        <h2 class="cr-head"><b>TL;DR:</b> I turned my frustration with caf&eacute; ratings into Crema, a coffee discovery app that helps people find caf&eacute;s based on their actual taste preferences.</h2>
+        <p class="cr-body">I&rsquo;m always craving a good cup of coffee with nutty, dark-chocolate notes, but trying a new caf&eacute; still always feels like a gamble. I&rsquo;ve honestly lost count of how many highly-rated cafes that had coffee too sour or fruity for my taste. My finding was that a five-star rating might tell me how good a cafe is, but not whether I&rsquo;d actually like the coffee.</p>
+      </div>
+    </section>
+    <div class="cr-ph cr-duo"><video src="images/crema/cremasquarea.mp4?v=3" autoplay muted loop playsinline></video><video src="images/crema/cremasquareb.mp4?v=3" autoplay muted loop playsinline></video></div>
+
+    <section class="cr-row" id="role">
+      <div class="cr-label">My Role</div>
+      <div class="cr-content">
+        <p class="cr-body cr-body--first">What began as an individual prototype evolved into a collaborative project with two other designers. I primarily owned the community experience and led the development of Crema&#39;s visual design system, bringing the three core flows together into a cohesive high-fidelity experience.</p>
+      </div>
+    </section>
+
+    <section class="cr-row" id="problem">
+      <div class="cr-label">The Problem</div>
+      <div class="cr-content">
+        <h2 class="cr-head">Finding caf&eacute;s is easy. Finding coffee you&#39;ll actually like isn&#39;t.</h2>
+        <p class="cr-body">An interview with another coffee drinker echoed my frustration. Looking at existing platforms helped us understand why.</p>
+        <p class="cr-body">Google Maps and Yelp make it fast and easy to find highly rated caf&eacute;s, but reviews there often focus on the overall experience. Meanwhile, specialty coffee apps offer more detailed coffee information, but conversations about taste happen separately on platforms like Reddit. The information is all out there, yet coffee lovers are left piecing it together themselves.</p>
+      </div>
+    </section>
+    <div class="cr-ph cr-duo cr-trio"><figure><figcaption>Reddit</figcaption><video src="images/crema/sqline2a.mp4?v=3" autoplay muted loop playsinline></video></figure><figure><figcaption>Yelp</figcaption><video src="images/crema/sqline2b.mp4?v=3" autoplay muted loop playsinline></video></figure><figure><figcaption>Trade</figcaption><video src="images/crema/sqline2c.mp4?v=3" autoplay muted loop playsinline></video></figure></div>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <h3 class="cr-sub cr-sub--first">Enthusiasts piece it together through three kinds of tools.</h3>
+        <p class="cr-body">We explored the different parts of the coffee experience that coffee drinkers have access to now.</p>
+      </div>
+    </section>
+    <img class="cr-ph cr-img" src="images/crema/competitors.webp?v=3" alt="Comparison of coffee apps, maps and reviews, and social platforms">
+
+    <section class="cr-row" id="opportunity">
+      <div class="cr-label">Opportunity</div>
+      <div class="cr-content">
+        <h2 class="cr-head">&ldquo;What if caf&eacute; discovery was built around what you actually like, rather than what everyone else rates highly?&rdquo;</h2>
+      </div>
+    </section>
+    <img class="cr-ph cr-img" src="images/crema/opportunity.webp?v=3" alt="What if caf&eacute; discovery started with your taste, not ratings?">
+
+    <section class="cr-row" id="started">
+      <div class="cr-label">Where it started</div>
+      <div class="cr-content">
+        <h2 class="cr-head">We narrowed Crema down to three core experiences.</h2>
+        <p class="cr-body">Crema began as my solo prototype exploring taste-based caf&eacute; discovery. When it grew into a team project, we had five weeks to decide which parts of the concept mattered the most.</p>
+      </div>
+    </section>
+    <img class="cr-ph cr-img cr-img--full" src="images/crema/narrowed.png?v=3" alt="Crema app screens">
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <p class="cr-body cr-body--first">We focused on three experiences, each addressing a different need:</p>
+      </div>
+    </section>
+    <video class="cr-ph cr-img cr-img--full" src="images/crema/core-experiences.mp4?v=3" autoplay muted loop playsinline aria-label="Core experiences: Find a caf&eacute;, Ask the community, Build your taste"></video>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <p class="cr-body cr-body--first">The early interview reinforced how much people wanted to learn from others, but I found that coffee advice in the real world remained scattered across forums and tutorials. We put features like side-by-side caf&eacute; comparisons and taste history on hold to focus on bringing these three experiences together.</p>
+      </div>
+    </section>
+
+    <section class="cr-row" id="home-decision">
+      <div class="cr-label">Decision 01: Home</div>
+      <div class="cr-content">
+        <h2 class="cr-head">Our home screen was doing too much.</h2>
+        <p class="cr-body">Our first design packed personalized recommendations, nearby cafes, friend activity, and community discussion, all into one scrolling page. We wanted to provide different avenues for people to explore coffee, but everything was competing for attention.</p>
+      </div>
+    </section>
+    <div class="cr-ph cr-duo"><img src="images/crema/home-b.webp?v=3" alt="Earlier Crema home screen" style="width:100%;aspect-ratio:1;object-fit:cover;display:block"><video src="images/crema/home-a.mp4?v=3" autoplay muted loop playsinline></video></div>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <h3 class="cr-sub cr-sub--top">The Decision: Separate recommendations by intent.</h3>
+        <p class="cr-body">Instead of mixing everything together, we divided Home into three views: <b>For You</b>, focused on personalized coffee recommendations, <b>Friends</b>, showing where people in your circle are drinking, and <b>Local/Global</b>, for when you&rsquo;re trying to find a new local cafe or travelling and looking for spots in a new city.</p>
+        <p class="cr-body">This gave each recommendation a clearer purpose and let us prioritize the information relevant to each experience.</p>
+      </div>
+    </section>
+    <img class="cr-ph cr-img cr-img--full" src="images/crema/decision.png?v=1" alt="Crema home with For you, Friends, Local and Global tabs">
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <h3 class="cr-sub">The Tradeoff</h3>
+        <p class="cr-body">Separating the feeds reduced competition for attention, but introduced an extra step to explore Friends. During prototype walkthroughs, people tended to stay on the default tab, leaving us with an important question: would they discover the Friends experience on their own?</p>
+      </div>
+    </section>
+    <p class="cr-bridge">Separating recommendations helped people find a caf&eacute;. But for enthusiasts, the coffee they brew at home raises its own questions.</p>
+
+    <section class="cr-row" id="community">
+      <div class="cr-label">Decision 02: Community</div>
+      <div class="cr-content">
+        <h2 class="cr-head">Coffee questions are hard to answer without the setup.</h2>
+        <p class="cr-body">On existing coffee forums, people often have to ask for more details before they can help: What beans are you using? What&#39;s your grinder? How are you brewing it??</p>
+      </div>
+    </section>
+    <video class="cr-ph cr-img cr-img--full" src="images/crema/coffeethread.mp4?v=2" autoplay muted loop playsinline aria-label="A coffee question thread in Crema's community"></video>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <p class="cr-body cr-body--first">I wanted Crema to make those conversations more useful from the start.</p>
+
+      </div>
+    </section>
+    <div class="cr-pair">
+      <video src="images/crema/community-01.mp4?v=4" autoplay muted loop playsinline></video>
+      <div class="cr-pair-text">
+        <h4 class="cr-mini cr-mini--first">01 / Every question should already have the context it needs.</h4>
+        <p class="cr-body">Instead of making users type out their brewing setup every time, I designed the question flow to pull saved details from their profile, such as beans, equipment, and recipe.</p>
+        <p class="cr-body">Users can choose which details to attach before posting, giving others the context they need while keeping control over what they share.</p>
+      </div>
+    </div>
+    <div class="cr-pair">
+      <video src="images/crema/community-02.mp4?v=3" autoplay muted loop playsinline></video>
+      <div class="cr-pair-text">
+        <h4 class="cr-mini cr-mini--first">02 / Turn answers into something people can actually try.</h4>
+        <p class="cr-body">Rather than relying entirely on written advice, I designed a way for answers to highlight specific brewing adjustments, such as changing grind size or extraction time.</p>
+        <p class="cr-body">Members can see what someone recommends changing, compare it with their current setup, and indicate whether they&#39;ve tried the advice.</p>
+      </div>
+    </div>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <h3 class="cr-sub cr-sub--top">The Tradeoff</h3>
+        <p class="cr-body">While structure can make advice easier to follow, it also risks making a casual conversation feel technical. To keep Community approachable, I kept free-text replies available alongside the detailed brewing suggestions.</p>
+      </div>
+    </section>
+    <p class="cr-bridge">The more Crema knows about someone&#39;s coffee preferences and brewing setup, the more relevant it can become. But when should we ask people for that information?</p>
+
+    <section class="cr-row" id="taste">
+      <div class="cr-label">Decision 03: Taste Profile</div>
+      <div class="cr-content">
+        <h2 class="cr-head">We asked for preferences before showing why they mattered.</h2>
+        <p class="cr-body">Our original onboarding started with four questions about coffee preferences before users could explore a single caf&eacute;. It gave Crema a starting point for personalized recommendations, but required people to invest time before experiencing the app.</p>
+      </div>
+    </section>
+    <img class="cr-ph cr-img cr-img--full" src="images/crema/onboarding.png?v=1" alt="Crema onboarding: taste questions and a saved coffee profile">
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <p class="cr-body cr-body--first">The same coffee drinker from our first interview told me he wouldn&#39;t want to complete a questionnaire, even if it meant getting better recommendations.</p>
+        <p class="cr-body">That challenged our assumption that personalization needed to happen before discovery.</p>
+        <h3 class="cr-sub">The decision: Let people explore first, personalize later.</h3>
+        <p class="cr-body">I redesigned onboarding around a short introduction to Crema instead of a mandatory taste questionnaire. The questions moved to a dedicated <b>Coffee Taste</b> section in the user&#39;s profile, where they could complete them whenever they wanted. Rather than collecting everything upfront, Crema could start with nearby caf&eacute;s and ask for more information when it became relevant.</p>
+      </div>
+    </section>
+    <video class="cr-ph cr-img cr-img--full" src="images/crema/profile-walkthrough.mp4?v=1" autoplay muted loop playsinline aria-label="Walkthrough: tuning matches from the home screen"></video>
+    <div class="cr-ctx">
+      <figure><img src="images/crema/ctx-home.webp?v=2" alt="Home prompt"><figcaption><b>Home:</b> Explain when recommendations are based on location alone, with an option to add taste preferences for better matches.</figcaption></figure>
+      <figure><img src="images/crema/ctx-friends.webp?v=2" alt="Friends prompt"><figcaption><b>Friends:</b> Encourage users to connect with friends when exploring social recommendations.</figcaption></figure>
+      <figure><img src="images/crema/ctx-community.webp?v=2" alt="Community prompt"><figcaption><b>Community:</b> Suggest adding brewing details when asking a question, so others can offer more relevant advice.</figcaption></figure>
+    </div>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <h3 class="cr-sub cr-sub--top">The tradeoff</h3>
+        <p class="cr-body">Removing the questionnaire makes it possible to explore immediately, but recommendations are less personalized at first. By explaining what recommendations are based on and offering optional ways to improve them, the redesign aims to make personalization feel worthwhile rather than required.</p>
+      </div>
+    </section>
+
+    <section class="cr-row" id="visual">
+      <div class="cr-label">Visual Direction</div>
+      <div class="cr-content">
+        <h2 class="cr-head">Serious about coffee shouldn&#39;t mean serious-looking.</h2>
+        <p class="cr-body">Crema started with bright blue colors and handwritten typography. It felt playful and approachable, but as the product developed, we wanted the coffee itself to take center stage. A teammate and I pushed for a more neutral direction, and I led its translation into the high-fidelity designs.</p>
+      </div>
+    </section>
+    <h3 class="cr-sub cr-sub--wide">Finding the balance between clarity and personality.</h3>
+    <div class="cr-pair">
+      <img src="images/crema/vd-playful.webp?v=1" alt="Playful exploration" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">
+      <div class="cr-pair-text">
+        <h4 class="cr-mini cr-mini--first">01 / Playful exploration</h4>
+        <p class="cr-body">Our original direction was expressive and energetic, but competed with the detailed coffee information we wanted to highlight.</p>
+      </div>
+    </div>
+    <div class="cr-pair">
+      <img src="images/crema/vd-minimal.webp?v=1" alt="A more minimal approach" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">
+      <div class="cr-pair-text">
+        <h4 class="cr-mini cr-mini--first">02 / A more minimal approach</h4>
+        <p class="cr-body">We simplified the interface and gave photography more space. But the first high-fidelity pass felt too generic, losing some of what made Crema feel distinct.</p>
+      </div>
+    </div>
+    <div class="cr-pair">
+      <img src="images/crema/vd-personality.webp?v=2" alt="Bringing personality back" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">
+      <div class="cr-pair-text">
+        <h4 class="cr-mini cr-mini--first">03 / Bringing personality back</h4>
+        <p class="cr-body">We kept the clean foundation while reintroducing playful details in smaller, more intentional moments.</p>
+      </div>
+    </div>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <h2 class="cr-head">A visual system with a purpose.</h2>
+        <p class="cr-body">I developed a consistent design system across the three flows, using typography to distinguish between interface content, technical coffee information, and personal expression.</p>
+      </div>
+    </section>
+    <div class="ds" id="design-system" aria-label="Crema design system: typography, color and buttons">
+      <div class="ds-col">
+        <h4 class="ds-title">TYPOGRAPHY</h4><hr class="ds-rule">
+        <p class="ds-face" style="--i:0">Switzer</p>
+          <div class="ds-row" style="--i:1"><span class="ds-l"><span style="font:600 40px Switzer">Semibold <em>40</em></span></span><span class="ds-r">Headline 1</span></div>
+          <div class="ds-row" style="--i:2"><span class="ds-l"><span style="font:600 24px Switzer">Semibold <em>24</em></span></span><span class="ds-r">Headline 2</span></div>
+          <div class="ds-row" style="--i:3"><span class="ds-l"><span style="font:500 20px Switzer">Medium <em>20</em></span></span><span class="ds-r">Headline 3</span></div>
+          <div class="ds-row" style="--i:4"><span class="ds-l"><span style="font:300 28px Switzer">Light <em>28</em></span></span><span class="ds-r">Headline 4</span></div>
+          <div class="ds-row" style="--i:5"><span class="ds-l"><span style="font:300 15px Switzer">Light 15</span></span><span class="ds-r">Paragraph</span></div>
+        <p class="ds-face ds-face--gap" style="--i:6">Departure Mono</p>
+          <div class="ds-row" style="--i:7"><span class="ds-l"><span style="font-family:'Departure Mono',monospace;font-size:11px">Regular 11</span></span><span class="ds-r">Subtitle, Data only</span></div>
+        <p class="ds-face ds-face--gap" style="--i:8">Gochi Hand</p>
+          <div class="ds-row" style="--i:9"><span class="ds-l"><span style="font-family:'Gochi Hand',cursive;font-size:25px">Medium</span> <em style="font:500 20px Switzer">24</em></span><span class="ds-r">Subtitle, Accent only</span></div>
+
+        <h4 class="ds-title ds-title--gap">BUTTONS</h4><hr class="ds-rule">
+        <div class="ds-btns">
+          <div class="ds-tabs" style="--i:10"><b>Brewing</b><span>Beans</span><span>Gear</span><span>Cafes</span><span>Roasters</span></div>
+          <div class="ds-toggles" style="--i:11"><i class="on"></i><i></i></div>
+          <div class="ds-cta" style="--i:12">Back to Community</div>
+          <div class="ds-input" style="--i:13"><i></i><span>Add an answer</span><i class="send"></i></div>
+        </div>
+      </div>
+      <div class="ds-col">
+        <h4 class="ds-title">COLOR</h4><hr class="ds-rule">
+        <div class="ds-swatches"><div class="ds-sw" style="--i:0;--c:#d9d9d9"><span>#D9D9D9</span></div><div class="ds-sw" style="--i:1;--c:#f8f8f8"><span>#F8F8F8</span></div><div class="ds-sw" style="--i:2;--c:#2a3fd0"><span>#2A3FD0</span></div><div class="ds-sw" style="--i:3;--c:#2d2d2d"><span>#2D2D2D</span></div><div class="ds-sw" style="--i:4;--c:#000000"><span>#000000</span></div><div class="ds-sw" style="--i:5;--c:#c4bbb0"><span>#C4BBB0</span></div></div>
+      </div>
+    </div>
+    <section class="cr-row cr-row--cont">
+      <div></div>
+      <div class="cr-content">
+        <p class="cr-body cr-body--first">The final direction balances the clarity needed for detailed coffee information with the warmth of a community built around a shared interest.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">&copy; 2026 Annabel Yang | Coded with Javascript, HTML, CSS</p>
+    <a href="index.html" class="footer-logo" aria-label="Back to home">
+      <img src="https://api.builder.io/api/v1/image/assets/TEMP/852cdf67a5a04491c32af2f17a47df78d91c2cc8?width=616"
+           alt="Annabel Yang" />
+    </a>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* Side navigation: shown from Intro down; the link for the section on screen is black. */
+    (function () {
+      var toc = document.querySelector('.cr-toc');
+      var first = document.getElementById('overview');
+      if (!toc || !first) return;
+      var links = [].slice.call(toc.querySelectorAll('a'));
+      var targets = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+      var ticking = false;
+      function update() {
+        ticking = false;
+        // positions come back in the page's zoomed units (js/scale.js)
+        var z = parseFloat(document.documentElement.style.zoom) || 1, H = window.innerHeight;
+        toc.classList.toggle('is-visible', first.getBoundingClientRect().top * z < H * 0.6);
+        var cur = -1;
+        targets.forEach(function (t, i) { if (t && t.getBoundingClientRect().top * z < H * 0.4) cur = i; });
+        links.forEach(function (a, i) { a.classList.toggle('is-current', i === cur); });
+      }
+      window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
+  <script>
+    /* Design system: plays in the first time it comes on screen. */
+    (function () {
+      var ds = document.getElementById('design-system');
+      if (!ds || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      ds.classList.add('is-armed');
+      var io = new IntersectionObserver(function (es) {
+        if (es[0].isIntersecting) { ds.classList.add('is-in'); io.disconnect(); }
+      }, { threshold: 0.25 });
+      io.observe(ds);
+    })();
+  </script>
+</body>
+</html>

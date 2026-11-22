@@ -1427,3 +1427,6 @@ video.lightbox__media {
 .project-slide.project-slide--wide { width: calc(42vw * 9 / 16 * 2560 / 1312); aspect-ratio: 2560 / 1312; }
 @media (max-width: 1024px) { .project-slide.project-slide--wide { width: calc(55vw * 9 / 16 * 2560 / 1312); } }
 @media (max-width: 768px)  { .project-slide.project-slide--wide { width: calc(78vw * 9 / 16 * 2560 / 1312); } }
+
+/* Images and videos can't be dragged out or long-pressed to save */
+img, video { -webkit-user-drag: none; user-select: none; -webkit-touch-callout: none; }
